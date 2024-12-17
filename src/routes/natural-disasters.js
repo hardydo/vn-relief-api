@@ -17,4 +17,12 @@ NaturalDisastersRouter.delete(`${prefix}/:id`)
 NaturalDisastersRouter.get(`${prefix}/active`)
 
 
+// - Lấy thông tin của đợt thiên tai
+NaturalDisastersRouter.get(`${prefix}/:id/info`)
+// - Thêm thông tin cho đợt thiên tai
+NaturalDisastersRouter.post(`${prefix}/:id/info`)
+// - Cập nhật thông tin
+NaturalDisastersRouter.put(`${prefix}/:id/info/:infoId`)
+// - Xóa thông tin
+NaturalDisastersRouter.delete(`${prefix}/:id/info/:infoId`)
 export default NaturalDisastersRouter
