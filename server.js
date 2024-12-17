@@ -5,14 +5,16 @@ import morgan from "morgan";
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import helmet from "helmet";
-// import dbConnection from "./db_config/index.js";
+import VARIABLE_GLOBAL from "./src/variables/global.js";
+import DBconnect from "./src/databases/connection/connection.js";
+
 // import errorMiddleware from "./middlewares/error.middleware.js";
 // import router from "./routes/index.js";
 
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 8800;
+const PORT = VARIABLE_GLOBAL.BE_PORT || 8800;
 
 app.use(
   cors({
@@ -28,7 +30,9 @@ app.use(
   })
 );
 
-// dbConnection();
+//connect db
+DBconnect()
+
 //
 // const a = 1,
 //   b = null,
