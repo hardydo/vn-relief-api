@@ -1,34 +1,26 @@
-import mongoose from "mongoose";
+import mongoose, { Schema } from "mongoose";
 
-const DotThienTaiSchema = new mongoose.Schema(
+// Đợt thiên tai
+const naturalDisasterSchema = new Schema(
   {
-    ten_dot: {
+    name: {
       type: String,
       required: true,
     },
-    trang_thai: {
+    status: {
       type: String,
-      enum: ["dang_dien_ra", "da_ket_thuc"],
+      enum: ["ongoing", "ended"],
       required: true,
     },
-    mo_ta: {
-      type: String,
-    },
-    thoi_gian_bat_dau: {
-      type: Date,
-    },
-    thoi_gian_ket_thuc: {
-      type: Date,
-    },
+    startTime: Date,
+    endTime: Date,
+    description: String,
   },
-  {
-    timestamps: true,
-  }
+  { timestamps: true }
 );
 
-const DotThienTaiModel =  mongoose.model(
-    "DotThienTai",
-    DotThienTaiSchema,
-    "dot_thien_tai"
+const NaturalDisasters = mongoose.model(
+  "NaturalDisasters",
+  naturalDisasterSchema
 );
-export default DotThienTaiModel
+export default NaturalDisasters;
