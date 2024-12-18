@@ -1,5 +1,6 @@
 import mongoose, { Schema } from "mongoose";
 
+// role
 const roleSchema = new Schema(
   {
     admin: {

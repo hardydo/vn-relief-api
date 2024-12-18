@@ -1,4 +1,3 @@
-// models/DisasterInformation.js
 import mongoose, { Schema } from "mongoose";
 
 // Thông tin thiên tai

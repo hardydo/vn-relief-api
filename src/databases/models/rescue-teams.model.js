@@ -1,4 +1,3 @@
-// models/RescueTeams.js
 import mongoose, { Schema } from "mongoose";
 
 // đội cứu trợ

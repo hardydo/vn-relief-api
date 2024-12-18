@@ -1,4 +1,3 @@
-// models/TableStatuses.js
 import mongoose, { Schema } from "mongoose";
 
 // Bảng lưu các trạng thái của từng Bảng
