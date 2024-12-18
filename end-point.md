@@ -165,13 +165,6 @@ Base URL: /api/v1
 	+ Body cũng truyền vào là 1 mảng các id "hàng cứu trợ muốn đóng góp" --> Tức là nhận 1 lúc nhiều hàng để chở đi ấy
 	+ Đồng thời update trạng thái của các "hàng cứu trợ muốn đóng góp" dựa vào mảng id tuyền body lên (status: Đang vận chuyển)
 	+ Đồng thời update trạng thái "lich trinh van chuyen"
-	
-- POST `/support-locations/:id/distribute` - Phân phối hàng hóa (tức user chở hàng tới nơi phân phát và phát)
-	+ Truyền body chứa thông tin "phương tiện" nhận hàng 
-	+ Body cũng truyền vào là 1 mảng các id "hàng cứu trợ muốn đóng góp" --> Tức là phát 1 lúc nhiều hàng cho hộ dân
-	+ Đồng thời update trạng thái của các "hàng cứu trợ muốn đóng góp" dựa vào mảng id tuyền body lên (status: Đang phân phát)
-	+ Khi nào phát xong thì người dùng tự update trạng thái lên "Đã phân phát xong"
-	+ Đồng thời update trạng thái "lich trinh van chuyen"
 
 - GET `/support-locations/nearby`        - Tìm điểm gần nhất
 		+ Lọc các điểm hỗ trợ gần người dùng (dựa vào vị trí hiện tại người dùng)
@@ -231,6 +224,17 @@ Base URL: /api/v1
 - POST `/transports/:id/supplies`        - Thêm hàng vào chuyến
 - DELETE `/transports/:id/supplies/:supplyId` - Xóa hàng khỏi chuyến
 - PUT `/transports/:id/supplies/:supplyId/status` - Cập nhật trạng thái
+- POST `/transports/:id/supplies/distribute`			 - Phân phối hàng hóa tại điểm đích
+  + Body:
+    - vehicleId: ID phương tiện
+    - items: Mảng các {itemId, quantity} - danh sách và số lượng hàng phân phối
+    - rescueRequestInfo: Phân phối cho đơn cứu trợ nào?
+    - location: Vị trí phân phối
+    - notes: Ghi chú
+  + Action:
+    - Update trạng thái các items đã phân phối
+    - Tạo transport history record
+    - Update số lượng tồn kho tại điểm đích
 
 ## Financial Management
 ### Financial Transactions (`/transactions`)
