@@ -46,12 +46,27 @@ Base URL: /api/v1
 - DELETE `/natural-disasters/:id`        - Xóa đợt thiên tai (soft delete)
 - GET `/natural-disasters/active`        - Đợt thiên tai đang diễn ra
 
-### Disaster Information (`/disaster-information`)
+### Disaster Information (`/natural-disasters/:disasterId/disaster-information`)
 #### Do người dùng đăng ký tài khoản sau vào cập nhật thông tin
-- GET `/natural-disasters/:id/information`     - Thông tin thiên tai
-- POST `/natural-disasters/:id/information`    - Thêm thông tin
-- PUT `/natural-disasters/:id/information/:infoId`  - Cập nhật thông tin
-- DELETE `/natural-disasters/:id/information/:infoId` - Xóa thông tin
+- GET `/natural-disasters/:disasterId/disaster-information`     - Lấy danh sách thông tin thiên tai của 1 đợt
+  + Query:
+    - type: loại thiệt hại
+    - area: mã địa phương
+    - startDate, endDate
+
+- GET `/natural-disasters/:disasterId/disaster-information/:id`     - Chi tiết một thông tin thiên tai
+
+- POST `/natural-disasters/:disasterId/disaster-information`    		- Thêm thông tin thiên tai mới cho đợt
+  + Body:
+    - wardCode: mã địa phương (required)
+    - disasterSeverity: mức độ
+    - damageDescription: mô tả thiệt hại
+    - affectedHouseholds: số hộ ảnh hưởng
+    - estimatedDamage: ước tính thiệt hại
+
+- PUT `/natural-disasters/:disasterId/disaster-information/:id`  		- Cập nhật thông tin thiên tai
+  
+- DELETE `/natural-disasters/:disasterId/disaster-information/:id` 	- Xóa thông tin thiên tai
 
 ## Rescue Teams Management
 ### Rescue Teams (`/rescue-teams`)
