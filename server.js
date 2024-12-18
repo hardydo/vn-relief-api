@@ -51,9 +51,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(morgan("dev"));
 
 //routes
-CombineRoute.forEach((route)=> {
-  app.use(route)
-})
+CombineRoute
 
 app.get("/", (req, res, next) => {
   res.send({
