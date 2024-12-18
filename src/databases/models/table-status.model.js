@@ -10,18 +10,11 @@ const tableStatusSchema = new Schema(
       type: String,
       required: true,
     },
-    referenceId: {
-      type: Schema.Types.ObjectId,
-      required: true,
-    },
     status: {
       type: String,
       required: true,
     },
-    updatedBy: {
-      type: Schema.Types.ObjectId,
-      ref: "Users",
-    },
+    note: String
   },
   { timestamps: true }
 );

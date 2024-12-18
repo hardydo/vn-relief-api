@@ -7,6 +7,10 @@ const rescueTeamSchema = new Schema(
       type: String,
       required: true,
     },
+    naturalDisasterId: {
+      type: Schema.Types.ObjectId,
+      ref: "NaturalDisasters",
+    },
     operationType: String, // Loại hình hoạt động: y tế, cứu người, di dời,...
     phone: String,
     supportCapability: String,
@@ -22,7 +26,6 @@ const rescueTeamSchema = new Schema(
     wardCode: String, //mã xã | mã tỉnh | mã huyện --> "01 | 23 | 34"
     operatingArea: String,
     status: String,
-    livestreamLink: String,
     locationTrackingLink: String,
   },
   { timestamps: true }

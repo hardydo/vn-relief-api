@@ -6,6 +6,10 @@ const userSchema = new Schema(
       type: String,
       required: true,
     },
+    rescueTeamId: {
+      type: Schema.Types.ObjectId,
+      ref: "RescueTeams",
+    },
     phone: {
       type: String,
       required: true,

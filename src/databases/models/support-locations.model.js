@@ -7,6 +7,10 @@ const supportLocationSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: "Users",
     },
+    naturalDisasterId: {
+      type: Schema.Types.ObjectId,
+      ref: "NaturalDisasters",
+    },
     currentSituation: String,
     supportAbility: String,
     address: {

@@ -6,7 +6,6 @@ const reliefContributionSchema = new Schema(
     donorId: {
       type: Schema.Types.ObjectId,
       ref: "Users",
-      required: true,
     },
     donorType: {
       type: String,

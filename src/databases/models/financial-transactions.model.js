@@ -7,19 +7,21 @@ const financialTransactionSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: "NaturalDisasters",
     },
-    transactionTime: Date,
-    amount: Number,
-    content: String,
-    executor: {
+    type: {
+      type: String,
+      enum: ["bank", "cash", "other"],
+    },
+    executorId: {
       type: Schema.Types.ObjectId,
       ref: "Users",
     },
-    approverId: {
+    verifierId: {
       type: Schema.Types.ObjectId,
       ref: "Users",
     },
     description: String,
     image: [String],
+    amount: Number,
     status: {
       type: String,
       enum: ["pending", "approved", "rejected", "cancelled"],

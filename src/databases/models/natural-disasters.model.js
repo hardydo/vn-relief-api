@@ -14,6 +14,7 @@ const naturalDisasterSchema = new Schema(
     },
     startTime: Date,
     endTime: Date,
+    title: String,
     description: String,
   },
   { timestamps: true }

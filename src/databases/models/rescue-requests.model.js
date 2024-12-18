@@ -13,10 +13,8 @@ const rescueRequestSchema = new Schema(
       ref: "Users",
     },
     wardCode: String, //mã xã | mã tỉnh | mã huyện --> "01 | 23 | 34",
-    address: String,
-    requiredRescueTime: Date,
-    title: String,
     description: String,
+    title: String,
     phone: String,
     priorityContact: String,
     priorityPhone: String,
@@ -28,12 +26,14 @@ const rescueRequestSchema = new Schema(
       },
       coordinates: [Number],
     },
-    detailedLocation: String,
+    address: String,
     numberOfPeopleNeedingHelp: Number,
     images: [String],
-    status: String,
-    detailsLink: String,
-    rescueProgressUpdate: String,
+    verifierId: {
+      type: Schema.Types.ObjectId,
+      ref: "Users",
+    },
+    requiredRescueTime: Date, //6h, 12-24h
   },
   { timestamps: true }
 );

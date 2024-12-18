@@ -6,12 +6,10 @@ const userRoleSchema = new Schema(
     userId: {
       type: Schema.Types.ObjectId,
       ref: "Users",
-      required: true,
     },
     roleId: {
-      type: Number,
+      type: Schema.Types.ObjectId,
       ref: "Roles",
-      required: true,
     },
   },
   { timestamps: true }

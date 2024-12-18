@@ -24,10 +24,6 @@ const statusHistorySchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: "Users",
     },
-    changeTime: {
-      type: Date,
-      default: Date.now,
-    },
     description: String,
   },
   { timestamps: true }

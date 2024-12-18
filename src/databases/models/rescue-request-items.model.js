@@ -6,7 +6,6 @@ const rescueRequestItemSchema = new Schema(
     rescueRequestId: {
       type: Schema.Types.ObjectId,
       ref: "RescueRequests",
-      required: true,
     },
     itemType: String,
     quantity: Number,

@@ -6,7 +6,6 @@ const contributionDetailSchema = new Schema(
     contributionId: {
       type: Schema.Types.ObjectId,
       ref: "ReliefContributions",
-      required: true,
     },
     itemType: String,
     unit: String,

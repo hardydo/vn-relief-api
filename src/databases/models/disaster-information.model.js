@@ -12,6 +12,8 @@ const disasterInformationSchema = new Schema(
     disasterSeverity: String,
     damageDescription: String,
     affectedHouseholds: Number,
+    startTime: Date,
+    endTime: Date,
     reporterId: {
       type: Schema.Types.ObjectId,
       ref: "Users",

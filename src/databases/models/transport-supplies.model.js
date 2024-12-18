@@ -6,12 +6,10 @@ const transportSuppliesSchema = new Schema(
     transportId: {
       type: Schema.Types.ObjectId,
       ref: "Transports",
-      required: true,
     },
     rescueRequestId: {
       type: Schema.Types.ObjectId,
       ref: "RescueRequests",
-      required: true,
       description: "Yêu cầu cứu trợ cần hỗ trợ",
     },
     pickupTime: Date,

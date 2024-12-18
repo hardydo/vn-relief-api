@@ -6,13 +6,11 @@ const transportSchema = new Schema(
     vehicleId: {
       type: Schema.Types.ObjectId,
       ref: "Vehicles",
-      required: true,
       description: "Phương tiện thực hiện vận chuyển",
     },
     pickupLocationId: {
       type: Schema.Types.ObjectId,
       ref: "SupportLocations",
-      required: true,
       description: "Địa điểm lấy hàng/điểm tập kết",
     },
     pickupLocation: {

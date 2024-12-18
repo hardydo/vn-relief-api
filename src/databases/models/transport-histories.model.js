@@ -6,7 +6,6 @@ const transportHistorySchema = new Schema(
     transportId: {
       type: Schema.Types.ObjectId,
       ref: "Transports",
-      required: true,
     },
     status: {
       type: String,
