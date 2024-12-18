@@ -180,8 +180,8 @@ Base URL: /api/v1
 - GET `/transactions/:id`                    - Chi tiết giao dịch
 
 ### Tiền mặt
-- POST `/donations/cash/record`              - Ghi nhận tiền mặt từ người dân đóng góp
-- PUT `/donations/cash/record`               - Sửa thông tin tiền mặt từ người dân đóng góp
+- POST `/donations-cash/record`              - Ghi nhận tiền mặt từ người dân đóng góp
+- PUT `/donations-cash/record`               - Sửa thông tin tiền mặt từ người dân đóng góp
 	+ Cái này thì xin sđt + thông tin người dân --> Sẽ tạo 1 account với sđt người dân đó NHƯNG KHÔNG CẦN XÁC MINH GÌ HẾT
 	+ Mục đích để sao kê ra thui
 
