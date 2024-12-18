@@ -18,6 +18,11 @@ Base URL: /api/v1
 - GET `/users/:id`                       - Chi tiết user
 - POST `/users`                          - Tạo user mới
 	+ body truyền mảng roles lên --> roles = [1,2,3] --> Tạo user có role là 1,2,3 
+	+ accountStatus là "inactive", và phải đợi xác minh 
+		+ Từ bên amin - đăng ký TNV
+		+ Từ bên TNV - đăng ký đội cứu trợ
+
+- POST `/users/toggle-status`						 - Toggle status (active | inactive) user
 - PUT `/users/:id`                       - Cập nhật user
 
 ### Roles (`/roles`) 
@@ -31,8 +36,8 @@ Base URL: /api/v1
 
 ### User Roles (`/user-roles`)
 - GET `/users/:id/roles`                 - Roles của user
-- POST `/users/:id/roles`                - Thêm roles cho user
-- DELETE `/users/:id/roles/:roleId`      - Xóa role của user
+- POST `/users/:id/roles`                - Cập nhật roles cho user
+	+ Body truyền roles: [roleIds] lên --> Update thằng
 
 ## Natural Disasters Management
 ### Natural Disasters (`/natural-disasters`)
@@ -69,7 +74,7 @@ Base URL: /api/v1
 - DELETE `/natural-disasters/:disasterId/disaster-information/:id` 	- Xóa thông tin thiên tai
 
 ## Rescue Teams Management
-### Rescue Teams (`/rescue-teams`)
+### Rescue Teams (`/natural-disasters/:disasterId/rescue-teams`)
 - GET `/rescue-teams`                    - Danh sách đội cứu trợ
   + Query:
     - status: 'active' | 'inactive'
