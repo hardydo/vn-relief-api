@@ -102,7 +102,7 @@ Base URL: /api/v1
 - PUT `/team-rescue-requests/:id/status`    - Cập nhật trạng thái xử lý
 
 ## Vehicles Management
-### Vehicles (`/vehicles`)
+### Vehicles (`/natural-disasters/:disasterId/vehicles`)
 - GET `/vehicles`                        - Danh sách phương tiện
   + Query:
     - status: 'available' | 'in_use'
@@ -113,7 +113,7 @@ Base URL: /api/v1
 - DELETE `/vehicles/:id`                 - Xóa phương tiện
 
 ## Rescue Requests Management
-### Rescue Requests (`/rescue-requests`)
+### Rescue Requests (`/natural-disasters/:disasterId/rescue-requests`)
 - GET `/rescue-requests`                 - Danh sách yêu cầu cứu trợ
   + Query:
     - status: 'pending' | 'verifying' | 'accepted' | 'in_progress' | 'completed'
@@ -153,7 +153,7 @@ Base URL: /api/v1
 - DELETE `/rescue-requests/:id/items/:itemId` - Xóa item
 
 ## Support Locations Management 
-### Support Locations (`/support-locations`)
+### Support Locations (`/natural-disasters/:disasterId/support-locations`)
 - GET `/support-locations`               - Danh sách địa điểm
 	+ Get luôn thông tin các hàng hoá đang có ở địa điểm này (bảng "chi tiết đóng góp hàng cứu trợ")
 	+ Query:
@@ -242,7 +242,7 @@ Base URL: /api/v1
     - Update số lượng tồn kho tại điểm đích
 
 ## Financial Management
-### Financial Transactions (`/transactions`)
+### Financial Transactions (`/natural-disasters/:disasterId/transactions`)
 - GET `/transactions`                    - Danh sách giao dịch
   + Query:
     - type: 'bank' | 'cash'
