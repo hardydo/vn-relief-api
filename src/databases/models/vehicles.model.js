@@ -10,6 +10,10 @@ const vehicleSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: "RescueTeams",
     },
+    naturalDisasterId: {
+      type: Schema.Types.ObjectId,
+      ref: "NaturalDisasters",
+    },
     phone: String,
     licensePlate: {
       type: String,
