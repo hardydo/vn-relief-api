@@ -1,1 +1,1 @@
-# Link ERD: https://prnt.sc/O22hDpTP6udp
+# Link ERD: https://prnt.sc/wKxoGbNx5I4k
