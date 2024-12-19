@@ -1,5 +1,5 @@
-import ResponseStatus from "@/response-handler/response-handler.js";
-import NaturalDisasters from "@/databases/models/natural-disasters.model.js";
+import ResponseStatus from "../../response-handler/response-handler.js";
+import NaturalDisasters from "../../databases/models/natural-disasters.model.js";
 
 // Lấy danh sách đợt thiên tai
 export const getDisastersController = async (req, res) => {
@@ -14,12 +14,13 @@ export const getDisastersController = async (req, res) => {
     if (startDate && endDate) {
       query.startTime = {
         $gte: new Date(startDate),
-        $lte: new Date(endDate)
+        $lte: new Date(endDate),
       };
     }
 
-    const disasters = await NaturalDisasters.find(query)
-      .sort({ createdAt: -1 });
+    const disasters = await NaturalDisasters.find(query).sort({
+      createdAt: -1,
+    });
 
     return ResponseStatus.ok(res, disasters);
   } catch (error) {
@@ -85,7 +86,7 @@ export const deleteDisasterController = async (req, res) => {
 
     const deleted = await NaturalDisasters.findByIdAndUpdate(
       id,
-      { $set: { deleted: true }},
+      { $set: { deleted: true } },
       { new: true }
     );
 
@@ -104,7 +105,7 @@ export const getActiveDisastersController = async (req, res) => {
   try {
     const activeDisasters = await NaturalDisasters.find({
       status: "ongoing",
-      deleted: { $ne: true }
+      deleted: { $ne: true },
     });
 
     return ResponseStatus.ok(res, activeDisasters);

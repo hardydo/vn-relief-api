@@ -1,12 +1,11 @@
-import ResponseStatus from "@/response-handler/response-handler.js";
-import Roles from "@/databases/models/roles.model.js";
-import UserRoles from "@/databases/models/user-roles.model.js";
+import ResponseStatus from "../../response-handler/response-handler.js";
+import Roles from "../../databases/models/roles.model.js";
+import UserRoles from "../../databases/models/user-roles.model.js";
 
 // Lấy danh sách roles
 export const getRolesController = async (req, res) => {
   try {
-    const roles = await Roles.find()
-      .sort({ code: 1 });
+    const roles = await Roles.find().sort({ code: 1 });
 
     return ResponseStatus.ok(res, roles);
   } catch (error) {

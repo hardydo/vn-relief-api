@@ -1,6 +1,6 @@
-import ResponseStatus from "@/response-handler/response-handler.js";
-import FinancialTransactions from "@/databases/models/financial-transactions.model.js";
-import Users from "@/databases/models/users.model.js";
+import ResponseStatus from "../../response-handler/response-handler.js";
+import FinancialTransactions from "../../databases/models/financial-transactions.model.js";
+import Users from "../../databases/models/users.model.js";
 
 // Lấy danh sách giao dịch
 export const getTransactionsController = async (req, res) => {
@@ -14,13 +14,13 @@ export const getTransactionsController = async (req, res) => {
     if (startDate && endDate) {
       query.createdAt = {
         $gte: new Date(startDate),
-        $lte: new Date(endDate)
+        $lte: new Date(endDate),
       };
     }
 
     const transactions = await FinancialTransactions.find(query)
-      .populate('executorId', 'name phone')
-      .populate('verifierId', 'name phone')
+      .populate("executorId", "name phone")
+      .populate("verifierId", "name phone")
       .sort({ createdAt: -1 });
 
     return ResponseStatus.ok(res, transactions);
@@ -35,9 +35,9 @@ export const getTransactionByIdController = async (req, res) => {
     const { id } = req.params;
 
     const transaction = await FinancialTransactions.findById(id)
-      .populate('executorId', 'name phone')
-      .populate('verifierId', 'name phone');
-      
+      .populate("executorId", "name phone")
+      .populate("verifierId", "name phone");
+
     if (!transaction) {
       return ResponseStatus.notfound(res);
     }
@@ -48,7 +48,7 @@ export const getTransactionByIdController = async (req, res) => {
   }
 };
 
-// Ghi nhận giao dịch tiền mặt 
+// Ghi nhận giao dịch tiền mặt
 export const createCashTransactionController = async (req, res) => {
   try {
     const { phone, ...transactionData } = req.body;
@@ -58,16 +58,16 @@ export const createCashTransactionController = async (req, res) => {
     if (!donor) {
       donor = await Users.create({
         phone,
-        role: 'thanh_vien_thuong',
-        status: 'active'
+        role: "thanh_vien_thuong",
+        status: "active",
       });
     }
 
     const newTransaction = await FinancialTransactions.create({
       ...transactionData,
-      type: 'cash',
+      type: "cash",
       executorId: donor._id,
-      status: 'pending'
+      status: "pending",
     });
 
     return ResponseStatus.created(res, newTransaction);
@@ -110,14 +110,14 @@ export const createVNPayTransactionController = async (req, res) => {
     const newTransaction = await FinancialTransactions.create({
       ...transactionData,
       amount,
-      type: 'bank',
+      type: "bank",
       executorId: req.user._id,
-      status: 'pending'
+      status: "pending",
     });
 
-    return ResponseStatus.created(res, { 
+    return ResponseStatus.created(res, {
       transaction: newTransaction,
-      paymentUrl 
+      paymentUrl,
     });
   } catch (error) {
     return ResponseStatus.error(res);
@@ -128,15 +128,14 @@ export const createVNPayTransactionController = async (req, res) => {
 export const handleVNPayCallbackController = async (req, res) => {
   try {
     const vnpayParams = req.query;
-    
+
     // TODO: Xác thực callback từ VNPAY
-    
+
     // Cập nhật trạng thái giao dịch
-    const transactionId = ''; // Lấy từ vnpayParams
-    await FinancialTransactions.findByIdAndUpdate(
-      transactionId,
-      { $set: { status: 'approved' }}
-    );
+    const transactionId = ""; // Lấy từ vnpayParams
+    await FinancialTransactions.findByIdAndUpdate(transactionId, {
+      $set: { status: "approved" },
+    });
 
     return ResponseStatus.ok(res, "Thanh toán thành công");
   } catch (error) {
@@ -149,15 +148,15 @@ export const getPaymentMethodsController = async (req, res) => {
   try {
     const methods = [
       {
-        id: 'cash',
-        name: 'Tiền mặt',
-        description: 'Thanh toán bằng tiền mặt'
+        id: "cash",
+        name: "Tiền mặt",
+        description: "Thanh toán bằng tiền mặt",
       },
       {
-        id: 'vnpay',
-        name: 'VNPAY',
-        description: 'Thanh toán qua VNPAY'
-      }
+        id: "vnpay",
+        name: "VNPAY",
+        description: "Thanh toán qua VNPAY",
+      },
       // Thêm các phương thức khác
     ];
 

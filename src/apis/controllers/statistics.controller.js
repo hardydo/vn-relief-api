@@ -1,8 +1,8 @@
-import ResponseStatus from "@/response-handler/response-handler.js";
-import RescueTeams from "@/databases/models/rescue-teams.model.js";
-import ReliefContributions from "@/databases/models/relief-contributions.model.js";
-import RescueRequests from "@/databases/models/rescue-requests.model.js";
-import Transports from "@/databases/models/transports.model.js";
+import ResponseStatus from "../../response-handler/response-handler.js";
+import RescueTeams from "../../databases/models/rescue-teams.model.js";
+import ReliefContributions from "../../databases/models/relief-contributions.model.js";
+import RescueRequests from "../../databases/models/rescue-requests.model.js";
+import Transports from "../../databases/models/transports.model.js";
 
 // Thống kê đội cứu trợ
 export const getRescueTeamsStatsController = async (req, res) => {
@@ -11,9 +11,9 @@ export const getRescueTeamsStatsController = async (req, res) => {
       {
         $group: {
           _id: "$status",
-          count: { $sum: 1 }
-        }
-      }
+          count: { $sum: 1 },
+        },
+      },
     ]);
 
     // Thêm các thống kê khác như:
@@ -36,12 +36,12 @@ export const getContributionsStatsController = async (req, res) => {
         $group: {
           _id: {
             type: "$contributionType",
-            status: "$status"
+            status: "$status",
           },
           count: { $sum: 1 },
-          totalAmount: { $sum: "$amount" }
-        }
-      }
+          totalAmount: { $sum: "$amount" },
+        },
+      },
     ]);
 
     // Thêm các thống kê khác như:
@@ -64,11 +64,11 @@ export const getRescueRequestsStatsController = async (req, res) => {
         $group: {
           _id: {
             type: "$type",
-            status: "$status"
+            status: "$status",
           },
-          count: { $sum: 1 }
-        }
-      }
+          count: { $sum: 1 },
+        },
+      },
     ]);
 
     // Thêm các thống kê khác như:
@@ -90,9 +90,9 @@ export const getTransportStatsController = async (req, res) => {
       {
         $group: {
           _id: "$status",
-          count: { $sum: 1 }
-        }
-      }
+          count: { $sum: 1 },
+        },
+      },
     ]);
 
     // Thêm các thống kê khác như:

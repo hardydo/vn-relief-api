@@ -1,14 +1,15 @@
-import ResponseStatus from "@/response-handler/response-handler.js";
-import ContributionDetails from "@/databases/models/contribution-details.model.js";
-import ReliefContributions from "@/databases/models/relief-contributions.model.js";
+import ResponseStatus from "../../response-handler/response-handler.js";
+import ContributionDetails from "../../databases/models/contribution-details.model.js";
+import ReliefContributions from "../../databases/models/relief-contributions.model.js";
 
 // Lấy chi tiết items đóng góp của 1 đơn đóng góp
 export const getContributionDetailsController = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const details = await ContributionDetails.find({ contributionId: id })
-      .sort({ createdAt: -1 });
+    const details = await ContributionDetails.find({ contributionId: id }).sort(
+      { createdAt: -1 }
+    );
 
     return ResponseStatus.ok(res, details);
   } catch (error) {
@@ -30,10 +31,10 @@ export const addContributionItemsController = async (req, res) => {
 
     // Tạo nhiều item cùng lúc
     const newItems = await ContributionDetails.insertMany(
-      items.map(item => ({
+      items.map((item) => ({
         ...item,
         contributionId: id,
-        remainingQuantity: item.providedQuantity
+        remainingQuantity: item.providedQuantity,
       }))
     );
 
@@ -54,8 +55,8 @@ export const updateContributionItemController = async (req, res) => {
       {
         $set: {
           ...updateData,
-          remainingQuantity: updateData.providedQuantity 
-        }
+          remainingQuantity: updateData.providedQuantity,
+        },
       },
       { new: true }
     );
@@ -76,9 +77,9 @@ export const deleteContributionItemController = async (req, res) => {
     const { id, detailId } = req.params;
 
     const deleted = await ContributionDetails.findByIdAndDelete(detailId);
-    
+
     if (!deleted) {
-      return ResponseStatus.notfound(res);  
+      return ResponseStatus.notfound(res);
     }
 
     return ResponseStatus.ok(res, "Xóa thành công");

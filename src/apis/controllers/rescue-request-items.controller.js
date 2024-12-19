@@ -1,14 +1,16 @@
-import ResponseStatus from "@/response-handler/response-handler.js";
-import RescueRequestItems from "@/databases/models/rescue-request-items.model.js";
-import RescueRequests from "@/databases/models/rescue-requests.model.js";
+import ResponseStatus from "../../response-handler/response-handler.js";
+import RescueRequestItems from "../../databases/models/rescue-request-items.model.js";
+import RescueRequests from "../../databases/models/rescue-requests.model.js";
 
 // Lấy danh sách nhu yếu phẩm cần hỗ trợ của 1 đơn cứu trợ
 export const getRequestItemsController = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const items = await RescueRequestItems.find({ rescueRequestId: id })
-      .sort({ priority: 1, createdAt: -1 });
+    const items = await RescueRequestItems.find({ rescueRequestId: id }).sort({
+      priority: 1,
+      createdAt: -1,
+    });
 
     return ResponseStatus.ok(res, items);
   } catch (error) {
@@ -30,10 +32,10 @@ export const addRequestItemsController = async (req, res) => {
 
     // Tạo nhiều item cùng lúc
     const newItems = await RescueRequestItems.insertMany(
-      items.map(item => ({
+      items.map((item) => ({
         ...item,
         rescueRequestId: id,
-        remainingQuantity: item.providedQuantity
+        remainingQuantity: item.providedQuantity,
       }))
     );
 
@@ -54,8 +56,8 @@ export const updateRequestItemController = async (req, res) => {
       {
         $set: {
           ...updateData,
-          remainingQuantity: updateData.providedQuantity
-        }
+          remainingQuantity: updateData.providedQuantity,
+        },
       },
       { new: true }
     );
@@ -76,7 +78,7 @@ export const deleteRequestItemController = async (req, res) => {
     const { id, itemId } = req.params;
 
     const deleted = await RescueRequestItems.findByIdAndDelete(itemId);
-    
+
     if (!deleted) {
       return ResponseStatus.notfound(res);
     }

@@ -1,6 +1,6 @@
-import ResponseStatus from "@/response-handler/response-handler.js";
-import ReliefContributions from "@/databases/models/relief-contributions.model.js";
-import Users from "@/databases/models/users.model.js";
+import ResponseStatus from "../../response-handler/response-handler.js";
+import ReliefContributions from "../../databases/models/relief-contributions.model.js";
+import Users from "../../databases/models/users.model.js";
 
 // Lấy danh sách đóng góp
 export const getContributionsController = async (req, res) => {
@@ -16,7 +16,7 @@ export const getContributionsController = async (req, res) => {
     }
 
     const contributions = await ReliefContributions.find(query)
-      .populate('donorId', 'name phone')
+      .populate("donorId", "name phone")
       .sort({ createdAt: -1 });
 
     return ResponseStatus.ok(res, contributions);
@@ -30,9 +30,11 @@ export const getContributionByIdController = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const contribution = await ReliefContributions.findById(id)
-      .populate('donorId', 'name phone');
-      
+    const contribution = await ReliefContributions.findById(id).populate(
+      "donorId",
+      "name phone"
+    );
+
     if (!contribution) {
       return ResponseStatus.notfound(res);
     }
@@ -50,21 +52,21 @@ export const createContributionController = async (req, res) => {
 
     // Kiểm tra user tồn tại
     let donor = await Users.findOne({ phone });
-    
+
     if (!donor) {
       // Tạo user mới với role thanh_vien_thuong
       donor = await Users.create({
         phone,
-        role: 'thanh_vien_thuong',
+        role: "thanh_vien_thuong",
         // TODO: Thêm các thông tin khác
       });
-      
+
       // TODO: Gửi OTP xác thực
     }
 
     const newContribution = await ReliefContributions.create({
       ...contributionData,
-      donorId: donor._id
+      donorId: donor._id,
     });
 
     return ResponseStatus.created(res, newContribution);
@@ -101,7 +103,7 @@ export const deleteContributionController = async (req, res) => {
     const { id } = req.params;
 
     const deleted = await ReliefContributions.findByIdAndDelete(id);
-    
+
     if (!deleted) {
       return ResponseStatus.notfound(res);
     }

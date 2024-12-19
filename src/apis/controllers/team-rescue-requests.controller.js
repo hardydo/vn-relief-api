@@ -1,7 +1,7 @@
-import ResponseStatus from "@/response-handler/response-handler.js";
-import TeamRescueRequests from "@/databases/models/team-rescue-requests.model.js";
-import RescueRequests from "@/databases/models/rescue-requests.model.js";
-import StatusHistory from "@/databases/models/status-history.model.js";
+import ResponseStatus from "../../response-handler/response-handler.js";
+import TeamRescueRequests from "../../databases/models/team-rescue-requests.model.js";
+import RescueRequests from "../../databases/models/rescue-requests.model.js";
+import StatusHistory from "../../databases/models/status-history.model.js";
 
 // Danh sách yêu cầu được phân công cho đội
 export const getTeamRescueRequestsController = async (req, res) => {
@@ -10,8 +10,8 @@ export const getTeamRescueRequestsController = async (req, res) => {
 
     const requests = await TeamRescueRequests.find({ rescueTeamId: id })
       .populate({
-        path: 'rescueRequestId',
-        select: 'type title description currentLocation wardCode'
+        path: "rescueRequestId",
+        select: "type title description currentLocation wardCode",
       })
       .sort({ createdAt: -1 });
 
@@ -29,7 +29,7 @@ export const handleRescueRequestController = async (req, res) => {
 
     const teamRequest = await TeamRescueRequests.findOne({
       rescueTeamId: id,
-      rescueRequestId: requestId
+      rescueRequestId: requestId,
     });
 
     if (!teamRequest) {
@@ -37,24 +37,21 @@ export const handleRescueRequestController = async (req, res) => {
     }
 
     // Cập nhật trạng thái
-    const status = action === 'accept' ? 'accepted' : 'cancelled';
+    const status = action === "accept" ? "accepted" : "cancelled";
     teamRequest.status = status;
     await teamRequest.save();
 
     // Cập nhật status của rescue request
-    await RescueRequests.findByIdAndUpdate(
-      requestId,
-      { $set: { status } }
-    );
+    await RescueRequests.findByIdAndUpdate(requestId, { $set: { status } });
 
     // Tạo lịch sử
     await StatusHistory.create({
-      referenceTable: 'TeamRescueRequests',
+      referenceTable: "TeamRescueRequests",
       referenceId: teamRequest._id,
       action,
       oldStatus: teamRequest.status,
       newStatus: status,
-      changedBy: req.user._id
+      changedBy: req.user._id,
     });
 
     return ResponseStatus.ok(res, "Cập nhật trạng thái thành công");
@@ -75,7 +72,7 @@ export const updateRequestStatusController = async (req, res) => {
     }
 
     const oldStatus = teamRequest.status;
-    
+
     // Cập nhật trạng thái
     teamRequest.status = status;
     if (notes) {
@@ -84,22 +81,21 @@ export const updateRequestStatusController = async (req, res) => {
     await teamRequest.save();
 
     // Cập nhật status của rescue request nếu cần
-    if (status === 'completed') {
-      await RescueRequests.findByIdAndUpdate(
-        teamRequest.rescueRequestId,
-        { $set: { status: 'completed' }}
-      );
+    if (status === "completed") {
+      await RescueRequests.findByIdAndUpdate(teamRequest.rescueRequestId, {
+        $set: { status: "completed" },
+      });
     }
 
     // Tạo lịch sử
     await StatusHistory.create({
-      referenceTable: 'TeamRescueRequests',
+      referenceTable: "TeamRescueRequests",
       referenceId: id,
-      action: 'update_status',
+      action: "update_status",
       oldStatus,
       newStatus: status,
       changedBy: req.user._id,
-      description: notes
+      description: notes,
     });
 
     return ResponseStatus.ok(res, teamRequest);

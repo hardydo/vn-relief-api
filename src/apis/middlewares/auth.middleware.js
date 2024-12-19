@@ -1,13 +1,14 @@
 import jwt from 'jsonwebtoken';
-import { StatusCodes } from 'http-status-codes';
+// import { StatusCodes } from 'http-status-codes';
+import ResponseStatus from '../../response-handler/response-handler.js';
 
 // Middleware kiểm tra token có hợp lệ không
 export const authMiddleware = async (req, res, next) => {
   try {
     const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return res.status(StatusCodes.UNAUTHORIZED).json({
-        message: 'Không tìm thấy token xác thực'
+      return res.status(ResponseStatus.unauthorized(res, "unauthorized")).json({
+        message: "Không tìm thấy token xác thực",
       });
     }
 
@@ -16,8 +17,53 @@ export const authMiddleware = async (req, res, next) => {
     req.user = decoded;
     next();
   } catch (error) {
-    return res.status(StatusCodes.UNAUTHORIZED).json({
-      message: 'Token không hợp lệ hoặc đã hết hạn'
+    return res.status(ResponseStatus.unauthorized(res, "unauthorized")).json({
+      message: "Token không hợp lệ hoặc đã hết hạn",
+    });
+  }
+};
+
+// Middleware cho admin 
+export const adminMiddleware = async (req, res, next) => {
+  try {
+    next();
+  } catch (error) {
+    return res.status(ResponseStatus.unauthorized(res, "unauthorized")).json({
+      message: "Token không hợp lệ hoặc đã hết hạn",
+    });
+  }
+}
+
+// Middleware cho team leader 
+export const teamLeaderMiddleware = async (req, res, next) => {
+  try {
+    next();
+  } catch (error) {
+    return res.status(ResponseStatus.unauthorized(res, "unauthorized")).json({
+      message: "Token không hợp lệ hoặc đã hết hạn",
+    });
+  }
+};
+
+// Middleware cho team member 
+export const teamMemberMiddleware = async (req, res, next) => {
+  try {
+    next();
+  } catch (error) {
+    return res.status(ResponseStatus.unauthorized(res, "unauthorized")).json({
+      message: "Token không hợp lệ hoặc đã hết hạn",
+    });
+  }
+};
+
+// xác thực middleware 
+// Middleware cho team member 
+export const verifierMiddleware = async (req, res, next) => {
+  try {
+    next();
+  } catch (error) {
+    return res.status(ResponseStatus.unauthorized(res, "unauthorized")).json({
+      message: "Token không hợp lệ hoặc đã hết hạn",
     });
   }
 };
@@ -28,7 +74,7 @@ export const phoneAuthMiddleware = (req, res, next) => {
   const phoneRegex = /(84|0[3|5|7|8|9])+([0-9]{8})\b/g;
   
   if (!phone || !phoneRegex.test(phone)) {
-    return res.status(StatusCodes.BAD_REQUEST).json({
+    return res.status(ResponseStatus.badRequest(res, "bad request")).json({
       message: 'Số điện thoại không hợp lệ'
     });
   }
@@ -40,8 +86,8 @@ export const loginMiddleware = (req, res, next) => {
   const { phone, password } = req.body;
   
   if (!phone || !password) {
-    return res.status(StatusCodes.BAD_REQUEST).json({
-      message: 'Vui lòng nhập đầy đủ số điện thoại và mật khẩu'
+    return res.status(ResponseStatus.badRequest(res, "bad request")).json({
+      message: "Vui lòng nhập đầy đủ số điện thoại và mật khẩu",
     });
   }
   next();
@@ -52,13 +98,13 @@ export const verifyOTPMiddleware = (req, res, next) => {
   const { phone, otp } = req.body;
 
   if (!phone || !otp) {
-    return res.status(StatusCodes.BAD_REQUEST).json({
+    return res.status(ResponseStatus.badRequest(res, "bad request")).json({
       message: 'Vui lòng nhập đầy đủ số điện thoại và mã OTP'
     });
   }
 
   if (!/^\d{6}$/.test(otp)) {
-    return res.status(StatusCodes.BAD_REQUEST).json({
+    return res.status(ResponseStatus.badRequest(res, "bad request")).json({
       message: 'Mã OTP không hợp lệ'
     });
   }
