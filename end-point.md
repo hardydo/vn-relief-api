@@ -262,13 +262,21 @@ Base URL: /api/v1
 
 ## System Management
 ### Status History (`/status-histories`)
+- GET `/status-histories`                - Lấy danh sách lịch sử trạng thái
 - GET `/status-histories/:table/:id`     - Lịch sử của một record
 	+ table là tên bảng
 	+ id là id trong cái bảng đó
+- POST `/status-histories`               - Tạo mới lịch sử trạng thái
+- PUT `/status-histories/:id`            - Cập nhật lịch sử trạng thái 
+- DELETE `/status-histories/:id`         - Xóa lịch sử trạng thái
 
 ### Table Status (`/table-status`)
+- GET `/table-status`                    - Lấy danh sách trạng thái bảng
 - GET `/table-status/:table`             - Lấy ra các trạng thái của bảng
 	+ :table là tên bảng
+- POST `/table-status`                   - Tạo mới trạng thái bảng
+- PUT `/table-status/:id`                - Cập nhật trạng thái bảng
+- DELETE `/table-status/:id`             - Xóa trạng thái bảng
 
 ### Notifications (`/notifications`): ĐỂ CUỐI, NẾU KỊP THÌ LÀM
 
