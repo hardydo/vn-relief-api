@@ -3,30 +3,19 @@ import mongoose, { Schema } from "mongoose";
 // role
 const roleSchema = new Schema(
   {
-    admin: {
+    code: {
       type: Number,
-      default: 0, // Vai trò admin
+      required: true,
+      enum: [
+        0,  // Vai trò admin
+        1,  // Vai trò thành viên đội cứu trợ
+        2,  // Vai trò tình nguyện viên thu thập thông tin
+        3,  // Vai trò tình nguyện viên hotline
+        4,  // Vai trò tình nguyện viên xác minh và kết nối tới đội cứu trợ
+        5   // Vai trò thành viên thường
+      ]
     },
-    thanh_vien_doi_cuu_tro: {
-      type: Number,
-      default: 1, // Vai trò thành viên đội cứu trợ
-    },
-    TNV_thu_thap_thong_tin: {
-      type: Number,
-      default: 2, // Vai trò tình nguyện viên thu thập thông tin
-    },
-    TNV_hotline: {
-      type: Number,
-      default: 3, // Vai trò tình nguyện viên hotline
-    },
-    TNV_xac_minh_ket_noi: {
-      type: Number,
-      default: 4, // Vai trò tình nguyện viên xác minh và kết nối tới đội cứu trợ
-    },
-    thanh_vien_thuong: {
-      type: Number,
-      default: 5, // Vai trò thành viên thường
-    },
+    name: String
   },
   { timestamps: true }
 );
