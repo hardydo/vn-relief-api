@@ -1,1 +1,1 @@
-# Link ERD: https://prnt.sc/wKxoGbNx5I4k
+# Link ERD: [Click here to get img](/src/public/ERD.png)
