@@ -1,7 +1,7 @@
-import ResponseStatus from "@/response-handler/response-handler.js";
-import Vehicles from "@/databases/models/vehicles.model.js";
-import RescueTeams from "@/databases/models/rescue-teams.model.js";
-import StatusHistory from "@/databases/models/status-history.model.js";
+import ResponseStatus from "../../response-handler/response-handler.js";
+import Vehicles from "../../databases/models/vehicles.model.js";
+import RescueTeams from "../../databases/models/rescue-teams.model.js";
+import StatusHistory from "../../databases/models/status-history.model.js";
 
 // Lấy danh sách phương tiện
 export const getVehiclesController = async (req, res) => {
@@ -17,8 +17,8 @@ export const getVehiclesController = async (req, res) => {
     }
 
     const vehicles = await Vehicles.find(query)
-      .populate('ownerId', 'name phone')
-      .populate('rescueTeamId', 'teamName')
+      .populate("ownerId", "name phone")
+      .populate("rescueTeamId", "teamName")
       .sort({ createdAt: -1 });
 
     return ResponseStatus.ok(res, vehicles);
@@ -33,9 +33,9 @@ export const getVehicleByIdController = async (req, res) => {
     const { id } = req.params;
 
     const vehicle = await Vehicles.findById(id)
-      .populate('ownerId', 'name phone')
-      .populate('rescueTeamId', 'teamName');
-      
+      .populate("ownerId", "name phone")
+      .populate("rescueTeamId", "teamName");
+
     if (!vehicle) {
       return ResponseStatus.notfound(res);
     }
@@ -63,16 +63,16 @@ export const createVehicleController = async (req, res) => {
       ...vehicleData,
       ownerId: req.user._id,
       rescueTeamId,
-      status: 'available'
+      status: "available",
     });
 
     // Tạo lịch sử
     await StatusHistory.create({
-      referenceTable: 'Vehicles',
+      referenceTable: "Vehicles",
       referenceId: newVehicle._id,
-      action: 'create',
-      newStatus: 'available',
-      changedBy: req.user._id
+      action: "create",
+      newStatus: "available",
+      changedBy: req.user._id,
     });
 
     return ResponseStatus.created(res, newVehicle);
@@ -93,8 +93,11 @@ export const updateVehicleController = async (req, res) => {
       return ResponseStatus.notfound(res);
     }
 
-    if (vehicle.ownerId.toString() !== req.user._id && 
-        (!req.user.rescueTeamId || vehicle.rescueTeamId.toString() !== req.user.rescueTeamId)) {
+    if (
+      vehicle.ownerId.toString() !== req.user._id &&
+      (!req.user.rescueTeamId ||
+        vehicle.rescueTeamId.toString() !== req.user.rescueTeamId)
+    ) {
       return ResponseStatus.forbidden(res, "Không có quyền cập nhật");
     }
 
@@ -126,19 +129,22 @@ export const deleteVehicleController = async (req, res) => {
     }
 
     // Kiểm tra phương tiện có đang được sử dụng
-    if (vehicle.status === 'in_use') {
-      return ResponseStatus.badRequest(res, "Không thể xóa phương tiện đang được sử dụng");
+    if (vehicle.status === "in_use") {
+      return ResponseStatus.badRequest(
+        res,
+        "Không thể xóa phương tiện đang được sử dụng"
+      );
     }
 
     await vehicle.delete();
 
     // Tạo lịch sử
     await StatusHistory.create({
-      referenceTable: 'Vehicles',
+      referenceTable: "Vehicles",
       referenceId: id,
-      action: 'delete',
+      action: "delete",
       oldStatus: vehicle.status,
-      changedBy: req.user._id
+      changedBy: req.user._id,
     });
 
     return ResponseStatus.ok(res, "Xóa phương tiện thành công");

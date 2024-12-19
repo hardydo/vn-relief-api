@@ -1,6 +1,6 @@
-import ResponseStatus from "@/response-handler/response-handler.js";
-import DisasterInformation from "@/databases/models/disaster-information.model.js";
-import NaturalDisasters from "@/databases/models/natural-disasters.model.js";
+import ResponseStatus from "../../response-handler/response-handler.js";
+import DisasterInformation from "../../databases/models/disaster-information.model.js";
+import NaturalDisasters from "../../databases/models/natural-disasters.model.js";
 
 // Lấy danh sách thông tin thiên tai của 1 đợt
 export const getDisasterInfoController = async (req, res) => {
@@ -17,12 +17,13 @@ export const getDisasterInfoController = async (req, res) => {
     if (startDate && endDate) {
       query.createdAt = {
         $gte: new Date(startDate),
-        $lte: new Date(endDate)
+        $lte: new Date(endDate),
       };
     }
 
-    const disasterInfo = await DisasterInformation.find(query)
-      .sort({ createdAt: -1 });
+    const disasterInfo = await DisasterInformation.find(query).sort({
+      createdAt: -1,
+    });
 
     return ResponseStatus.ok(res, disasterInfo);
   } catch (error) {
@@ -61,7 +62,7 @@ export const createDisasterInfoController = async (req, res) => {
     const newInfo = await DisasterInformation.create({
       ...data,
       naturalDisasterId: disasterId,
-      reporterId: req.user._id
+      reporterId: req.user._id,
     });
 
     return ResponseStatus.created(res, newInfo);
@@ -98,7 +99,7 @@ export const deleteDisasterInfoController = async (req, res) => {
     const { id } = req.params;
 
     const deleted = await DisasterInformation.findByIdAndDelete(id);
-    
+
     if (!deleted) {
       return ResponseStatus.notfound(res);
     }

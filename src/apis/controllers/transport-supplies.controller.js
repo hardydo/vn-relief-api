@@ -1,7 +1,7 @@
-import ResponseStatus from "@/response-handler/response-handler.js";
-import TransportSupplies from "@/databases/models/transport-supplies.model.js";
-import ContributionDetails from "@/databases/models/contribution-details.model.js";
-import StatusHistory from "@/databases/models/status-history.model.js";
+import ResponseStatus from "../../response-handler/response-handler.js";
+import TransportSupplies from "../../databases/models/transport-supplies.model.js";
+import ContributionDetails from "../../databases/models/contribution-details.model.js";
+import StatusHistory from "../../databases/models/status-history.model.js";
 
 // Lấy danh sách hàng đang vận chuyển
 export const getTransportSuppliesController = async (req, res) => {
@@ -9,7 +9,7 @@ export const getTransportSuppliesController = async (req, res) => {
     const { id } = req.params; // transport id
 
     const supplies = await TransportSupplies.find({ transportId: id })
-      .populate('rescueRequestId')
+      .populate("rescueRequestId")
       .sort({ createdAt: -1 });
 
     return ResponseStatus.ok(res, supplies);
@@ -26,14 +26,14 @@ export const addSupplyToTransportController = async (req, res) => {
 
     // Kiểm tra và tạo các ghi nhận vận chuyển
     const supplies = await TransportSupplies.insertMany(
-      items.map(item => ({
+      items.map((item) => ({
         transportId: id,
         rescueRequestId,
         itemId: item.id,
         quantity: item.quantity,
         pickupTime,
         deliveryTime,
-        status: 'pending'
+        status: "pending",
       }))
     );
 
@@ -49,7 +49,7 @@ export const removeSupplyFromTransportController = async (req, res) => {
     const { id, supplyId } = req.params;
 
     const deleted = await TransportSupplies.findByIdAndDelete(supplyId);
-    
+
     if (!deleted) {
       return ResponseStatus.notfound(res);
     }
@@ -80,13 +80,13 @@ export const updateSupplyStatusController = async (req, res) => {
 
     // Tạo lịch sử
     await StatusHistory.create({
-      referenceTable: 'TransportSupplies',
+      referenceTable: "TransportSupplies",
       referenceId: supplyId,
-      action: 'update_status',
+      action: "update_status",
       oldStatus,
       newStatus: status,
       changedBy: req.user._id,
-      description: notes
+      description: notes,
     });
 
     return ResponseStatus.ok(res, supply);
@@ -104,26 +104,23 @@ export const distributeSuppliesController = async (req, res) => {
     // Cập nhật số lượng các item đã phân phối
     for (const item of items) {
       // Giảm số lượng trong kho
-      await ContributionDetails.findByIdAndUpdate(
-        item.itemId,
-        { 
-          $inc: { remainingQuantity: -item.quantity },
-          $set: { status: 'distributed' }
-        }
-      );
+      await ContributionDetails.findByIdAndUpdate(item.itemId, {
+        $inc: { remainingQuantity: -item.quantity },
+        $set: { status: "distributed" },
+      });
 
       // Cập nhật trạng thái vận chuyển
       await TransportSupplies.findOneAndUpdate(
         {
           transportId: id,
-          'items.itemId': item.itemId
+          "items.itemId": item.itemId,
         },
         {
           $set: {
-            status: 'completed',
+            status: "completed",
             deliveryLocation: location,
-            notes
-          }
+            notes,
+          },
         }
       );
     }
@@ -132,13 +129,13 @@ export const distributeSuppliesController = async (req, res) => {
 
     // Tạo lịch sử
     await StatusHistory.create({
-      referenceTable: 'TransportSupplies',
+      referenceTable: "TransportSupplies",
       referenceId: id,
-      action: 'distribute',
-      oldStatus: 'in_progress',
-      newStatus: 'completed',
+      action: "distribute",
+      oldStatus: "in_progress",
+      newStatus: "completed",
       changedBy: req.user._id,
-      description: notes
+      description: notes,
     });
 
     return ResponseStatus.ok(res, "Phân phối hàng hóa thành công");

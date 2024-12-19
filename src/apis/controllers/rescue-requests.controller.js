@@ -1,7 +1,7 @@
-import ResponseStatus from "@/response-handler/response-handler.js";
-import RescueRequests from "@/databases/models/rescue-requests.model.js";
-import TeamRescueRequests from "@/databases/models/team-rescue-requests.model.js";
-import StatusHistory from "@/databases/models/status-history.model.js";
+import ResponseStatus from "../../response-handler/response-handler.js";
+import RescueRequests from "../../databases/models/rescue-requests.model.js";
+import TeamRescueRequests from "../../databases/models/team-rescue-requests.model.js";
+import StatusHistory from "../../databases/models/status-history.model.js";
 
 // Lấy danh sách yêu cầu cứu trợ
 export const getRescueRequestsController = async (req, res) => {
@@ -18,20 +18,17 @@ export const getRescueRequestsController = async (req, res) => {
     if (area) {
       query.wardCode = area;
     }
-    if (nearby === 'true' && req.user?.wardCode) {
+    if (nearby === "true" && req.user?.wardCode) {
       // Lọc yêu cầu gần người dùng dựa trên mã địa phương
-      const [userWard, userDistrict, userProvince] = req.user.wardCode.split('|');
+      const [userWard, userDistrict, userProvince] =
+        req.user.wardCode.split("|");
       query.wardCode = {
-        $in: [
-          req.user.wardCode,
-          `${userWard}|${userDistrict}`,
-          `${userWard}`
-        ]
+        $in: [req.user.wardCode, `${userWard}|${userDistrict}`, `${userWard}`],
       };
     }
 
     const requests = await RescueRequests.find(query)
-      .populate('informantId', 'name phone')
+      .populate("informantId", "name phone")
       .sort({ createdAt: -1 });
 
     return ResponseStatus.ok(res, requests);
@@ -46,9 +43,9 @@ export const getRescueRequestByIdController = async (req, res) => {
     const { id } = req.params;
 
     const request = await RescueRequests.findById(id)
-      .populate('informantId', 'name phone')
-      .populate('verifierId', 'name phone');
-      
+      .populate("informantId", "name phone")
+      .populate("verifierId", "name phone");
+
     if (!request) {
       return ResponseStatus.notfound(res);
     }
@@ -66,16 +63,16 @@ export const createRescueRequestController = async (req, res) => {
 
     const newRequest = await RescueRequests.create({
       ...data,
-      informantId: req.user._id
+      informantId: req.user._id,
     });
 
     // Tạo lịch sử trạng thái
     await StatusHistory.create({
-      referenceTable: 'RescueRequests',
+      referenceTable: "RescueRequests",
       referenceId: newRequest._id,
-      action: 'create',
-      newStatus: 'pending',
-      changedBy: req.user._id
+      action: "create",
+      newStatus: "pending",
+      changedBy: req.user._id,
     });
 
     return ResponseStatus.created(res, newRequest);
@@ -91,9 +88,14 @@ export const updateRescueRequestController = async (req, res) => {
     const updateData = req.body;
 
     // Kiểm tra có đội nào nhận chưa
-    const assignedTeam = await TeamRescueRequests.findOne({ rescueRequestId: id });
+    const assignedTeam = await TeamRescueRequests.findOne({
+      rescueRequestId: id,
+    });
     if (assignedTeam) {
-      return ResponseStatus.forbidden(res, "Không thể cập nhật khi đã có đội nhận");
+      return ResponseStatus.forbidden(
+        res,
+        "Không thể cập nhật khi đã có đội nhận"
+      );
     }
 
     const updated = await RescueRequests.findByIdAndUpdate(
@@ -118,13 +120,15 @@ export const deleteRescueRequestController = async (req, res) => {
     const { id } = req.params;
 
     // Kiểm tra có đội nào nhận chưa
-    const assignedTeam = await TeamRescueRequests.findOne({ rescueRequestId: id });
+    const assignedTeam = await TeamRescueRequests.findOne({
+      rescueRequestId: id,
+    });
     if (assignedTeam) {
       return ResponseStatus.forbidden(res, "Không thể xóa khi đã có đội nhận");
     }
 
     const deleted = await RescueRequests.findByIdAndDelete(id);
-    
+
     if (!deleted) {
       return ResponseStatus.notfound(res);
     }
@@ -142,11 +146,11 @@ export const verifyRescueRequestController = async (req, res) => {
 
     const updated = await RescueRequests.findByIdAndUpdate(
       id,
-      { 
+      {
         $set: {
           verifierId: req.user._id,
-          status: 'verified'
-        }
+          status: "verified",
+        },
       },
       { new: true }
     );
@@ -157,12 +161,12 @@ export const verifyRescueRequestController = async (req, res) => {
 
     // Tạo lịch sử trạng thái
     await StatusHistory.create({
-      referenceTable: 'RescueRequests',
+      referenceTable: "RescueRequests",
       referenceId: id,
-      action: 'verify',
-      oldStatus: 'pending',
-      newStatus: 'verified', 
-      changedBy: req.user._id
+      action: "verify",
+      oldStatus: "pending",
+      newStatus: "verified",
+      changedBy: req.user._id,
     });
 
     return ResponseStatus.ok(res, updated);
@@ -180,7 +184,7 @@ export const updateStatusController = async (req, res) => {
     // Kiểm tra yêu cầu được gán cho đội của user
     const teamRequest = await TeamRescueRequests.findOne({
       rescueRequestId: id,
-      rescueTeamId: req.user.rescueTeamId
+      rescueTeamId: req.user.rescueTeamId,
     });
 
     if (!teamRequest) {
@@ -193,12 +197,12 @@ export const updateStatusController = async (req, res) => {
 
     // Tạo lịch sử trạng thái
     await StatusHistory.create({
-      referenceTable: 'TeamRescueRequests',
+      referenceTable: "TeamRescueRequests",
       referenceId: teamRequest._id,
-      action: 'update_status',
+      action: "update_status",
       oldStatus,
       newStatus: status,
-      changedBy: req.user._id
+      changedBy: req.user._id,
     });
 
     return ResponseStatus.ok(res, teamRequest);
@@ -215,23 +219,23 @@ export const assignTeamController = async (req, res) => {
     const newAssignment = await TeamRescueRequests.create({
       rescueRequestId: id,
       rescueTeamId: teamId,
-      status: 'pending'
+      status: "pending",
     });
 
     // Cập nhật trạng thái yêu cầu
     await RescueRequests.findByIdAndUpdate(id, {
-      $set: { status: 'assigned' }
+      $set: { status: "assigned" },
     });
 
     // Tạo lịch sử trạng thái
     await StatusHistory.create({
-      referenceTable: 'RescueRequests',
+      referenceTable: "RescueRequests",
       referenceId: id,
-      action: 'assign',
-      oldStatus: 'verified',
-      newStatus: 'assigned',
+      action: "assign",
+      oldStatus: "verified",
+      newStatus: "assigned",
       changedBy: req.user._id,
-      description: `Assigned to team ${teamId}`
+      description: `Assigned to team ${teamId}`,
     });
 
     return ResponseStatus.created(res, newAssignment);

@@ -1,15 +1,16 @@
-import ResponseStatus from "@/response-handler/response-handler.js";
-import TransportHistories from "@/databases/models/transport-histories.model.js";
-import Transports from "@/databases/models/transports.model.js";
-import StatusHistory from "@/databases/models/status-history.model.js";
+import ResponseStatus from "../../response-handler/response-handler.js";
+import TransportHistories from "../../databases/models/transport-histories.model.js";
+import Transports from "../../databases/models/transports.model.js";
+import StatusHistory from "../../databases/models/status-history.model.js";
 
 // Lấy lịch sử vận chuyển
 export const getTransportHistoriesController = async (req, res) => {
   try {
     const { id } = req.params; // transport id
 
-    const histories = await TransportHistories.find({ transportId: id })
-      .sort({ createdAt: -1 });
+    const histories = await TransportHistories.find({ transportId: id }).sort({
+      createdAt: -1,
+    });
 
     return ResponseStatus.ok(res, histories);
   } catch (error) {
@@ -33,17 +34,17 @@ export const addCheckpointController = async (req, res) => {
       transportId: id,
       location,
       status,
-      notes
+      notes,
     });
 
     // Tạo lịch sử
     await StatusHistory.create({
-      referenceTable: 'TransportHistories',
+      referenceTable: "TransportHistories",
       referenceId: newCheckpoint._id,
-      action: 'checkpoint',
+      action: "checkpoint",
       newStatus: status,
       changedBy: req.user._id,
-      description: notes
+      description: notes,
     });
 
     return ResponseStatus.created(res, newCheckpoint);
@@ -74,13 +75,13 @@ export const updateCheckpointStatusController = async (req, res) => {
 
     // Tạo lịch sử
     await StatusHistory.create({
-      referenceTable: 'TransportHistories',
+      referenceTable: "TransportHistories",
       referenceId: historyId,
-      action: 'update_status',
+      action: "update_status",
       oldStatus,
       newStatus: status,
       changedBy: req.user._id,
-      description: notes
+      description: notes,
     });
 
     return ResponseStatus.ok(res, checkpoint);

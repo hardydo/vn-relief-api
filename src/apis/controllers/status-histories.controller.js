@@ -1,11 +1,11 @@
-import ResponseStatus from "@/response-handler/response-handler.js";
-import StatusHistory from "@/databases/models/status-history.model.js";
+import ResponseStatus from "../../response-handler/response-handler.js";
+import StatusHistory from "../../databases/models/status-history.model.js";
 
 // Lấy tất cả lịch sử
 export const getAllHistoriesController = async (req, res) => {
   try {
     const histories = await StatusHistory.find()
-      .populate('changedBy', 'name')
+      .populate("changedBy", "name")
       .sort({ createdAt: -1 });
 
     return ResponseStatus.ok(res, histories);
@@ -21,9 +21,9 @@ export const getStatusHistoryController = async (req, res) => {
 
     const histories = await StatusHistory.find({
       referenceTable: table,
-      referenceId: id
+      referenceId: id,
     })
-      .populate('changedBy', 'name')
+      .populate("changedBy", "name")
       .sort({ createdAt: -1 });
 
     return ResponseStatus.ok(res, histories);
@@ -39,7 +39,7 @@ export const createHistoryController = async (req, res) => {
 
     const newHistory = await StatusHistory.create({
       ...data,
-      changedBy: req.user._id
+      changedBy: req.user._id,
     });
 
     return ResponseStatus.created(res, newHistory);
@@ -76,7 +76,7 @@ export const deleteHistoryController = async (req, res) => {
     const { id } = req.params;
 
     const deleted = await StatusHistory.findByIdAndDelete(id);
-    
+
     if (!deleted) {
       return ResponseStatus.notfound(res);
     }

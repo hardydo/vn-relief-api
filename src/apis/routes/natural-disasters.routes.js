@@ -13,21 +13,21 @@ const naturalDisastersRouter = express.Router();
 
 // Lấy danh sách đợt thiên tai
 // Query: status, startDate, endDate
-disastersRouter.get("/", authMiddleware, getDisastersController);
+naturalDisastersRouter.get("/", authMiddleware, getDisastersController);
 
 // Chi tiết đợt thiên tai
-disastersRouter.get("/:id", authMiddleware, getDisasterByIdController);
+naturalDisastersRouter.get("/:id", authMiddleware, getDisasterByIdController);
 
 // Tạo đợt thiên tai mới
-disastersRouter.post("/", authMiddleware, adminMiddleware, createDisasterController);
+naturalDisastersRouter.post("/", authMiddleware, adminMiddleware, createDisasterController);
 
 // Cập nhật đợt thiên tai
-disastersRouter.put("/:id", authMiddleware, adminMiddleware, updateDisasterController);
+naturalDisastersRouter.put("/:id", authMiddleware, adminMiddleware, updateDisasterController);
 
 // Xóa đợt thiên tai (soft delete)
-disastersRouter.delete("/:id", authMiddleware, adminMiddleware, deleteDisasterController);
+naturalDisastersRouter.delete("/:id", authMiddleware, adminMiddleware, deleteDisasterController);
 
 // Lấy đợt thiên tai đang diễn ra
-disastersRouter.get("/active", authMiddleware, getActiveDisastersController);
+naturalDisastersRouter.get("/active", authMiddleware, getActiveDisastersController);
 
 export default naturalDisastersRouter;

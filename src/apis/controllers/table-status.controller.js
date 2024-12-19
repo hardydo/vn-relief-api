@@ -1,11 +1,13 @@
-import ResponseStatus from "@/response-handler/response-handler.js";
-import TableStatuses from "@/databases/models/table-status.model.js";
+import ResponseStatus from "../../response-handler/response-handler.js";
+import TableStatuses from "../../databases/models/table-status.model.js";
 
 // Lấy tất cả trạng thái bảng
 export const getAllTableStatusController = async (req, res) => {
   try {
-    const statuses = await TableStatuses.find()
-      .sort({ referenceTable: 1, status: 1 });
+    const statuses = await TableStatuses.find().sort({
+      referenceTable: 1,
+      status: 1,
+    });
 
     return ResponseStatus.ok(res, statuses);
   } catch (error) {
@@ -18,8 +20,9 @@ export const getTableStatusController = async (req, res) => {
   try {
     const { table } = req.params;
 
-    const statuses = await TableStatuses.find({ referenceTable: table })
-      .sort({ status: 1 });
+    const statuses = await TableStatuses.find({ referenceTable: table }).sort({
+      status: 1,
+    });
 
     return ResponseStatus.ok(res, statuses);
   } catch (error) {
@@ -68,7 +71,7 @@ export const deleteTableStatusController = async (req, res) => {
     const { id } = req.params;
 
     const deleted = await TableStatuses.findByIdAndDelete(id);
-    
+
     if (!deleted) {
       return ResponseStatus.notfound(res);
     }

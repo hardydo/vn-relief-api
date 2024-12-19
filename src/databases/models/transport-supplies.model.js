@@ -10,7 +10,7 @@ const transportSuppliesSchema = new Schema(
     rescueRequestId: {
       type: Schema.Types.ObjectId,
       ref: "RescueRequests",
-      description: "Yêu cầu cứu trợ cần hỗ trợ",
+      // description: "Yêu cầu cứu trợ cần hỗ trợ",
     },
     pickupTime: Date,
     deliveryTime: Date,
@@ -24,7 +24,7 @@ const transportSuppliesSchema = new Schema(
         enum: ["Point"],
       },
       coordinates: [Number],
-      description: "Tọa độ điểm giao hàng",
+      // description: "Tọa độ điểm giao hàng",
     },
     notes: String,
   },

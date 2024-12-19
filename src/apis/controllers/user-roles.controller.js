@@ -1,16 +1,16 @@
-import ResponseStatus from "@/response-handler/response-handler.js";
-import UserRoles from "@/databases/models/user-roles.model.js";
-import Users from "@/databases/models/users.model.js";
-import Roles from "@/databases/models/roles.model.js";
-import StatusHistory from "@/databases/models/status-history.model.js";
+import ResponseStatus from "../../response-handler/response-handler.js";
+import UserRoles from "../../databases/models/user-roles.model.js";
+import Users from "../../databases/models/users.model.js";
+import Roles from "../../databases/models/roles.model.js";
+import StatusHistory from "../../databases/models/status-history.model.js";
 
-// Lấy roles của user 
+// Lấy roles của user
 export const getUserRolesController = async (req, res) => {
   try {
     const { id } = req.params;
 
     const userRoles = await UserRoles.find({ userId: id })
-      .populate('roleId', 'name code')
+      .populate("roleId", "name code")
       .sort({ createdAt: -1 });
 
     return ResponseStatus.ok(res, userRoles);
@@ -38,20 +38,19 @@ export const updateUserRolesController = async (req, res) => {
     }
 
     // Lấy roles hiện tại của user
-    const currentRoles = await UserRoles.find({ userId: id })
-      .select('roleId');
-    const currentRoleIds = currentRoles.map(ur => ur.roleId.toString());
+    const currentRoles = await UserRoles.find({ userId: id }).select("roleId");
+    const currentRoleIds = currentRoles.map((ur) => ur.roleId.toString());
 
     // Xác định roles cần thêm và xóa
-    const rolesToAdd = roles.filter(r => !currentRoleIds.includes(r));
-    const rolesToRemove = currentRoleIds.filter(r => !roles.includes(r));
+    const rolesToAdd = roles.filter((r) => !currentRoleIds.includes(r));
+    const rolesToRemove = currentRoleIds.filter((r) => !roles.includes(r));
 
     // Thêm roles mới
     if (rolesToAdd.length > 0) {
       await UserRoles.insertMany(
-        rolesToAdd.map(roleId => ({
+        rolesToAdd.map((roleId) => ({
           userId: id,
-          roleId
+          roleId,
         }))
       );
     }
@@ -60,23 +59,25 @@ export const updateUserRolesController = async (req, res) => {
     if (rolesToRemove.length > 0) {
       await UserRoles.deleteMany({
         userId: id,
-        roleId: { $in: rolesToRemove }
+        roleId: { $in: rolesToRemove },
       });
     }
 
     // Tạo lịch sử
     await StatusHistory.create({
-      referenceTable: 'UserRoles',
+      referenceTable: "UserRoles",
       referenceId: id,
-      action: 'update_roles',
-      oldStatus: currentRoleIds.join(','),
-      newStatus: roles.join(','),
-      changedBy: req.user._id
+      action: "update_roles",
+      oldStatus: currentRoleIds.join(","),
+      newStatus: roles.join(","),
+      changedBy: req.user._id,
     });
 
     // Lấy danh sách roles mới
-    const updatedRoles = await UserRoles.find({ userId: id })
-      .populate('roleId', 'name code');
+    const updatedRoles = await UserRoles.find({ userId: id }).populate(
+      "roleId",
+      "name code"
+    );
 
     return ResponseStatus.ok(res, updatedRoles);
   } catch (error) {

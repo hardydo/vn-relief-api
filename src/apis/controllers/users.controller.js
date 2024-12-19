@@ -1,7 +1,7 @@
-import ResponseStatus from "@/response-handler/response-handler.js";
-import Users from "@/databases/models/users.model.js";
-import UserRoles from "@/databases/models/user-roles.model.js";
-import StatusHistory from "@/databases/models/status-history.model.js";
+import ResponseStatus from "../../response-handler/response-handler.js";
+import Users from "../../databases/models/users.model.js";
+import UserRoles from "../../databases/models/user-roles.model.js";
+import StatusHistory from "../../databases/models/status-history.model.js";
 
 // Lấy danh sách users
 export const getUsersController = async (req, res) => {
@@ -9,12 +9,12 @@ export const getUsersController = async (req, res) => {
     const { roles, status, search } = req.query;
 
     let query = {};
-    
+
     // Filter by roles
     if (roles) {
-      const roleIds = roles.split(',');
+      const roleIds = roles.split(",");
       const userRoles = await UserRoles.find({ roleId: { $in: roleIds } });
-      const userIds = userRoles.map(ur => ur.userId);
+      const userIds = userRoles.map((ur) => ur.userId);
       query._id = { $in: userIds };
     }
 
@@ -26,15 +26,15 @@ export const getUsersController = async (req, res) => {
     // Search by name or phone
     if (search) {
       query.$or = [
-        { name: { $regex: search, $options: 'i' }},
-        { phone: { $regex: search }}
+        { name: { $regex: search, $options: "i" } },
+        { phone: { $regex: search } },
       ];
     }
 
     const users = await Users.find(query)
       .populate({
-        path: 'rescueTeamId',
-        select: 'teamName'
+        path: "rescueTeamId",
+        select: "teamName",
       })
       .sort({ createdAt: -1 });
 
@@ -49,23 +49,24 @@ export const getUserByIdController = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const user = await Users.findById(id)
-      .populate({
-        path: 'rescueTeamId',
-        select: 'teamName'
-      });
+    const user = await Users.findById(id).populate({
+      path: "rescueTeamId",
+      select: "teamName",
+    });
 
     if (!user) {
       return ResponseStatus.notfound(res);
     }
 
     // Lấy roles của user
-    const userRoles = await UserRoles.find({ userId: id })
-      .populate('roleId', 'name code');
+    const userRoles = await UserRoles.find({ userId: id }).populate(
+      "roleId",
+      "name code"
+    );
 
     return ResponseStatus.ok(res, {
       ...user.toObject(),
-      roles: userRoles
+      roles: userRoles,
     });
   } catch (error) {
     return ResponseStatus.error(res);
@@ -80,26 +81,26 @@ export const createUserController = async (req, res) => {
     // Tạo user với trạng thái inactive
     const newUser = await Users.create({
       ...userData,
-      accountStatus: 'inactive'
+      accountStatus: "inactive",
     });
 
     // Thêm roles cho user nếu có
     if (roles && roles.length > 0) {
       await UserRoles.insertMany(
-        roles.map(roleId => ({
+        roles.map((roleId) => ({
           userId: newUser._id,
-          roleId
+          roleId,
         }))
       );
     }
 
     // Tạo lịch sử
     await StatusHistory.create({
-      referenceTable: 'Users',
+      referenceTable: "Users",
       referenceId: newUser._id,
-      action: 'create',
-      newStatus: 'inactive',
-      changedBy: req.user?._id
+      action: "create",
+      newStatus: "inactive",
+      changedBy: req.user?._id,
     });
 
     return ResponseStatus.created(res, newUser);
@@ -141,19 +142,19 @@ export const toggleUserStatusController = async (req, res) => {
     }
 
     const oldStatus = user.accountStatus;
-    const newStatus = oldStatus === 'active' ? 'inactive' : 'active';
+    const newStatus = oldStatus === "active" ? "inactive" : "active";
 
     user.accountStatus = newStatus;
     await user.save();
 
     // Tạo lịch sử
     await StatusHistory.create({
-      referenceTable: 'Users',
+      referenceTable: "Users",
       referenceId: id,
-      action: 'toggle_status',
+      action: "toggle_status",
       oldStatus,
       newStatus,
-      changedBy: req.user._id
+      changedBy: req.user._id,
     });
 
     return ResponseStatus.ok(res, user);

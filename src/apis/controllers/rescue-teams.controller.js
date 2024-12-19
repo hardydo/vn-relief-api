@@ -1,7 +1,7 @@
-import ResponseStatus from "@/response-handler/response-handler.js";
-import RescueTeams from "@/databases/models/rescue-teams.model.js";
-import Users from "@/databases/models/users.model.js";
-import StatusHistory from "@/databases/models/status-history.model.js";
+import ResponseStatus from "../../response-handler/response-handler.js";
+import RescueTeams from "../../databases/models/rescue-teams.model.js";
+import Users from "../../databases/models/users.model.js";
+import StatusHistory from "../../databases/models/status-history.model.js";
 
 // Danh sách đội cứu trợ
 export const getTeamsController = async (req, res) => {
@@ -13,8 +13,7 @@ export const getTeamsController = async (req, res) => {
       query.status = status;
     }
 
-    const teams = await RescueTeams.find(query)
-      .sort({ createdAt: -1 });
+    const teams = await RescueTeams.find(query).sort({ createdAt: -1 });
 
     return ResponseStatus.ok(res, teams);
   } catch (error) {
@@ -45,21 +44,21 @@ export const createTeamController = async (req, res) => {
 
     const newTeam = await RescueTeams.create({
       ...data,
-      status: 'active'
+      status: "active",
     });
 
     // Cập nhật rescueTeamId cho leader
     await Users.findByIdAndUpdate(req.user._id, {
-      $set: { rescueTeamId: newTeam._id }
+      $set: { rescueTeamId: newTeam._id },
     });
 
     // Tạo lịch sử
     await StatusHistory.create({
-      referenceTable: 'RescueTeams',
+      referenceTable: "RescueTeams",
       referenceId: newTeam._id,
-      action: 'create',
-      newStatus: 'active',
-      changedBy: req.user._id
+      action: "create",
+      newStatus: "active",
+      changedBy: req.user._id,
     });
 
     return ResponseStatus.created(res, newTeam);
@@ -98,7 +97,7 @@ export const deleteTeamController = async (req, res) => {
     // Cập nhật trạng thái đội
     const deleted = await RescueTeams.findByIdAndUpdate(
       id,
-      { $set: { status: 'inactive' }},
+      { $set: { status: "inactive" } },
       { new: true }
     );
 
@@ -109,17 +108,17 @@ export const deleteTeamController = async (req, res) => {
     // Remove rescueTeamId của tất cả thành viên
     await Users.updateMany(
       { rescueTeamId: id },
-      { $unset: { rescueTeamId: "" }}
+      { $unset: { rescueTeamId: "" } }
     );
 
     // Tạo lịch sử
     await StatusHistory.create({
-      referenceTable: 'RescueTeams',
+      referenceTable: "RescueTeams",
       referenceId: id,
-      action: 'delete',
-      oldStatus: 'active',
-      newStatus: 'inactive',
-      changedBy: req.user._id
+      action: "delete",
+      oldStatus: "active",
+      newStatus: "inactive",
+      changedBy: req.user._id,
     });
 
     return ResponseStatus.ok(res, "Giải tán đội thành công");
@@ -133,8 +132,9 @@ export const getTeamMembersController = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const members = await Users.find({ rescueTeamId: id })
-      .select('name phone role');
+    const members = await Users.find({ rescueTeamId: id }).select(
+      "name phone role"
+    );
 
     return ResponseStatus.ok(res, members);
   } catch (error) {
@@ -151,7 +151,7 @@ export const addTeamMemberController = async (req, res) => {
     // Cập nhật rescueTeamId cho user
     const updated = await Users.findByIdAndUpdate(
       userId,
-      { $set: { rescueTeamId: id }},
+      { $set: { rescueTeamId: id } },
       { new: true }
     );
 
@@ -172,7 +172,7 @@ export const removeTeamMemberController = async (req, res) => {
 
     const updated = await Users.findByIdAndUpdate(
       userId,
-      { $unset: { rescueTeamId: "" }},
+      { $unset: { rescueTeamId: "" } },
       { new: true }
     );
 
@@ -190,7 +190,7 @@ export const removeTeamMemberController = async (req, res) => {
 export const sendJoinRequestController = async (req, res) => {
   try {
     const { id } = req.params;
-    
+
     // TODO: Implement join request logic
 
     return ResponseStatus.created(res, "Gửi yêu cầu thành công");
@@ -235,6 +235,6 @@ export const changeTeamLeaderController = async (req, res) => {
 
     return ResponseStatus.ok(res, "Chuyển quyền trưởng nhóm thành công");
   } catch (error) {
-    return ResponseStatus.error(res); 
+    return ResponseStatus.error(res);
   }
 };

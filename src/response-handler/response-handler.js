@@ -19,22 +19,22 @@ const badRequest = (res, message) =>
     message,
   });
 
-const unauthorized = (res) =>
+const unauthorized = (res, message) =>
   responseWithData(res, 401, {
     message,
   });
 
-const forbidden = (res) =>
+const forbidden = (res, message) =>
   responseWithData(res, 403, {
     message,
   });
 
-const notfound = (res) =>
+const notfound = (res, message) =>
   responseWithData(res, 404, {
     message,
   });
 
-const error = (res) =>
+const error = (res, message) =>
   responseWithData(res, 500, {
     message,
   });
