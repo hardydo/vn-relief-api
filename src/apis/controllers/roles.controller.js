@@ -1,0 +1,93 @@
+import ResponseStatus from "@/response-handler/response-handler.js";
+import Roles from "@/databases/models/roles.model.js";
+import UserRoles from "@/databases/models/user-roles.model.js";
+
+// Lấy danh sách roles
+export const getRolesController = async (req, res) => {
+  try {
+    const roles = await Roles.find()
+      .sort({ code: 1 });
+
+    return ResponseStatus.ok(res, roles);
+  } catch (error) {
+    return ResponseStatus.error(res);
+  }
+};
+
+// Chi tiết role
+export const getRoleByIdController = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const role = await Roles.findById(id);
+    if (!role) {
+      return ResponseStatus.notfound(res);
+    }
+
+    return ResponseStatus.ok(res, role);
+  } catch (error) {
+    return ResponseStatus.error(res);
+  }
+};
+
+// Tạo role mới
+export const createRoleController = async (req, res) => {
+  try {
+    const data = req.body;
+
+    const newRole = await Roles.create(data);
+
+    return ResponseStatus.created(res, newRole);
+  } catch (error) {
+    return ResponseStatus.error(res);
+  }
+};
+
+// Cập nhật role
+export const updateRoleController = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updateData = req.body;
+
+    const updated = await Roles.findByIdAndUpdate(
+      id,
+      { $set: updateData },
+      { new: true }
+    );
+
+    if (!updated) {
+      return ResponseStatus.notfound(res);
+    }
+
+    return ResponseStatus.ok(res, updated);
+  } catch (error) {
+    return ResponseStatus.error(res);
+  }
+};
+
+// Xóa role và cập nhật user_roles
+export const deleteRoleController = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Xóa role
+    const deleted = await Roles.findByIdAndDelete(id);
+    if (!deleted) {
+      return ResponseStatus.notfound(res);
+    }
+
+    // Xóa trong bảng user_role
+    await UserRoles.deleteMany({ roleId: id });
+
+    // Cập nhật role của các user
+    const affectedUsers = await UserRoles.find({ roleId: id });
+    for (const userRole of affectedUsers) {
+      const remainingRoles = await UserRoles.find({ userId: userRole.userId });
+      // TODO: Cập nhật role array của user
+    }
+
+    return ResponseStatus.ok(res, "Xóa role thành công");
+  } catch (error) {
+    return ResponseStatus.error(res);
+  }
+};
