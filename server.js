@@ -7,7 +7,7 @@ import cookieParser from "cookie-parser";
 import helmet from "helmet";
 import VARIABLE_GLOBAL from "./src/variables/global.js";
 import DBconnect from "./src/databases/connection/connection.js";
-import CombineRoute from "./src/routes/index.js";
+import CombineRoute from "./src/apis/routes/index.js";
 
 // import errorMiddleware from "./middlewares/error.middleware.js";
 // import router from "./routes/index.js";
@@ -51,7 +51,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(morgan("dev"));
 
 //routes
-CombineRoute
+app.use(CombineRoute);
 
 app.get("/", (req, res, next) => {
   res.send({
