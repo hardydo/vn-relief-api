@@ -7,6 +7,10 @@ const financialTransactionSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: "NaturalDisasters",
     },
+    rescueRequestId: {
+      type: Schema.Types.ObjectId,
+      ref: "RescueRequests",
+    },
     type: {
       type: String,
       enum: ["bank", "cash", "other"],
