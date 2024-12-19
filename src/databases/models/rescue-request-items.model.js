@@ -8,7 +8,8 @@ const rescueRequestItemSchema = new Schema(
       ref: "RescueRequests",
     },
     itemType: String,
-    quantity: Number,
+    providedQuantity: Number,
+    remainingQuantity: Number,
     unit: String,
     priority: {
       type: String,
