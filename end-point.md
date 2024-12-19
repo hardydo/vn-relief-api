@@ -12,7 +12,7 @@ Base URL: /api/v1
 ### Users (`/users`)
 - GET `/users`                           - Lấy danh sách users
   + Query: 
-    - roles: [roleIds] - Filter by roles
+    - roles: [roleIds] - Filter by rolesbn
     - status: 'active' | 'inactive'
     - search: keyword
 - GET `/users/:id`                       - Chi tiết user
@@ -98,7 +98,7 @@ Base URL: /api/v1
 
 ### Team Rescue Requests (`/team-rescue-requests`)
 - GET `/rescue-teams/:id/rescue-requests`   - Danh sách yêu cầu được phân công
-- POST `/rescue-teams/:id/rescue-requests/:requestId` - Nhận yêu cầu cứu trợ
+- POST `/rescue-teams/:id/rescue-requests/:requestId` - Nhận/huỷ yêu cầu cứu trợ
 - PUT `/team-rescue-requests/:id/status`    - Cập nhật trạng thái xử lý
 
 ## Vehicles Management
@@ -245,7 +245,7 @@ Base URL: /api/v1
 ### Financial Transactions (`/natural-disasters/:disasterId/transactions`)
 - GET `/transactions`                    - Danh sách giao dịch
   + Query:
-    - type: 'bank' | 'cash'
+    - type: 'bank' | 'cash' | 'rescue-request'
     - startDate, endDate
 - GET `/transactions/:id`                - Chi tiết giao dịch
 
