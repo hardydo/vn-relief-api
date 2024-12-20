@@ -25,7 +25,8 @@ export const getTransactionsController = async (req, res) => {
 
     return ResponseStatus.ok(res, transactions);
   } catch (error) {
-    return ResponseStatus.error(res);
+    console.log(error);
+    return ResponseStatus.error(res, error);
   }
 };
 
@@ -44,7 +45,8 @@ export const getTransactionByIdController = async (req, res) => {
 
     return ResponseStatus.ok(res, transaction);
   } catch (error) {
-    return ResponseStatus.error(res);
+    console.log(error);
+    return ResponseStatus.error(res, error);
   }
 };
 
@@ -72,7 +74,8 @@ export const createCashTransactionController = async (req, res) => {
 
     return ResponseStatus.created(res, newTransaction);
   } catch (error) {
-    return ResponseStatus.error(res);
+    console.log(error);
+    return ResponseStatus.error(res, error);
   }
 };
 
@@ -94,7 +97,8 @@ export const updateCashTransactionController = async (req, res) => {
 
     return ResponseStatus.ok(res, updated);
   } catch (error) {
-    return ResponseStatus.error(res);
+    console.log(error);
+    return ResponseStatus.error(res, error);
   }
 };
 
@@ -120,7 +124,8 @@ export const createVNPayTransactionController = async (req, res) => {
       paymentUrl,
     });
   } catch (error) {
-    return ResponseStatus.error(res);
+    console.log(error);
+    return ResponseStatus.error(res, error);
   }
 };
 
@@ -139,7 +144,8 @@ export const handleVNPayCallbackController = async (req, res) => {
 
     return ResponseStatus.ok(res, "Thanh toán thành công");
   } catch (error) {
-    return ResponseStatus.error(res);
+    console.log(error);
+    return ResponseStatus.error(res, error);
   }
 };
 
@@ -162,6 +168,7 @@ export const getPaymentMethodsController = async (req, res) => {
 
     return ResponseStatus.ok(res, methods);
   } catch (error) {
-    return ResponseStatus.error(res);
+    console.log(error);
+    return ResponseStatus.error(res, error);
   }
 };

@@ -13,7 +13,8 @@ export const getContributionDetailsController = async (req, res) => {
 
     return ResponseStatus.ok(res, details);
   } catch (error) {
-    return ResponseStatus.error(res);
+    console.log(error);
+    return ResponseStatus.error(res, error);
   }
 };
 
@@ -40,7 +41,8 @@ export const addContributionItemsController = async (req, res) => {
 
     return ResponseStatus.created(res, newItems);
   } catch (error) {
-    return ResponseStatus.error(res);
+    console.log(error);
+    return ResponseStatus.error(res, error);
   }
 };
 
@@ -67,7 +69,8 @@ export const updateContributionItemController = async (req, res) => {
 
     return ResponseStatus.ok(res, updated);
   } catch (error) {
-    return ResponseStatus.error(res);
+    console.log(error);
+    return ResponseStatus.error(res, error);
   }
 };
 
@@ -84,6 +87,7 @@ export const deleteContributionItemController = async (req, res) => {
 
     return ResponseStatus.ok(res, "Xóa thành công");
   } catch (error) {
-    return ResponseStatus.error(res);
+    console.log(error);
+    return ResponseStatus.error(res, error);
   }
 };

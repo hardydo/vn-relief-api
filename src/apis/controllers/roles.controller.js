@@ -9,7 +9,8 @@ export const getRolesController = async (req, res) => {
 
     return ResponseStatus.ok(res, roles);
   } catch (error) {
-    return ResponseStatus.error(res);
+    console.log(error);
+    return ResponseStatus.error(res, error);
   }
 };
 
@@ -25,7 +26,8 @@ export const getRoleByIdController = async (req, res) => {
 
     return ResponseStatus.ok(res, role);
   } catch (error) {
-    return ResponseStatus.error(res);
+    console.log(error);
+    return ResponseStatus.error(res, error);
   }
 };
 
@@ -38,7 +40,8 @@ export const createRoleController = async (req, res) => {
 
     return ResponseStatus.created(res, newRole);
   } catch (error) {
-    return ResponseStatus.error(res);
+    console.log(error);
+    return ResponseStatus.error(res, error);
   }
 };
 
@@ -60,7 +63,8 @@ export const updateRoleController = async (req, res) => {
 
     return ResponseStatus.ok(res, updated);
   } catch (error) {
-    return ResponseStatus.error(res);
+    console.log(error);
+    return ResponseStatus.error(res, error);
   }
 };
 
@@ -87,6 +91,7 @@ export const deleteRoleController = async (req, res) => {
 
     return ResponseStatus.ok(res, "Xóa role thành công");
   } catch (error) {
-    return ResponseStatus.error(res);
+    console.log(error);
+    return ResponseStatus.error(res, error);
   }
 };

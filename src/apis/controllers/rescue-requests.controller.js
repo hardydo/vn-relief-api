@@ -33,7 +33,8 @@ export const getRescueRequestsController = async (req, res) => {
 
     return ResponseStatus.ok(res, requests);
   } catch (error) {
-    return ResponseStatus.error(res);
+    console.log(error);
+    return ResponseStatus.error(res, error);
   }
 };
 
@@ -52,7 +53,8 @@ export const getRescueRequestByIdController = async (req, res) => {
 
     return ResponseStatus.ok(res, request);
   } catch (error) {
-    return ResponseStatus.error(res);
+    console.log(error);
+    return ResponseStatus.error(res, error);
   }
 };
 
@@ -72,12 +74,13 @@ export const createRescueRequestController = async (req, res) => {
       referenceId: newRequest._id,
       action: "create",
       newStatus: "pending",
-      changedBy: req.user._id,
+      changedBy: req.user?._id,
     });
 
     return ResponseStatus.created(res, newRequest);
   } catch (error) {
-    return ResponseStatus.error(res);
+    console.log(error);
+    return ResponseStatus.error(res, error);
   }
 };
 
@@ -110,7 +113,8 @@ export const updateRescueRequestController = async (req, res) => {
 
     return ResponseStatus.ok(res, updated);
   } catch (error) {
-    return ResponseStatus.error(res);
+    console.log(error);
+    return ResponseStatus.error(res, error);
   }
 };
 
@@ -135,7 +139,8 @@ export const deleteRescueRequestController = async (req, res) => {
 
     return ResponseStatus.ok(res, "Xóa thành công");
   } catch (error) {
-    return ResponseStatus.error(res);
+    console.log(error);
+    return ResponseStatus.error(res, error);
   }
 };
 
@@ -166,12 +171,13 @@ export const verifyRescueRequestController = async (req, res) => {
       action: "verify",
       oldStatus: "pending",
       newStatus: "verified",
-      changedBy: req.user._id,
+      changedBy: req.user?._id,
     });
 
     return ResponseStatus.ok(res, updated);
   } catch (error) {
-    return ResponseStatus.error(res);
+    console.log(error);
+    return ResponseStatus.error(res, error);
   }
 };
 
@@ -202,12 +208,13 @@ export const updateStatusController = async (req, res) => {
       action: "update_status",
       oldStatus,
       newStatus: status,
-      changedBy: req.user._id,
+      changedBy: req.user?._id,
     });
 
     return ResponseStatus.ok(res, teamRequest);
   } catch (error) {
-    return ResponseStatus.error(res);
+    console.log(error);
+    return ResponseStatus.error(res, error);
   }
 };
 
@@ -234,12 +241,13 @@ export const assignTeamController = async (req, res) => {
       action: "assign",
       oldStatus: "verified",
       newStatus: "assigned",
-      changedBy: req.user._id,
+      changedBy: req.user?._id,
       description: `Assigned to team ${teamId}`,
     });
 
     return ResponseStatus.created(res, newAssignment);
   } catch (error) {
-    return ResponseStatus.error(res);
+    console.log(error);
+    return ResponseStatus.error(res, error);
   }
 };

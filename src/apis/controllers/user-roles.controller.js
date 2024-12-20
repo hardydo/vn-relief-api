@@ -15,7 +15,8 @@ export const getUserRolesController = async (req, res) => {
 
     return ResponseStatus.ok(res, userRoles);
   } catch (error) {
-    return ResponseStatus.error(res);
+    console.log(error);
+    return ResponseStatus.error(res, error);
   }
 };
 
@@ -70,7 +71,7 @@ export const updateUserRolesController = async (req, res) => {
       action: "update_roles",
       oldStatus: currentRoleIds.join(","),
       newStatus: roles.join(","),
-      changedBy: req.user._id,
+      changedBy: req.user?._id,
     });
 
     // Lấy danh sách roles mới
@@ -81,6 +82,7 @@ export const updateUserRolesController = async (req, res) => {
 
     return ResponseStatus.ok(res, updatedRoles);
   } catch (error) {
-    return ResponseStatus.error(res);
+    console.log(error);
+    return ResponseStatus.error(res, error);
   }
 };

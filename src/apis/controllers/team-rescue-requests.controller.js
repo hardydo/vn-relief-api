@@ -17,7 +17,8 @@ export const getTeamRescueRequestsController = async (req, res) => {
 
     return ResponseStatus.ok(res, requests);
   } catch (error) {
-    return ResponseStatus.error(res);
+    console.log(error);
+    return ResponseStatus.error(res, error);
   }
 };
 
@@ -51,12 +52,13 @@ export const handleRescueRequestController = async (req, res) => {
       action,
       oldStatus: teamRequest.status,
       newStatus: status,
-      changedBy: req.user._id,
+      changedBy: req.user?._id,
     });
 
     return ResponseStatus.ok(res, "Cập nhật trạng thái thành công");
   } catch (error) {
-    return ResponseStatus.error(res);
+    console.log(error);
+    return ResponseStatus.error(res, error);
   }
 };
 
@@ -94,12 +96,13 @@ export const updateRequestStatusController = async (req, res) => {
       action: "update_status",
       oldStatus,
       newStatus: status,
-      changedBy: req.user._id,
+      changedBy: req.user?._id,
       description: notes,
     });
 
     return ResponseStatus.ok(res, teamRequest);
   } catch (error) {
-    return ResponseStatus.error(res);
+    console.log(error);
+    return ResponseStatus.error(res, error);
   }
 };

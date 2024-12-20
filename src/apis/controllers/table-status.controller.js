@@ -11,7 +11,8 @@ export const getAllTableStatusController = async (req, res) => {
 
     return ResponseStatus.ok(res, statuses);
   } catch (error) {
-    return ResponseStatus.error(res);
+    console.log(error);
+    return ResponseStatus.error(res, error);
   }
 };
 
@@ -26,7 +27,8 @@ export const getTableStatusController = async (req, res) => {
 
     return ResponseStatus.ok(res, statuses);
   } catch (error) {
-    return ResponseStatus.error(res);
+    console.log(error);
+    return ResponseStatus.error(res, error);
   }
 };
 
@@ -39,7 +41,8 @@ export const createTableStatusController = async (req, res) => {
 
     return ResponseStatus.created(res, newStatus);
   } catch (error) {
-    return ResponseStatus.error(res);
+    console.log(error);
+    return ResponseStatus.error(res, error);
   }
 };
 
@@ -61,7 +64,8 @@ export const updateTableStatusController = async (req, res) => {
 
     return ResponseStatus.ok(res, updated);
   } catch (error) {
-    return ResponseStatus.error(res);
+    console.log(error);
+    return ResponseStatus.error(res, error);
   }
 };
 
@@ -78,6 +82,7 @@ export const deleteTableStatusController = async (req, res) => {
 
     return ResponseStatus.ok(res, "Xóa trạng thái thành công");
   } catch (error) {
-    return ResponseStatus.error(res);
+    console.log(error);
+    return ResponseStatus.error(res, error);
   }
 };

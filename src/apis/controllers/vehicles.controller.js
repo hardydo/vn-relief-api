@@ -23,7 +23,8 @@ export const getVehiclesController = async (req, res) => {
 
     return ResponseStatus.ok(res, vehicles);
   } catch (error) {
-    return ResponseStatus.error(res);
+    console.log(error);
+    return ResponseStatus.error(res, error);
   }
 };
 
@@ -42,7 +43,8 @@ export const getVehicleByIdController = async (req, res) => {
 
     return ResponseStatus.ok(res, vehicle);
   } catch (error) {
-    return ResponseStatus.error(res);
+    console.log(error);
+    return ResponseStatus.error(res, error);
   }
 };
 
@@ -72,12 +74,13 @@ export const createVehicleController = async (req, res) => {
       referenceId: newVehicle._id,
       action: "create",
       newStatus: "available",
-      changedBy: req.user._id,
+      changedBy: req.user?._id,
     });
 
     return ResponseStatus.created(res, newVehicle);
   } catch (error) {
-    return ResponseStatus.error(res);
+    console.log(error);
+    return ResponseStatus.error(res, error);
   }
 };
 
@@ -109,7 +112,8 @@ export const updateVehicleController = async (req, res) => {
 
     return ResponseStatus.ok(res, updated);
   } catch (error) {
-    return ResponseStatus.error(res);
+    console.log(error);
+    return ResponseStatus.error(res, error);
   }
 };
 
@@ -144,11 +148,12 @@ export const deleteVehicleController = async (req, res) => {
       referenceId: id,
       action: "delete",
       oldStatus: vehicle.status,
-      changedBy: req.user._id,
+      changedBy: req.user?._id,
     });
 
     return ResponseStatus.ok(res, "Xóa phương tiện thành công");
   } catch (error) {
-    return ResponseStatus.error(res);
+    console.log(error);
+    return ResponseStatus.error(res, error);
   }
 };

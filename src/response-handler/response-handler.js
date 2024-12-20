@@ -4,15 +4,11 @@ const responseWithData = (res, statusCode, data) =>
     data: data,
   });
 
-const ok = (res, message) =>
-  responseWithData(res, 200, {
-    message,
-  });
+const ok = (res, data) =>
+  responseWithData(res, 200, data);
 
-const created = (res, message) =>
-  responseWithData(res, 201, {
-    message,
-  });
+const created = (res, data) =>
+  responseWithData(res, 201, data);
 
 const badRequest = (res, message) =>
   responseWithData(res, 400, {

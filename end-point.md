@@ -2,13 +2,13 @@
 Base URL: /api/v1
 =======================
 
-## Authentication: Firebase
+## Authentication: Firebase (peding)
 - POST `/auth/phone/send-otp`            - Gửi OTP tới số điện thoại
 - POST `/auth/phone/verify-otp`          - Xác thực OTP
 - POST `/auth/phone/login`               - Đăng nhập bằng số điện thoại + password
 - POST `/auth/logout`                    - Đăng xuất
 
-## Users Management
+## Users Management (done)
 ### Users (`/users`)
 - GET `/users`                           - Lấy danh sách users
   + Query: 

@@ -29,7 +29,8 @@ export const getTransportsController = async (req, res) => {
 
     return ResponseStatus.ok(res, transports);
   } catch (error) {
-    return ResponseStatus.error(res);
+    console.log(error);
+    return ResponseStatus.error(res, error);
   }
 };
 
@@ -48,7 +49,8 @@ export const getTransportByIdController = async (req, res) => {
 
     return ResponseStatus.ok(res, transport);
   } catch (error) {
-    return ResponseStatus.error(res);
+    console.log(error);
+    return ResponseStatus.error(res, error);
   }
 };
 
@@ -79,7 +81,8 @@ export const createTransportController = async (req, res) => {
 
     return ResponseStatus.created(res, newTransport);
   } catch (error) {
-    return ResponseStatus.error(res);
+    console.log(error);
+    return ResponseStatus.error(res, error);
   }
 };
 
@@ -101,7 +104,8 @@ export const updateTransportController = async (req, res) => {
 
     return ResponseStatus.ok(res, updated);
   } catch (error) {
-    return ResponseStatus.error(res);
+    console.log(error);
+    return ResponseStatus.error(res, error);
   }
 };
 
@@ -118,6 +122,7 @@ export const deleteTransportController = async (req, res) => {
 
     return ResponseStatus.ok(res, "Hủy vận chuyển thành công");
   } catch (error) {
-    return ResponseStatus.error(res);
+    console.log(error);
+    return ResponseStatus.error(res, error);
   }
 };
