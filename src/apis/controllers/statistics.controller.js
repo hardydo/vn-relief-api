@@ -24,7 +24,8 @@ export const getRescueTeamsStatsController = async (req, res) => {
 
     return ResponseStatus.ok(res, stats);
   } catch (error) {
-    return ResponseStatus.error(res);
+    console.log(error);
+    return ResponseStatus.error(res, error);
   }
 };
 
@@ -52,7 +53,8 @@ export const getContributionsStatsController = async (req, res) => {
 
     return ResponseStatus.ok(res, stats);
   } catch (error) {
-    return ResponseStatus.error(res);
+    console.log(error);
+    return ResponseStatus.error(res, error);
   }
 };
 
@@ -79,7 +81,8 @@ export const getRescueRequestsStatsController = async (req, res) => {
 
     return ResponseStatus.ok(res, stats);
   } catch (error) {
-    return ResponseStatus.error(res);
+    console.log(error);
+    return ResponseStatus.error(res, error);
   }
 };
 
@@ -103,6 +106,7 @@ export const getTransportStatsController = async (req, res) => {
 
     return ResponseStatus.ok(res, stats);
   } catch (error) {
-    return ResponseStatus.error(res);
+    console.log(error);
+    return ResponseStatus.error(res, error);
   }
 };

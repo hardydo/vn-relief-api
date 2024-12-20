@@ -24,7 +24,8 @@ export const getDisastersController = async (req, res) => {
 
     return ResponseStatus.ok(res, disasters);
   } catch (error) {
-    return ResponseStatus.error(res);
+    console.log(error);
+    return ResponseStatus.error(res, error);
   }
 };
 
@@ -40,7 +41,8 @@ export const getDisasterByIdController = async (req, res) => {
 
     return ResponseStatus.ok(res, disaster);
   } catch (error) {
-    return ResponseStatus.error(res);
+    console.log(error);
+    return ResponseStatus.error(res, error);
   }
 };
 
@@ -53,7 +55,8 @@ export const createDisasterController = async (req, res) => {
 
     return ResponseStatus.created(res, newDisaster);
   } catch (error) {
-    return ResponseStatus.error(res);
+    console.log(error);
+    return ResponseStatus.error(res, error);
   }
 };
 
@@ -75,7 +78,8 @@ export const updateDisasterController = async (req, res) => {
 
     return ResponseStatus.ok(res, updated);
   } catch (error) {
-    return ResponseStatus.error(res);
+    console.log(error);
+    return ResponseStatus.error(res, error);
   }
 };
 
@@ -96,7 +100,8 @@ export const deleteDisasterController = async (req, res) => {
 
     return ResponseStatus.ok(res, "Xóa thành công");
   } catch (error) {
-    return ResponseStatus.error(res);
+    console.log(error);
+    return ResponseStatus.error(res, error);
   }
 };
 
@@ -110,6 +115,7 @@ export const getActiveDisastersController = async (req, res) => {
 
     return ResponseStatus.ok(res, activeDisasters);
   } catch (error) {
-    return ResponseStatus.error(res);
+    console.log(error);
+    return ResponseStatus.error(res, error);
   }
 };

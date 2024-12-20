@@ -17,7 +17,8 @@ export const getTeamsController = async (req, res) => {
 
     return ResponseStatus.ok(res, teams);
   } catch (error) {
-    return ResponseStatus.error(res);
+    console.log(error);
+    return ResponseStatus.error(res, error);
   }
 };
 
@@ -33,7 +34,8 @@ export const getTeamByIdController = async (req, res) => {
 
     return ResponseStatus.ok(res, team);
   } catch (error) {
-    return ResponseStatus.error(res);
+    console.log(error);
+    return ResponseStatus.error(res, error);
   }
 };
 
@@ -58,12 +60,13 @@ export const createTeamController = async (req, res) => {
       referenceId: newTeam._id,
       action: "create",
       newStatus: "active",
-      changedBy: req.user._id,
+      changedBy: req.user?._id,
     });
 
     return ResponseStatus.created(res, newTeam);
   } catch (error) {
-    return ResponseStatus.error(res);
+    console.log(error);
+    return ResponseStatus.error(res, error);
   }
 };
 
@@ -85,7 +88,8 @@ export const updateTeamController = async (req, res) => {
 
     return ResponseStatus.ok(res, updated);
   } catch (error) {
-    return ResponseStatus.error(res);
+    console.log(error);
+    return ResponseStatus.error(res, error);
   }
 };
 
@@ -118,12 +122,13 @@ export const deleteTeamController = async (req, res) => {
       action: "delete",
       oldStatus: "active",
       newStatus: "inactive",
-      changedBy: req.user._id,
+      changedBy: req.user?._id,
     });
 
     return ResponseStatus.ok(res, "Giải tán đội thành công");
   } catch (error) {
-    return ResponseStatus.error(res);
+    console.log(error);
+    return ResponseStatus.error(res, error);
   }
 };
 
@@ -138,7 +143,8 @@ export const getTeamMembersController = async (req, res) => {
 
     return ResponseStatus.ok(res, members);
   } catch (error) {
-    return ResponseStatus.error(res);
+    console.log(error);
+    return ResponseStatus.error(res, error);
   }
 };
 
@@ -161,7 +167,8 @@ export const addTeamMemberController = async (req, res) => {
 
     return ResponseStatus.ok(res, "Thêm thành viên thành công");
   } catch (error) {
-    return ResponseStatus.error(res);
+    console.log(error);
+    return ResponseStatus.error(res, error);
   }
 };
 
@@ -182,7 +189,8 @@ export const removeTeamMemberController = async (req, res) => {
 
     return ResponseStatus.ok(res, "Xóa thành viên thành công");
   } catch (error) {
-    return ResponseStatus.error(res);
+    console.log(error);
+    return ResponseStatus.error(res, error);
   }
 };
 
@@ -195,7 +203,8 @@ export const sendJoinRequestController = async (req, res) => {
 
     return ResponseStatus.created(res, "Gửi yêu cầu thành công");
   } catch (error) {
-    return ResponseStatus.error(res);
+    console.log(error);
+    return ResponseStatus.error(res, error);
   }
 };
 
@@ -208,7 +217,8 @@ export const getJoinRequestsController = async (req, res) => {
 
     return ResponseStatus.ok(res, []);
   } catch (error) {
-    return ResponseStatus.error(res);
+    console.log(error);
+    return ResponseStatus.error(res, error);
   }
 };
 
@@ -222,7 +232,8 @@ export const handleJoinRequestController = async (req, res) => {
 
     return ResponseStatus.ok(res, "Xử lý yêu cầu thành công");
   } catch (error) {
-    return ResponseStatus.error(res);
+    console.log(error);
+    return ResponseStatus.error(res, error);
   }
 };
 
@@ -235,6 +246,7 @@ export const changeTeamLeaderController = async (req, res) => {
 
     return ResponseStatus.ok(res, "Chuyển quyền trưởng nhóm thành công");
   } catch (error) {
-    return ResponseStatus.error(res);
+    console.log(error);
+    return ResponseStatus.error(res, error);
   }
 };

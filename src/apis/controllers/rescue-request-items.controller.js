@@ -14,7 +14,8 @@ export const getRequestItemsController = async (req, res) => {
 
     return ResponseStatus.ok(res, items);
   } catch (error) {
-    return ResponseStatus.error(res);
+    console.log(error);
+    return ResponseStatus.error(res, error);
   }
 };
 
@@ -41,7 +42,8 @@ export const addRequestItemsController = async (req, res) => {
 
     return ResponseStatus.created(res, newItems);
   } catch (error) {
-    return ResponseStatus.error(res);
+    console.log(error);
+    return ResponseStatus.error(res, error);
   }
 };
 
@@ -68,7 +70,8 @@ export const updateRequestItemController = async (req, res) => {
 
     return ResponseStatus.ok(res, updated);
   } catch (error) {
-    return ResponseStatus.error(res);
+    console.log(error);
+    return ResponseStatus.error(res, error);
   }
 };
 
@@ -85,6 +88,7 @@ export const deleteRequestItemController = async (req, res) => {
 
     return ResponseStatus.ok(res, "Xóa thành công");
   } catch (error) {
-    return ResponseStatus.error(res);
+    console.log(error);
+    return ResponseStatus.error(res, error);
   }
 };

@@ -2,6 +2,7 @@ import ResponseStatus from "../../response-handler/response-handler.js";
 import Users from "../../databases/models/users.model.js";
 import UserRoles from "../../databases/models/user-roles.model.js";
 import StatusHistory from "../../databases/models/status-history.model.js";
+import mongoose from "mongoose";
 
 // Lấy danh sách users
 export const getUsersController = async (req, res) => {
@@ -40,7 +41,9 @@ export const getUsersController = async (req, res) => {
 
     return ResponseStatus.ok(res, users);
   } catch (error) {
-    return ResponseStatus.error(res);
+    console.log(error);
+    console.log(error);
+    return ResponseStatus.error(res, error);
   }
 };
 
@@ -69,7 +72,8 @@ export const getUserByIdController = async (req, res) => {
       roles: userRoles,
     });
   } catch (error) {
-    return ResponseStatus.error(res);
+    console.log(error);
+    return ResponseStatus.error(res, error);
   }
 };
 
@@ -103,9 +107,15 @@ export const createUserController = async (req, res) => {
       changedBy: req.user?._id,
     });
 
-    return ResponseStatus.created(res, newUser);
+    const result = {
+      data: newUser,
+      message: "User created"
+    }
+
+    return ResponseStatus.created(res, result);
   } catch (error) {
-    return ResponseStatus.error(res);
+    console.log(error);
+    return ResponseStatus.error(res, error);
   }
 };
 
@@ -125,9 +135,15 @@ export const updateUserController = async (req, res) => {
       return ResponseStatus.notfound(res);
     }
 
-    return ResponseStatus.ok(res, updated);
+    const result = {
+      data: updated,
+      message: "User updated successfully",
+    };
+
+    return ResponseStatus.ok(res, result);
   } catch (error) {
-    return ResponseStatus.error(res);
+    console.log(error);
+    return ResponseStatus.error(res, error);
   }
 };
 
@@ -154,11 +170,17 @@ export const toggleUserStatusController = async (req, res) => {
       action: "toggle_status",
       oldStatus,
       newStatus,
-      changedBy: req.user._id,
+      changedBy: req.user?._id,
     });
 
-    return ResponseStatus.ok(res, user);
+    const result = {
+      data: user,
+      message: "User changed status",
+    };
+
+    return ResponseStatus.ok(res, result);
   } catch (error) {
-    return ResponseStatus.error(res);
+    console.log(error);
+    return ResponseStatus.error(res, error);
   }
 };

@@ -37,7 +37,8 @@ export const getSupportLocationsController = async (req, res) => {
 
     return ResponseStatus.ok(res, locations);
   } catch (error) {
-    return ResponseStatus.error(res);
+    console.log(error);
+    return ResponseStatus.error(res, error);
   }
 };
 
@@ -59,7 +60,8 @@ export const getSupportLocationByIdController = async (req, res) => {
 
     return ResponseStatus.ok(res, { ...location.toObject(), supplies });
   } catch (error) {
-    return ResponseStatus.error(res);
+    console.log(error);
+    return ResponseStatus.error(res, error);
   }
 };
 
@@ -76,7 +78,8 @@ export const createSupportLocationController = async (req, res) => {
 
     return ResponseStatus.created(res, newLocation);
   } catch (error) {
-    return ResponseStatus.error(res);
+    console.log(error);
+    return ResponseStatus.error(res, error);
   }
 };
 
@@ -98,7 +101,8 @@ export const updateSupportLocationController = async (req, res) => {
 
     return ResponseStatus.ok(res, updated);
   } catch (error) {
-    return ResponseStatus.error(res);
+    console.log(error);
+    return ResponseStatus.error(res, error);
   }
 };
 
@@ -128,7 +132,8 @@ export const deleteSupportLocationController = async (req, res) => {
 
     return ResponseStatus.ok(res, "Xóa địa điểm thành công");
   } catch (error) {
-    return ResponseStatus.error(res);
+    console.log(error);
+    return ResponseStatus.error(res, error);
   }
 };
 
@@ -152,7 +157,8 @@ export const receiveSuppliesController = async (req, res) => {
 
     return ResponseStatus.ok(res, "Tiếp nhận hàng hóa thành công");
   } catch (error) {
-    return ResponseStatus.error(res);
+    console.log(error);
+    return ResponseStatus.error(res, error);
   }
 };
 
@@ -178,6 +184,7 @@ export const getNearbyLocationsController = async (req, res) => {
 
     return ResponseStatus.ok(res, locations);
   } catch (error) {
-    return ResponseStatus.error(res);
+    console.log(error);
+    return ResponseStatus.error(res, error);
   }
 };

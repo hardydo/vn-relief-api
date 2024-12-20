@@ -14,7 +14,8 @@ export const getTransportHistoriesController = async (req, res) => {
 
     return ResponseStatus.ok(res, histories);
   } catch (error) {
-    return ResponseStatus.error(res);
+    console.log(error);
+    return ResponseStatus.error(res, error);
   }
 };
 
@@ -43,13 +44,14 @@ export const addCheckpointController = async (req, res) => {
       referenceId: newCheckpoint._id,
       action: "checkpoint",
       newStatus: status,
-      changedBy: req.user._id,
+      changedBy: req.user?._id,
       description: notes,
     });
 
     return ResponseStatus.created(res, newCheckpoint);
   } catch (error) {
-    return ResponseStatus.error(res);
+    console.log(error);
+    return ResponseStatus.error(res, error);
   }
 };
 
@@ -80,12 +82,13 @@ export const updateCheckpointStatusController = async (req, res) => {
       action: "update_status",
       oldStatus,
       newStatus: status,
-      changedBy: req.user._id,
+      changedBy: req.user?._id,
       description: notes,
     });
 
     return ResponseStatus.ok(res, checkpoint);
   } catch (error) {
-    return ResponseStatus.error(res);
+    console.log(error);
+    return ResponseStatus.error(res, error);
   }
 };

@@ -10,7 +10,8 @@ export const getAllHistoriesController = async (req, res) => {
 
     return ResponseStatus.ok(res, histories);
   } catch (error) {
-    return ResponseStatus.error(res);
+    console.log(error);
+    return ResponseStatus.error(res, error);
   }
 };
 
@@ -28,7 +29,8 @@ export const getStatusHistoryController = async (req, res) => {
 
     return ResponseStatus.ok(res, histories);
   } catch (error) {
-    return ResponseStatus.error(res);
+    console.log(error);
+    return ResponseStatus.error(res, error);
   }
 };
 
@@ -39,12 +41,13 @@ export const createHistoryController = async (req, res) => {
 
     const newHistory = await StatusHistory.create({
       ...data,
-      changedBy: req.user._id,
+      changedBy: req.user?._id,
     });
 
     return ResponseStatus.created(res, newHistory);
   } catch (error) {
-    return ResponseStatus.error(res);
+    console.log(error);
+    return ResponseStatus.error(res, error);
   }
 };
 
@@ -66,7 +69,8 @@ export const updateHistoryController = async (req, res) => {
 
     return ResponseStatus.ok(res, updated);
   } catch (error) {
-    return ResponseStatus.error(res);
+    console.log(error);
+    return ResponseStatus.error(res, error);
   }
 };
 
@@ -83,6 +87,7 @@ export const deleteHistoryController = async (req, res) => {
 
     return ResponseStatus.ok(res, "Xóa lịch sử thành công");
   } catch (error) {
-    return ResponseStatus.error(res);
+    console.log(error);
+    return ResponseStatus.error(res, error);
   }
 };

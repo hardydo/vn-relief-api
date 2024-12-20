@@ -14,7 +14,8 @@ export const getTransportSuppliesController = async (req, res) => {
 
     return ResponseStatus.ok(res, supplies);
   } catch (error) {
-    return ResponseStatus.error(res);
+    console.log(error);
+    return ResponseStatus.error(res, error);
   }
 };
 
@@ -39,7 +40,8 @@ export const addSupplyToTransportController = async (req, res) => {
 
     return ResponseStatus.created(res, supplies);
   } catch (error) {
-    return ResponseStatus.error(res);
+    console.log(error);
+    return ResponseStatus.error(res, error);
   }
 };
 
@@ -56,7 +58,8 @@ export const removeSupplyFromTransportController = async (req, res) => {
 
     return ResponseStatus.ok(res, "Xóa hàng khỏi chuyến thành công");
   } catch (error) {
-    return ResponseStatus.error(res);
+    console.log(error);
+    return ResponseStatus.error(res, error);
   }
 };
 
@@ -85,13 +88,14 @@ export const updateSupplyStatusController = async (req, res) => {
       action: "update_status",
       oldStatus,
       newStatus: status,
-      changedBy: req.user._id,
+      changedBy: req.user?._id,
       description: notes,
     });
 
     return ResponseStatus.ok(res, supply);
   } catch (error) {
-    return ResponseStatus.error(res);
+    console.log(error);
+    return ResponseStatus.error(res, error);
   }
 };
 
@@ -134,12 +138,13 @@ export const distributeSuppliesController = async (req, res) => {
       action: "distribute",
       oldStatus: "in_progress",
       newStatus: "completed",
-      changedBy: req.user._id,
+      changedBy: req.user?._id,
       description: notes,
     });
 
     return ResponseStatus.ok(res, "Phân phối hàng hóa thành công");
   } catch (error) {
-    return ResponseStatus.error(res);
+    console.log(error);
+    return ResponseStatus.error(res, error);
   }
 };

@@ -5,16 +5,16 @@ import ResponseStatus from '../../response-handler/response-handler.js';
 // Middleware kiểm tra token có hợp lệ không
 export const authMiddleware = async (req, res, next) => {
   try {
-    const authHeader = req.headers.authorization;
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return res.status(ResponseStatus.unauthorized(res, "unauthorized")).json({
-        message: "Không tìm thấy token xác thực",
-      });
-    }
+    // const authHeader = req.headers.authorization;
+    // if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    //   return res.status(ResponseStatus.unauthorized(res, "unauthorized")).json({
+    //     message: "Không tìm thấy token xác thực",
+    //   });
+    // }
 
-    const token = authHeader.split(' ')[1];
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded;
+    // const token = authHeader.split(' ')[1];
+    // const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    // req.user = decoded;
     next();
   } catch (error) {
     return res.status(ResponseStatus.unauthorized(res, "unauthorized")).json({
