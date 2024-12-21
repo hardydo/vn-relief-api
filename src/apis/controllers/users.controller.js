@@ -1,8 +1,7 @@
-import ResponseStatus from "../../response-handler/response-handler.js";
-import Users from "../../databases/models/users.model.js";
-import UserRoles from "../../databases/models/user-roles.model.js";
 import StatusHistory from "../../databases/models/status-history.model.js";
-import mongoose from "mongoose";
+import UserRoles from "../../databases/models/user-roles.model.js";
+import Users from "../../databases/models/users.model.js";
+import ResponseStatus from "../../response-handler/response-handler.js";
 
 // Lấy danh sách users
 export const getUsersController = async (req, res) => {
@@ -41,7 +40,6 @@ export const getUsersController = async (req, res) => {
 
     return ResponseStatus.ok(res, users);
   } catch (error) {
-    console.log(error);
     console.log(error);
     return ResponseStatus.error(res, error);
   }
@@ -109,7 +107,7 @@ export const createUserController = async (req, res) => {
 
     const result = {
       data: newUser,
-      message: "User created"
+      message: "Tạo người dùng thành công"
     }
 
     return ResponseStatus.created(res, result);
@@ -137,7 +135,7 @@ export const updateUserController = async (req, res) => {
 
     const result = {
       data: updated,
-      message: "User updated successfully",
+      message: "Chỉnh sửa thông tin người dùng thành công",
     };
 
     return ResponseStatus.ok(res, result);
@@ -175,7 +173,7 @@ export const toggleUserStatusController = async (req, res) => {
 
     const result = {
       data: user,
-      message: "User changed status",
+      message: "Chỉnh sửa trạng thái người dùng thành công",
     };
 
     return ResponseStatus.ok(res, result);

@@ -11,6 +11,10 @@ const userRoleSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: "Roles",
     },
+    deletedAt: {
+      type: Date,
+      default: null,
+    },
   },
   { timestamps: true }
 );

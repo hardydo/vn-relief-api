@@ -38,7 +38,12 @@ export const createRoleController = async (req, res) => {
 
     const newRole = await Roles.create(data);
 
-    return ResponseStatus.created(res, newRole);
+    const result = {
+      data: newRole,
+      message: 'Role created successfully'
+    }
+
+    return ResponseStatus.created(res, result);
   } catch (error) {
     console.log(error);
     return ResponseStatus.error(res, error);
@@ -61,7 +66,12 @@ export const updateRoleController = async (req, res) => {
       return ResponseStatus.notfound(res);
     }
 
-    return ResponseStatus.ok(res, updated);
+    const result = {
+      data: updated,
+      message: "Chỉnh sửa role thành công",
+    };
+
+    return ResponseStatus.ok(res, result);
   } catch (error) {
     console.log(error);
     return ResponseStatus.error(res, error);
@@ -88,8 +98,11 @@ export const deleteRoleController = async (req, res) => {
       const remainingRoles = await UserRoles.find({ userId: userRole.userId });
       // TODO: Cập nhật role array của user
     }
+    const result = {
+      message: "Xóa role thành công",
+    };
 
-    return ResponseStatus.ok(res, "Xóa role thành công");
+    return ResponseStatus.ok(res, result);
   } catch (error) {
     console.log(error);
     return ResponseStatus.error(res, error);

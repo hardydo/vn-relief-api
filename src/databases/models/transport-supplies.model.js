@@ -27,6 +27,10 @@ const transportSuppliesSchema = new Schema(
       // description: "Tọa độ điểm giao hàng",
     },
     notes: String,
+    deletedAt: {
+      type: Date,
+      default: null,
+    },
   },
   { timestamps: true }
 );

@@ -72,7 +72,7 @@ export const createSupportLocationController = async (req, res) => {
 
     const newLocation = await SupportLocations.create({
       ...data,
-      verificationOfficerId: req.user._id,
+      verificationOfficerId: req.user?._id,
       verificationStatus: "active",
     });
 

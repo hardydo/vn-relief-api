@@ -63,7 +63,7 @@ export const createVehicleController = async (req, res) => {
 
     const newVehicle = await Vehicles.create({
       ...vehicleData,
-      ownerId: req.user._id,
+      ownerId: req.user?._id,
       rescueTeamId,
       status: "available",
     });
@@ -97,7 +97,7 @@ export const updateVehicleController = async (req, res) => {
     }
 
     if (
-      vehicle.ownerId.toString() !== req.user._id &&
+      vehicle.ownerId.toString() !== req.user?._id &&
       (!req.user.rescueTeamId ||
         vehicle.rescueTeamId.toString() !== req.user.rescueTeamId)
     ) {
@@ -128,7 +128,7 @@ export const deleteVehicleController = async (req, res) => {
       return ResponseStatus.notfound(res);
     }
 
-    if (vehicle.ownerId.toString() !== req.user._id) {
+    if (vehicle.ownerId.toString() !== req.user?._id) {
       return ResponseStatus.forbidden(res, "Không có quyền xóa");
     }
 

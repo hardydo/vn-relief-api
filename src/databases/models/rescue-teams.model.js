@@ -27,6 +27,10 @@ const rescueTeamSchema = new Schema(
     operatingArea: String,
     status: String,
     locationTrackingLink: String,
+    deletedAt: {
+      type: Date,
+      default: null,
+    },
   },
   { timestamps: true }
 );

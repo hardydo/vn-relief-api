@@ -22,6 +22,10 @@ const transportSchema = new Schema(
       // description: "Tọa độ điểm lấy hàng",
     },
     notes: String,
+    deletedAt: {
+      type: Date,
+      default: null,
+    },
   },
   { timestamps: true }
 );

@@ -25,7 +25,7 @@ Base URL: /api/v1
 - POST `/users/toggle-status`						 - Toggle status (active | inactive) user
 - PUT `/users/:id`                       - Cập nhật user
 
-### Roles (`/roles`) 
+### Roles (`/roles`) (done)
 - GET `/roles`                           - Danh sách roles
 - GET `/roles/:id`                       - Chi tiết role
 - POST `/roles`                          - Tạo role mới
@@ -34,13 +34,13 @@ Base URL: /api/v1
 	+ Xoá role thì cũng phải xoá ở bảng user_role: `delete * from user_role where role_id == id`
 	+ Đồng thời update role của user --> ví dụ xoá role 1, thì user có roles [1,2,3] phải update thành [2,3]
 
-### User Roles (`/user-roles`)
+### User Roles (`/user-roles`) (done)
 - GET `/users/:id/roles`                 - Roles của user
 - POST `/users/:id/roles`                - Cập nhật roles cho user
 	+ Body truyền roles: [roleIds] lên --> Update thằng
 
-## Natural Disasters Management
-### Natural Disasters (`/natural-disasters`)
+## Natural Disasters Management 
+### Natural Disasters (`/natural-disasters`) (done)
 - GET `/natural-disasters`               - Danh sách đợt thiên tai
   + Query:
     - status: 'ongoing' | 'ended'

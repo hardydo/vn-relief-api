@@ -50,7 +50,7 @@ export const createTeamController = async (req, res) => {
     });
 
     // Cập nhật rescueTeamId cho leader
-    await Users.findByIdAndUpdate(req.user._id, {
+    await Users.findByIdAndUpdate(req.user?._id, {
       $set: { rescueTeamId: newTeam._id },
     });
 
@@ -85,8 +85,11 @@ export const updateTeamController = async (req, res) => {
     if (!updated) {
       return ResponseStatus.notfound(res);
     }
-
-    return ResponseStatus.ok(res, updated);
+    const result = {
+      message: "Đã cập nhật thông tin đội giải cứu",
+      data: updated
+    }
+    return ResponseStatus.ok(res, result);
   } catch (error) {
     console.log(error);
     return ResponseStatus.error(res, error);
@@ -125,7 +128,7 @@ export const deleteTeamController = async (req, res) => {
       changedBy: req.user?._id,
     });
 
-    return ResponseStatus.ok(res, "Giải tán đội thành công");
+    return ResponseStatus.ok(res, {messsage: "Giải tán đội thành công"});
   } catch (error) {
     console.log(error);
     return ResponseStatus.error(res, error);

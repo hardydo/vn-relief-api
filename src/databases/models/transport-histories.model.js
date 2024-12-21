@@ -28,6 +28,10 @@ const transportHistorySchema = new Schema(
       coordinates: [Number],
     },
     notes: String,
+    deletedAt: {
+      type: Date,
+      default: null,
+    },
   },
   { timestamps: true }
 );

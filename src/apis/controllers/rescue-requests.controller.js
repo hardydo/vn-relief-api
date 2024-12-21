@@ -65,7 +65,7 @@ export const createRescueRequestController = async (req, res) => {
 
     const newRequest = await RescueRequests.create({
       ...data,
-      informantId: req.user._id,
+      informantId: req.user?._id,
     });
 
     // Tạo lịch sử trạng thái
@@ -153,7 +153,7 @@ export const verifyRescueRequestController = async (req, res) => {
       id,
       {
         $set: {
-          verifierId: req.user._id,
+          verifierId: req.user?._id,
           status: "verified",
         },
       },

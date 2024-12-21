@@ -34,6 +34,10 @@ const rescueRequestSchema = new Schema(
       ref: "Users",
     },
     requiredRescueTime: Date, //6h, 12-24h
+    deletedAt: {
+      type: Date,
+      default: null,
+    },
   },
   { timestamps: true }
 );

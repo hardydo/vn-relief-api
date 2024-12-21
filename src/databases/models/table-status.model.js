@@ -14,8 +14,12 @@ const tableStatusSchema = new Schema(
       type: String,
       required: true,
     },
-    note: String
-  },
+    note: String,
+  deletedAt: {
+  type: Date,
+  default: null
+  }
+},
   { timestamps: true }
 );
 

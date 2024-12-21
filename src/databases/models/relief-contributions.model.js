@@ -51,6 +51,10 @@ const reliefContributionSchema = new Schema(
       type: String,
       enum: ["individual", "organization"],
     },
+    deletedAt: {
+      type: Date,
+      default: null,
+    },
   },
   { timestamps: true }
 );

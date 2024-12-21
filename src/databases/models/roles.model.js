@@ -15,8 +15,12 @@ const roleSchema = new Schema(
         5   // Vai trò thành viên thường
       ]
     },
-    name: String
-  },
+    name: String,
+  deletedAt: {
+  type: Date,
+  default: null
+  }
+},
   { timestamps: true }
 );
 

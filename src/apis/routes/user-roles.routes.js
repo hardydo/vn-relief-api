@@ -12,6 +12,6 @@ userRolesRouter.get("/:id/roles", authMiddleware, getUserRolesController);
 
 // Cập nhật roles cho user
 // Body truyền roles: [roleIds]
-userRolesRouter.post("/:id/roles", authMiddleware, updateUserRolesController);
+userRolesRouter.post("/:userId/roles", authMiddleware, updateUserRolesController);
 
 export default userRolesRouter;

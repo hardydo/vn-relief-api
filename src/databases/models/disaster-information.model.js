@@ -23,6 +23,10 @@ const disasterInformationSchema = new Schema(
       type: Number,
       default: 0,
     },
+    deletedAt: {
+      type: Date,
+      default: null,
+    },
   },
   { timestamps: true }
 );
