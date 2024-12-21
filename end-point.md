@@ -74,7 +74,7 @@ Base URL: /api/v1
 - DELETE `/natural-disasters/:disasterId/disaster-information/:id` 	- Xóa thông tin thiên tai
 
 ## Rescue Teams Management
-### Rescue Teams (`/natural-disasters/:disasterId/rescue-teams`)
+### Rescue Teams (`/natural-disasters/:disasterId/rescue-teams`) (done)
 - GET `/rescue-teams`                    - Danh sách đội cứu trợ
   + Query:
     - status: 'active' | 'inactive'
@@ -96,13 +96,13 @@ Base URL: /api/v1
 
 - PUT `/rescue-teams/:id/leader/:userId` - Chuyển quyền trưởng nhóm
 
-### Team Rescue Requests (`/team-rescue-requests`)
-- GET `/rescue-teams/:id/rescue-requests`   - Danh sách yêu cầu được phân công
-- POST `/rescue-teams/:id/rescue-requests/:requestId` - Nhận/huỷ yêu cầu cứu trợ
-- PUT `/team-rescue-requests/:id/status`    - Cập nhật trạng thái xử lý
+### Team Rescue Requests (`/team-rescue-requests`) (not test)
+- GET `/rescue-teams/:id/rescue-requests`   - Danh sách yêu cầu được phân công (not test)
+- POST `/rescue-teams/:id/rescue-requests/:requestId` - Nhận/huỷ yêu cầu cứu trợ (not test)
+- PUT `/team-rescue-requests/:id/status`    - Cập nhật trạng thái xử lý (not test)
 
 ## Vehicles Management
-### Vehicles (`/natural-disasters/:disasterId/vehicles`)
+### Vehicles (`/vehicles`)(done)
 - GET `/vehicles`                        - Danh sách phương tiện
   + Query:
     - status: 'available' | 'in_use'

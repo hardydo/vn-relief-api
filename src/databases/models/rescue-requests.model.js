@@ -15,6 +15,10 @@ const rescueRequestSchema = new Schema(
     wardCode: String, //mã xã | mã tỉnh | mã huyện --> "01 | 23 | 34",
     description: String,
     title: String,
+    status: {
+      type: String,
+      enum: ["pending", "doing", "closed"]
+    },
     phone: String,
     priorityContact: String,
     priorityPhone: String,

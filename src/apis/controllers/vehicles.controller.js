@@ -15,6 +15,7 @@ export const getVehiclesController = async (req, res) => {
     if (type) {
       query.vehicleType = type;
     }
+    console.log("🚀 ~ getVehiclesController ~ query:", query)
 
     const vehicles = await Vehicles.find(query)
       .populate("ownerId", "name phone")
@@ -63,7 +64,6 @@ export const createVehicleController = async (req, res) => {
 
     const newVehicle = await Vehicles.create({
       ...vehicleData,
-      ownerId: req.user?._id,
       rescueTeamId,
       status: "available",
     });
@@ -74,10 +74,14 @@ export const createVehicleController = async (req, res) => {
       referenceId: newVehicle._id,
       action: "create",
       newStatus: "available",
-      changedBy: req.user?._id,
+      changedBy: req.user?._id || "676452c5b85460f14f0b1d76",
     });
+    const result = {
+      message: "Tạo phương tiện thành công",
+      data: newVehicle,
+    };
 
-    return ResponseStatus.created(res, newVehicle);
+    return ResponseStatus.created(res, result);
   } catch (error) {
     console.log(error);
     return ResponseStatus.error(res, error);
@@ -97,9 +101,10 @@ export const updateVehicleController = async (req, res) => {
     }
 
     if (
-      vehicle.ownerId.toString() !== req.user?._id &&
-      (!req.user.rescueTeamId ||
-        vehicle.rescueTeamId.toString() !== req.user.rescueTeamId)
+      vehicle.ownerId.toString() !== (req.user?._id ||
+      "676452c5b85460f14f0b1d76") &&
+        (!req.user.rescueTeamId ||
+          vehicle.rescueTeamId?.toString() !== req.user?.rescueTeamId)
     ) {
       return ResponseStatus.forbidden(res, "Không có quyền cập nhật");
     }
@@ -110,7 +115,12 @@ export const updateVehicleController = async (req, res) => {
       { new: true }
     );
 
-    return ResponseStatus.ok(res, updated);
+    const result = {
+      message: "Cập nhật phương tiện thành công",
+      data: updated
+    }
+
+    return ResponseStatus.ok(res, result);
   } catch (error) {
     console.log(error);
     return ResponseStatus.error(res, error);
@@ -128,7 +138,10 @@ export const deleteVehicleController = async (req, res) => {
       return ResponseStatus.notfound(res);
     }
 
-    if (vehicle.ownerId.toString() !== req.user?._id) {
+    if (
+      vehicle.ownerId.toString() !== (req.user?._id ||
+      "676452c5b85460f14f0b1d76")
+    ) {
       return ResponseStatus.forbidden(res, "Không có quyền xóa");
     }
 
@@ -140,7 +153,7 @@ export const deleteVehicleController = async (req, res) => {
       );
     }
 
-    await vehicle.delete();
+    await Vehicles.deleteMany({ id });
 
     // Tạo lịch sử
     await StatusHistory.create({
@@ -148,10 +161,10 @@ export const deleteVehicleController = async (req, res) => {
       referenceId: id,
       action: "delete",
       oldStatus: vehicle.status,
-      changedBy: req.user?._id,
+      changedBy: req.user?._id || "676452c5b85460f14f0b1d76",
     });
 
-    return ResponseStatus.ok(res, "Xóa phương tiện thành công");
+    return ResponseStatus.ok(res, {message: "Xóa phương tiện thành công"});
   } catch (error) {
     console.log(error);
     return ResponseStatus.error(res, error);

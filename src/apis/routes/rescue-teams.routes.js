@@ -34,16 +34,30 @@ rescueTeamsRouter.put("/:id", authMiddleware, teamLeaderMiddleware, updateTeamCo
 rescueTeamsRouter.delete("/:id", authMiddleware, teamLeaderMiddleware, deleteTeamController);
 
 // Quản lý thành viên
-rescueTeamsRouter.get("/:id/members", authMiddleware, getTeamMembersController);
-rescueTeamsRouter.post("/:id/members", authMiddleware, teamLeaderMiddleware, addTeamMemberController);
-rescueTeamsRouter.delete("/:id/members/:userId", authMiddleware, teamLeaderMiddleware, removeTeamMemberController);
+rescueTeamsRouter.get(
+  "/:rescueTeamId/members",
+  authMiddleware,
+  getTeamMembersController
+);
+rescueTeamsRouter.post(
+  "/:rescueTeamId/members",
+  authMiddleware,
+  teamLeaderMiddleware,
+  addTeamMemberController
+);
+rescueTeamsRouter.delete(
+  "/:rescueTeamId/members/:userId",
+  authMiddleware,
+  teamLeaderMiddleware,
+  removeTeamMemberController
+);
 
 // Quản lý yêu cầu tham gia
-rescueTeamsRouter.post("/:id/join-requests", authMiddleware, sendJoinRequestController);
-rescueTeamsRouter.get("/:id/join-requests", authMiddleware, teamLeaderMiddleware, getJoinRequestsController);
-rescueTeamsRouter.put("/:id/join-requests/:requestId", authMiddleware, teamLeaderMiddleware, handleJoinRequestController);
+rescueTeamsRouter.post("/:rescueTeamId/join-requests", authMiddleware, sendJoinRequestController);
+rescueTeamsRouter.get("/:rescueTeamId/join-requests", authMiddleware, teamLeaderMiddleware, getJoinRequestsController);
+rescueTeamsRouter.put("/:rescueTeamId/join-requests/:requestId", authMiddleware, teamLeaderMiddleware, handleJoinRequestController);
 
 // Chuyển quyền trưởng nhóm
-rescueTeamsRouter.put("/:id/leader/:userId", authMiddleware, teamLeaderMiddleware, changeTeamLeaderController);
+rescueTeamsRouter.put("/:rescueTeamId/leader/:userId", authMiddleware, teamLeaderMiddleware, changeTeamLeaderController);
 
 export default rescueTeamsRouter;

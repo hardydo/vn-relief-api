@@ -72,7 +72,7 @@ export const updateUserRolesController = async (req, res) => {
       action: "update_roles",
       oldStatus: currentRoleIds.join(","),
       newStatus: roles.join(","),
-      changedBy: req.user?._id,
+      changedBy: req.user?._id || "676452c5b85460f14f0b1d76",
     });
 
     // Lấy danh sách roles mới
@@ -83,8 +83,8 @@ export const updateUserRolesController = async (req, res) => {
 
     const result = {
       data: updatedRoles,
-      messsage: "Cập nhật vai trò người dùng thành công"
-    }
+      messsage: "Cập nhật vai trò người dùng thành công",
+    };
 
     return ResponseStatus.ok(res, result);
   } catch (error) {

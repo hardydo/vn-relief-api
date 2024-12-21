@@ -11,6 +11,10 @@ const rescueTeamSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: "NaturalDisasters",
     },
+    leaderId: {
+      ref: "User",
+      type: Schema.Types.ObjectId,
+    },
     operationType: String, // Loại hình hoạt động: y tế, cứu người, di dời,...
     phone: String,
     supportCapability: String,

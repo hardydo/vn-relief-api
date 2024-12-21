@@ -6,9 +6,11 @@ import StatusHistory from "../../databases/models/status-history.model.js";
 // Danh sách yêu cầu được phân công cho đội
 export const getTeamRescueRequestsController = async (req, res) => {
   try {
-    const { id } = req.params; // id của đội
+    const { teamRescueRequestsId } = req.params; // id của đội
 
-    const requests = await TeamRescueRequests.find({ rescueTeamId: id })
+    const requests = await TeamRescueRequests.find({
+      rescueTeamId: teamRescueRequestsId,
+    })
       .populate({
         path: "rescueRequestId",
         select: "type title description currentLocation wardCode",
@@ -25,11 +27,11 @@ export const getTeamRescueRequestsController = async (req, res) => {
 // Nhận/huỷ yêu cầu cứu trợ
 export const handleRescueRequestController = async (req, res) => {
   try {
-    const { id, requestId } = req.params;
+    const { teamRescueRequestsId, requestId } = req.params;
     const { action } = req.body; // 'accept' hoặc 'cancel'
 
     const teamRequest = await TeamRescueRequests.findOne({
-      rescueTeamId: id,
+      rescueTeamId: teamRescueRequestsId,
       rescueRequestId: requestId,
     });
 
@@ -52,10 +54,12 @@ export const handleRescueRequestController = async (req, res) => {
       action,
       oldStatus: teamRequest.status,
       newStatus: status,
-      changedBy: req.user?._id,
+      changedBy: req.user?._id || "676452c5b85460f14f0b1d76",
     });
 
-    return ResponseStatus.ok(res, "Cập nhật trạng thái thành công");
+    return ResponseStatus.ok(res, {
+      message: "Cập nhật trạng thái thành công",
+    });
   } catch (error) {
     console.log(error);
     return ResponseStatus.error(res, error);
@@ -65,10 +69,10 @@ export const handleRescueRequestController = async (req, res) => {
 // Cập nhật trạng thái xử lý
 export const updateRequestStatusController = async (req, res) => {
   try {
-    const { id } = req.params; // id của team_rescue_requests
+    const { teamRescueRequestsId } = req.params; // id của team_rescue_requests
     const { status, notes } = req.body;
 
-    const teamRequest = await TeamRescueRequests.findById(id);
+    const teamRequest = await TeamRescueRequests.findById(teamRescueRequestsId);
     if (!teamRequest) {
       return ResponseStatus.notfound(res);
     }
@@ -96,11 +100,16 @@ export const updateRequestStatusController = async (req, res) => {
       action: "update_status",
       oldStatus,
       newStatus: status,
-      changedBy: req.user?._id,
+      changedBy: req.user?._id || "676452c5b85460f14f0b1d76",
       description: notes,
     });
 
-    return ResponseStatus.ok(res, teamRequest);
+    const result = {
+      data: teamRequest,
+      messsage: "Cập nhật trạng thái thành công",
+    };
+
+    return ResponseStatus.ok(res, result);
   } catch (error) {
     console.log(error);
     return ResponseStatus.error(res, error);

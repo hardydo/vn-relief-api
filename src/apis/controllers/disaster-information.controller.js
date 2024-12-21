@@ -64,12 +64,12 @@ export const createDisasterInfoController = async (req, res) => {
     const newInfo = await DisasterInformation.create({
       ...data,
       naturalDisasterId: disasterId,
-      reporterId: req.user?._id,
+      reporterId: req.user?._id || "676452c5b85460f14f0b1d76",
     });
     const result = {
       message: "Tạo thông tin thiên tai mới thành công",
-      data: newInfo
-    }
+      data: newInfo,
+    };
     return ResponseStatus.created(res, result);
   } catch (error) {
     console.log(error);
@@ -114,7 +114,7 @@ export const deleteDisasterInfoController = async (req, res) => {
       return ResponseStatus.notfound(res);
     }
 
-    return ResponseStatus.ok(res, {message: "Xóa thành công"});
+    return ResponseStatus.ok(res, { message: "Xóa thành công" });
   } catch (error) {
     console.log(error);
     return ResponseStatus.error(res, error);

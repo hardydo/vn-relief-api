@@ -44,7 +44,7 @@ export const addCheckpointController = async (req, res) => {
       referenceId: newCheckpoint._id,
       action: "checkpoint",
       newStatus: status,
-      changedBy: req.user?._id,
+      changedBy: req.user?._id || "676452c5b85460f14f0b1d76",
       description: notes,
     });
 
@@ -82,7 +82,7 @@ export const updateCheckpointStatusController = async (req, res) => {
       action: "update_status",
       oldStatus,
       newStatus: status,
-      changedBy: req.user?._id,
+      changedBy: req.user?._id || "676452c5b85460f14f0b1d76",
       description: notes,
     });
 

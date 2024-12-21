@@ -102,13 +102,13 @@ export const createUserController = async (req, res) => {
       referenceId: newUser._id,
       action: "create",
       newStatus: "inactive",
-      changedBy: req.user?._id,
+      changedBy: req.user?._id || "676452c5b85460f14f0b1d76",
     });
 
     const result = {
       data: newUser,
-      message: "Tạo người dùng thành công"
-    }
+      message: "Tạo người dùng thành công",
+    };
 
     return ResponseStatus.created(res, result);
   } catch (error) {
@@ -168,7 +168,7 @@ export const toggleUserStatusController = async (req, res) => {
       action: "toggle_status",
       oldStatus,
       newStatus,
-      changedBy: req.user?._id,
+      changedBy: req.user?._id || "676452c5b85460f14f0b1d76",
     });
 
     const result = {
