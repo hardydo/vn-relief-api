@@ -16,6 +16,10 @@ const rescueRequestItemSchema = new Schema(
       enum: ["high", "medium", "low"],
     },
     notes: String,
+    deletedAt: {
+      type: Date,
+      default: null,
+    },
   },
   { timestamps: true }
 );

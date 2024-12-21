@@ -2,6 +2,7 @@ import ResponseStatus from "../../response-handler/response-handler.js";
 import RescueTeams from "../../databases/models/rescue-teams.model.js";
 import Users from "../../databases/models/users.model.js";
 import StatusHistory from "../../databases/models/status-history.model.js";
+import TeamRescueUsers from "../../databases/models/team-rescue-users.js";
 
 // Danh sách đội cứu trợ
 export const getTeamsController = async (req, res) => {
@@ -47,10 +48,11 @@ export const createTeamController = async (req, res) => {
     const newTeam = await RescueTeams.create({
       ...data,
       status: "active",
+      leaderId: req.user?._id || "676452c5b85460f14f0b1d76",
     });
 
     // Cập nhật rescueTeamId cho leader
-    await Users.findByIdAndUpdate(req.user._id, {
+    await Users.findByIdAndUpdate(req.user?._id || "676452c5b85460f14f0b1d76", {
       $set: { rescueTeamId: newTeam._id },
     });
 
@@ -60,10 +62,15 @@ export const createTeamController = async (req, res) => {
       referenceId: newTeam._id,
       action: "create",
       newStatus: "active",
-      changedBy: req.user?._id,
+      changedBy: req.user?._id || "676452c5b85460f14f0b1d76",
     });
 
-    return ResponseStatus.created(res, newTeam);
+    const result = {
+      message: "Tạo mới team thành công",
+      data: newTeam,
+    };
+
+    return ResponseStatus.created(res, result);
   } catch (error) {
     console.log(error);
     return ResponseStatus.error(res, error);
@@ -85,8 +92,11 @@ export const updateTeamController = async (req, res) => {
     if (!updated) {
       return ResponseStatus.notfound(res);
     }
-
-    return ResponseStatus.ok(res, updated);
+    const result = {
+      message: "Đã cập nhật thông tin đội giải cứu",
+      data: updated,
+    };
+    return ResponseStatus.ok(res, result);
   } catch (error) {
     console.log(error);
     return ResponseStatus.error(res, error);
@@ -122,10 +132,10 @@ export const deleteTeamController = async (req, res) => {
       action: "delete",
       oldStatus: "active",
       newStatus: "inactive",
-      changedBy: req.user?._id,
+      changedBy: req.user?._id || "676452c5b85460f14f0b1d76",
     });
 
-    return ResponseStatus.ok(res, "Giải tán đội thành công");
+    return ResponseStatus.ok(res, { messsage: "Giải tán đội thành công" });
   } catch (error) {
     console.log(error);
     return ResponseStatus.error(res, error);
@@ -135,9 +145,9 @@ export const deleteTeamController = async (req, res) => {
 // Lấy danh sách thành viên
 export const getTeamMembersController = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { rescueTeamId } = req.params;
 
-    const members = await Users.find({ rescueTeamId: id }).select(
+    const members = await Users.find({ rescueTeamId: rescueTeamId }).select(
       "name phone role"
     );
 
@@ -151,13 +161,13 @@ export const getTeamMembersController = async (req, res) => {
 // Thêm thành viên
 export const addTeamMemberController = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { rescueTeamId } = req.params;
     const { userId } = req.body;
 
     // Cập nhật rescueTeamId cho user
     const updated = await Users.findByIdAndUpdate(
       userId,
-      { $set: { rescueTeamId: id } },
+      { $set: { rescueTeamId: rescueTeamId } },
       { new: true }
     );
 
@@ -165,7 +175,7 @@ export const addTeamMemberController = async (req, res) => {
       return ResponseStatus.notfound(res);
     }
 
-    return ResponseStatus.ok(res, "Thêm thành viên thành công");
+    return ResponseStatus.ok(res, { message: "Thêm thành viên thành công" });
   } catch (error) {
     console.log(error);
     return ResponseStatus.error(res, error);
@@ -175,7 +185,7 @@ export const addTeamMemberController = async (req, res) => {
 // Xóa thành viên
 export const removeTeamMemberController = async (req, res) => {
   try {
-    const { id, userId } = req.params;
+    const { rescueTeamId, userId } = req.params;
 
     const updated = await Users.findByIdAndUpdate(
       userId,
@@ -187,7 +197,7 @@ export const removeTeamMemberController = async (req, res) => {
       return ResponseStatus.notfound(res);
     }
 
-    return ResponseStatus.ok(res, "Xóa thành viên thành công");
+    return ResponseStatus.ok(res, { messsage: "Xóa thành viên thành công" });
   } catch (error) {
     console.log(error);
     return ResponseStatus.error(res, error);
@@ -197,11 +207,19 @@ export const removeTeamMemberController = async (req, res) => {
 // Gửi yêu cầu tham gia
 export const sendJoinRequestController = async (req, res) => {
   try {
-    const { id } = req.params;
-
+    const { rescueTeamId } = req.params;
+    const newJoin = await TeamRescueUsers.create({
+      rescueTeamId: rescueTeamId,
+      userId: req.user?._id || "676452c5b85460f14f0b1d76",
+      status: "pending"
+    });
+    const result = {
+      data: newJoin,
+      message: "Gửi đơn gia nhập thành công",
+    };
     // TODO: Implement join request logic
 
-    return ResponseStatus.created(res, "Gửi yêu cầu thành công");
+    return ResponseStatus.created(res, result);
   } catch (error) {
     console.log(error);
     return ResponseStatus.error(res, error);
@@ -211,11 +229,12 @@ export const sendJoinRequestController = async (req, res) => {
 // Xem yêu cầu tham gia
 export const getJoinRequestsController = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { rescueTeamId } = req.params;
+    const listJoin = await TeamRescueUsers.find({
+      rescueTeamId: rescueTeamId,
+    }).populate("userId").populate("rescueTeamId");
 
-    // TODO: Implement get join requests logic
-
-    return ResponseStatus.ok(res, []);
+    return ResponseStatus.ok(res, listJoin);
   } catch (error) {
     console.log(error);
     return ResponseStatus.error(res, error);
@@ -225,12 +244,24 @@ export const getJoinRequestsController = async (req, res) => {
 // Phê duyệt/từ chối yêu cầu tham gia
 export const handleJoinRequestController = async (req, res) => {
   try {
-    const { id, requestId } = req.params;
-    const { status } = req.body;
-
+    const { rescueTeamId, requestId } = req.params;
+    const checkExists = await TeamRescueUsers.findByIdAndUpdate(requestId, {
+      $set: {
+        status: "active"
+      }
+    })
+    if (!checkExists) {
+      return ResponseStatus.badRequest(res, "Không tìm thấy yêu cầu")
+    }
+    await TeamRescueUsers.deleteMany({
+      userId: req.user?._id || "676452c5b85460f14f0b1d76",
+      _id: {
+        $ne: checkExists._id
+      }
+    });
     // TODO: Implement handle join request logic
 
-    return ResponseStatus.ok(res, "Xử lý yêu cầu thành công");
+    return ResponseStatus.ok(res, { message: "Xử lý yêu cầu thành công" });
   } catch (error) {
     console.log(error);
     return ResponseStatus.error(res, error);
@@ -240,11 +271,20 @@ export const handleJoinRequestController = async (req, res) => {
 // Chuyển quyền trưởng nhóm
 export const changeTeamLeaderController = async (req, res) => {
   try {
-    const { id, userId } = req.params;
-
-    // TODO: Implement change team leader logic
-
-    return ResponseStatus.ok(res, "Chuyển quyền trưởng nhóm thành công");
+    const { rescueTeamId, userId } = req.params;
+    const checkExists = await RescueTeams.findByIdAndUpdate(rescueTeamId, {
+      $set: {
+        leaderId: userId
+      }
+    })
+    if (!checkExists) {
+      return ResponseStatus.badRequest(res, "Không tìm thấy đội")
+    }
+    const result = {
+      message: "Thay đổi đội trưởng thành công",
+      data: checkExists
+    }
+    return ResponseStatus.ok(res, result);
   } catch (error) {
     console.log(error);
     return ResponseStatus.error(res, error);

@@ -88,7 +88,7 @@ export const updateSupplyStatusController = async (req, res) => {
       action: "update_status",
       oldStatus,
       newStatus: status,
-      changedBy: req.user?._id,
+      changedBy: req.user?._id || "676452c5b85460f14f0b1d76",
       description: notes,
     });
 
@@ -138,7 +138,7 @@ export const distributeSuppliesController = async (req, res) => {
       action: "distribute",
       oldStatus: "in_progress",
       newStatus: "completed",
-      changedBy: req.user?._id,
+      changedBy: req.user?._id || "676452c5b85460f14f0b1d76",
       description: notes,
     });
 

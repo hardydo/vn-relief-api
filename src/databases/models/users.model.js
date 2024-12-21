@@ -34,6 +34,10 @@ const userSchema = new Schema(
       enum: ["active", "inactive"],
       default: "inactive",
     },
+    deletedAt: {
+      type: Date,
+      default: null,
+    },
   },
   { timestamps: true }
 );

@@ -25,6 +25,10 @@ const statusHistorySchema = new Schema(
       ref: "Users",
     },
     description: String,
+    deletedAt: {
+      type: Date,
+      default: null,
+    },
   },
   { timestamps: true }
 );

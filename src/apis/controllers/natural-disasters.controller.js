@@ -1,5 +1,7 @@
 import ResponseStatus from "../../response-handler/response-handler.js";
 import NaturalDisasters from "../../databases/models/natural-disasters.model.js";
+import { DateTime } from "luxon";
+
 
 // Lấy danh sách đợt thiên tai
 export const getDisastersController = async (req, res) => {
@@ -11,11 +13,27 @@ export const getDisastersController = async (req, res) => {
       query.status = status;
     }
 
-    if (startDate && endDate) {
-      query.startTime = {
-        $gte: new Date(startDate),
-        $lte: new Date(endDate),
-      };
+    const parseDate = (date) =>
+      DateTime.fromISO(date, { zone: "Asia/Ho_Chi_Minh" });
+    if (startDate || endDate) {
+      if (startDate) {
+        query.startTime = {};
+        const start = parseDate(startDate);
+        if (start.isValid) {
+          query.startTime.$gte = start.toJSDate();
+        } else {
+          return ResponseStatus.badRequest(res, "startDate sai định dạng" );
+        }
+      }
+      if (endDate) {
+        query.endTime = {};
+        const end = parseDate(endDate);
+        if (end.isValid) {
+          query.endTime.$gte = end.toJSDate();
+        } else {
+           return ResponseStatus.badRequest(res, "endDate sai định dạng");
+        }
+      }
     }
 
     const disasters = await NaturalDisasters.find(query).sort({
@@ -52,8 +70,11 @@ export const createDisasterController = async (req, res) => {
     const data = req.body;
 
     const newDisaster = await NaturalDisasters.create(data);
-
-    return ResponseStatus.created(res, newDisaster);
+    const result = {
+      data: newDisaster,
+      message: "Tạo thiên tai mới thành công"
+    }
+    return ResponseStatus.created(res, result);
   } catch (error) {
     console.log(error);
     return ResponseStatus.error(res, error);
@@ -75,8 +96,11 @@ export const updateDisasterController = async (req, res) => {
     if (!updated) {
       return ResponseStatus.notfound(res);
     }
-
-    return ResponseStatus.ok(res, updated);
+    const result = {
+      data: updated,
+      message: "Tạo thiên tai mới thành công",
+    };
+    return ResponseStatus.ok(res, result);
   } catch (error) {
     console.log(error);
     return ResponseStatus.error(res, error);
@@ -98,7 +122,7 @@ export const deleteDisasterController = async (req, res) => {
       return ResponseStatus.notfound(res);
     }
 
-    return ResponseStatus.ok(res, "Xóa thành công");
+    return ResponseStatus.ok(res, {message: "Xóa thành công"});
   } catch (error) {
     console.log(error);
     return ResponseStatus.error(res, error);

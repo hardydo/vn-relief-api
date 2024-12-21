@@ -38,6 +38,10 @@ const supportLocationSchema = new Schema(
       coordinates: [Number],
     },
     wardCode: String, //mã xã | mã tỉnh | mã huyện --> "01 | 23 | 34"
+    deletedAt: {
+      type: Date,
+      default: null,
+    },
   },
   { timestamps: true }
 );

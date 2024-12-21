@@ -30,6 +30,10 @@ const financialTransactionSchema = new Schema(
       type: String,
       enum: ["pending", "approved", "rejected", "cancelled"],
     },
+    deletedAt: {
+      type: Date,
+      default: null,
+    },
   },
   { timestamps: true }
 );

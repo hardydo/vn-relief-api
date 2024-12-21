@@ -15,6 +15,10 @@ const rescueRequestSchema = new Schema(
     wardCode: String, //mã xã | mã tỉnh | mã huyện --> "01 | 23 | 34",
     description: String,
     title: String,
+    status: {
+      type: String,
+      enum: ["pending", "doing", "closed"]
+    },
     phone: String,
     priorityContact: String,
     priorityPhone: String,
@@ -34,6 +38,10 @@ const rescueRequestSchema = new Schema(
       ref: "Users",
     },
     requiredRescueTime: Date, //6h, 12-24h
+    deletedAt: {
+      type: Date,
+      default: null,
+    },
   },
   { timestamps: true }
 );

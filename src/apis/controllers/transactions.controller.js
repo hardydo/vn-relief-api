@@ -115,7 +115,7 @@ export const createVNPayTransactionController = async (req, res) => {
       ...transactionData,
       amount,
       type: "bank",
-      executorId: req.user._id,
+      executorId: req.user?._id || "676452c5b85460f14f0b1d76",
       status: "pending",
     });
 

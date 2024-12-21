@@ -13,6 +13,10 @@ const contributionDetailSchema = new Schema(
     remainingQuantity: Number,
     notes: String,
     status: String,
+    deletedAt: {
+      type: Date,
+      default: null,
+    },
   },
   { timestamps: true }
 );

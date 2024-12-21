@@ -19,6 +19,10 @@ const teamRescueRequestSchema = new Schema(
       enum: ["pending", "accepted", "in_progress", "completed", "cancelled"],
     },
     notes: String,
+    deletedAt: {
+      type: Date,
+      default: null,
+    },
   },
   { timestamps: true }
 );

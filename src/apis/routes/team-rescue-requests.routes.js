@@ -9,12 +9,27 @@ import { authMiddleware, teamMemberMiddleware } from "../middlewares/auth.middle
 const teamRescueRequestsRouter = express.Router();
 
 // Danh sách yêu cầu được phân công cho đội
-teamRescueRequestsRouter.get("/rescue-teams/:id/rescue-requests", authMiddleware, teamMemberMiddleware, getTeamRescueRequestsController);
+teamRescueRequestsRouter.get(
+  "/rescue-teams/:teamRescueRequestsId/rescue-requests",
+  authMiddleware,
+  teamMemberMiddleware,
+  getTeamRescueRequestsController
+);
 
 // Nhận/huỷ yêu cầu cứu trợ 
-teamRescueRequestsRouter.post("/rescue-teams/:id/rescue-requests/:requestId", authMiddleware, teamMemberMiddleware, handleRescueRequestController);
+teamRescueRequestsRouter.post(
+  "/rescue-teams/:teamRescueRequestsId/rescue-requests/:requestId",
+  authMiddleware,
+  teamMemberMiddleware,
+  handleRescueRequestController
+);
 
 // Cập nhật trạng thái xử lý
-teamRescueRequestsRouter.put("/team-rescue-requests/:id/status", authMiddleware, teamMemberMiddleware, updateRequestStatusController);
+teamRescueRequestsRouter.put(
+  "/team-rescue-requests/:teamRescueRequestsId/status",
+  authMiddleware,
+  teamMemberMiddleware,
+  updateRequestStatusController
+);
 
 export default teamRescueRequestsRouter;

@@ -10,6 +10,12 @@ const TeamRescueUsersSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: "RescueTeams",
     },
+    status: {
+      type: String,
+      enum: ["pending", "active"],
+      required: true,
+      default: "pending"
+    }
   },
   { timestamps: true }
 );

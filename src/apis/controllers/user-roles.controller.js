@@ -11,6 +11,7 @@ export const getUserRolesController = async (req, res) => {
 
     const userRoles = await UserRoles.find({ userId: id })
       .populate("roleId", "name code")
+      .populate("userId")
       .sort({ createdAt: -1 });
 
     return ResponseStatus.ok(res, userRoles);
@@ -23,11 +24,11 @@ export const getUserRolesController = async (req, res) => {
 // Cập nhật roles cho user
 export const updateUserRolesController = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { userId } = req.params;
     const { roles } = req.body; // Mảng roleIds
 
     // Kiểm tra user tồn tại
-    const user = await Users.findById(id);
+    const user = await Users.findById(userId);
     if (!user) {
       return ResponseStatus.notfound(res);
     }
@@ -39,7 +40,7 @@ export const updateUserRolesController = async (req, res) => {
     }
 
     // Lấy roles hiện tại của user
-    const currentRoles = await UserRoles.find({ userId: id }).select("roleId");
+    const currentRoles = await UserRoles.find({ userId }).select("roleId");
     const currentRoleIds = currentRoles.map((ur) => ur.roleId.toString());
 
     // Xác định roles cần thêm và xóa
@@ -50,7 +51,7 @@ export const updateUserRolesController = async (req, res) => {
     if (rolesToAdd.length > 0) {
       await UserRoles.insertMany(
         rolesToAdd.map((roleId) => ({
-          userId: id,
+          userId,
           roleId,
         }))
       );
@@ -59,7 +60,7 @@ export const updateUserRolesController = async (req, res) => {
     // Xóa roles cũ
     if (rolesToRemove.length > 0) {
       await UserRoles.deleteMany({
-        userId: id,
+        userId,
         roleId: { $in: rolesToRemove },
       });
     }
@@ -67,20 +68,25 @@ export const updateUserRolesController = async (req, res) => {
     // Tạo lịch sử
     await StatusHistory.create({
       referenceTable: "UserRoles",
-      referenceId: id,
+      referenceId: userId,
       action: "update_roles",
       oldStatus: currentRoleIds.join(","),
       newStatus: roles.join(","),
-      changedBy: req.user?._id,
+      changedBy: req.user?._id || "676452c5b85460f14f0b1d76",
     });
 
     // Lấy danh sách roles mới
-    const updatedRoles = await UserRoles.find({ userId: id }).populate(
+    const updatedRoles = await UserRoles.find({ userId }).populate(
       "roleId",
       "name code"
     );
 
-    return ResponseStatus.ok(res, updatedRoles);
+    const result = {
+      data: updatedRoles,
+      messsage: "Cập nhật vai trò người dùng thành công",
+    };
+
+    return ResponseStatus.ok(res, result);
   } catch (error) {
     console.log(error);
     return ResponseStatus.error(res, error);

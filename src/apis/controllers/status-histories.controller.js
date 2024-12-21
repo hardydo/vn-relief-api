@@ -41,7 +41,7 @@ export const createHistoryController = async (req, res) => {
 
     const newHistory = await StatusHistory.create({
       ...data,
-      changedBy: req.user?._id,
+      changedBy: req.user?._id || "676452c5b85460f14f0b1d76",
     });
 
     return ResponseStatus.created(res, newHistory);

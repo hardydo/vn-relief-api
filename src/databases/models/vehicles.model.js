@@ -38,6 +38,10 @@ const vehicleSchema = new Schema(
     wardCode: String, //mã xã | mã tỉnh | mã huyện --> "01 | 23 | 34"
     locationTrackingLink: String,
     lastUpdate: Date,
+    deletedAt: {
+      type: Date,
+      default: null,
+    },
   },
   { timestamps: true }
 );
