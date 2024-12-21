@@ -34,6 +34,7 @@ const vehicleSchema = new Schema(
       },
       coordinates: [Number],
     },
+    status: String,
     wardCode: String, //mã xã | mã tỉnh | mã huyện --> "01 | 23 | 34"
     locationTrackingLink: String,
     lastUpdate: Date,
