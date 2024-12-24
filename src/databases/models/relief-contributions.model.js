@@ -51,6 +51,10 @@ const reliefContributionSchema = new Schema(
       type: String,
       enum: ["individual", "organization"],
     },
+    status: {
+      type: String,
+      enum: ["pending", "accept", "decline"]
+    },
     deletedAt: {
       type: Date,
       default: null,

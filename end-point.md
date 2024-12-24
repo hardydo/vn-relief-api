@@ -177,7 +177,7 @@ Base URL: /api/v1
 		+ *mỗi vị trí đều có 1 mã xã, mã huyện, mã tỉnh riêng. Ví dụ triều khúc, thanh trì, hà nội thì field wardCode lưu là "01 | 32 | 12" (giả sử triều khúc là 01, thanh trì là mã 32, hà nội mã 12 - cái này có data trên google, search là thấy)
 
 ## Relief Contributions Management
-### Relief Contributions (`/relief-contributions`) (chưa test)
+### Relief Contributions (`/relief-contributions`) (done)
 - GET `/relief-contributions`            - Danh sách đóng góp
   + Query:
     - type: 'money' | 'supplies' | 'other'
@@ -191,7 +191,7 @@ Base URL: /api/v1
 - PUT `/relief-contributions/:id`        - Cập nhật đóng góp
 - DELETE `/relief-contributions/:id`     - Xóa đóng góp
 
-### Contribution Details (`/contribution-details`)
+### Contribution Details (`/contribution-details`) (done)
 - Ví dụ Người dân mang 100 cân gạo, 10 cân thịt tới điểm A
 	+ Bảng "relief-contributions" chỉ lưu là Gạo, thịt
 	+  còn bảng này ("Chi tiết đóng góp cứu trợ") sẽ lưu số lượng 100 cân, 10 cân
@@ -219,12 +219,12 @@ Base URL: /api/v1
 - PUT `/transports/:id`                  - Cập nhật thông tin
 - DELETE `/transports/:id`               - Hủy vận chuyển
 
-### Transport Histories (`/transport-histories`) 
+### Transport Histories (`/transport-histories`) (done)
 - GET `/transports/:id/histories`        - Lịch sử vận chuyển
 - POST `/transports/:id/histories`       - Thêm điểm check-in mới
 - PUT `/transports/:id/histories/:historyId` - Cập nhật trạng thái
 
-### Transport Supplies (`/transport-supplies`)
+### Transport Supplies (`/transport-supplies`) (done)
 - GET `/transports/:id/supplies`         - Danh sách hàng đang vận chuyển
 - POST `/transports/:id/supplies`        - Thêm hàng vào chuyến
 - DELETE `/transports/:id/supplies/:supplyId` - Xóa hàng khỏi chuyến
@@ -255,7 +255,7 @@ Base URL: /api/v1
 
 - PUT `/transactions/cash/:id`           - Cập nhật giao dịch tiền mặt
 
-### Online Payment --> Dùng VNPAY dev, hoặc 1 bên nào đó cho thực tế --> Cái này để em làm
+### Online Payment --> Dùng VNPAY dev, hoặc 1 bên nào đó cho thực tế --> Cái này để em làm (payos)
 - POST `/transactions/vnpay/create`      - Tạo giao dịch VNPAY
 - POST `/transactions/vnpay/callback`    - Callback VNPAY
 - GET `/transactions/payment-methods`    - Danh sách phương thức thanh toán

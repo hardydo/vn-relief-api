@@ -70,7 +70,12 @@ export const updateContributionItemController = async (req, res) => {
       return ResponseStatus.notfound(res);
     }
 
-    return ResponseStatus.ok(res, updated);
+    const result = {
+      data: updated,
+      message: "Cập nhật thông tin sản phẩm thành công"
+    }
+
+    return ResponseStatus.ok(res, result);
   } catch (error) {
     console.log(error);
     return ResponseStatus.error(res, error);
@@ -88,7 +93,7 @@ export const deleteContributionItemController = async (req, res) => {
       return ResponseStatus.notfound(res);
     }
 
-    return ResponseStatus.ok(res, "Xóa thành công");
+    return ResponseStatus.ok(res, {message: "Xóa thành công"});
   } catch (error) {
     console.log(error);
     return ResponseStatus.error(res, error);

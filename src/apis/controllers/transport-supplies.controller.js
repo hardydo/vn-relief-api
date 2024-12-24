@@ -23,22 +23,25 @@ export const getTransportSuppliesController = async (req, res) => {
 export const addSupplyToTransportController = async (req, res) => {
   try {
     const { id } = req.params;
-    const { rescueRequestId, items, pickupTime, deliveryTime } = req.body;
+    const items = req.body;
 
     // Kiểm tra và tạo các ghi nhận vận chuyển
     const supplies = await TransportSupplies.insertMany(
       items.map((item) => ({
         transportId: id,
-        rescueRequestId,
-        itemId: item.id,
-        quantity: item.quantity,
-        pickupTime,
-        deliveryTime,
+        rescueRequestId: item.rescueRequestId,
+        pickupTime: item.pickupTime,
+        deliveryTime: item.deliveryTime,
+        deliveryLocation: item.deliveryLocation,
+        notes: item.notes,
         status: "pending",
       }))
     );
-
-    return ResponseStatus.created(res, supplies);
+    const result = {
+      data: supplies,
+      message: "Đã thêm hàng vào chuyến đi"
+    }
+    return ResponseStatus.created(res, result);
   } catch (error) {
     console.log(error);
     return ResponseStatus.error(res, error);
@@ -56,7 +59,7 @@ export const removeSupplyFromTransportController = async (req, res) => {
       return ResponseStatus.notfound(res);
     }
 
-    return ResponseStatus.ok(res, "Xóa hàng khỏi chuyến thành công");
+    return ResponseStatus.ok(res, {message: "Xóa hàng khỏi chuyến thành công"});
   } catch (error) {
     console.log(error);
     return ResponseStatus.error(res, error);
@@ -103,12 +106,12 @@ export const updateSupplyStatusController = async (req, res) => {
 export const distributeSuppliesController = async (req, res) => {
   try {
     const { id } = req.params;
-    const { items, rescueRequestInfo, location, notes } = req.body;
+    const { items, location, notes } = req.body;
 
     // Cập nhật số lượng các item đã phân phối
     for (const item of items) {
       // Giảm số lượng trong kho
-      await ContributionDetails.findByIdAndUpdate(item.itemId, {
+      await ContributionDetails.findByIdAndUpdate(item.contributionDetailId, {
         $inc: { remainingQuantity: -item.quantity },
         $set: { status: "distributed" },
       });
@@ -117,7 +120,7 @@ export const distributeSuppliesController = async (req, res) => {
       await TransportSupplies.findOneAndUpdate(
         {
           transportId: id,
-          "items.itemId": item.itemId,
+          "_id": item.transportSuppliesId,
         },
         {
           $set: {
@@ -142,7 +145,7 @@ export const distributeSuppliesController = async (req, res) => {
       description: notes,
     });
 
-    return ResponseStatus.ok(res, "Phân phối hàng hóa thành công");
+    return ResponseStatus.ok(res, {message: "Phân phối hàng hóa thành công"});
   } catch (error) {
     console.log(error);
     return ResponseStatus.error(res, error);

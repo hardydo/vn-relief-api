@@ -48,7 +48,12 @@ export const addCheckpointController = async (req, res) => {
       description: notes,
     });
 
-    return ResponseStatus.created(res, newCheckpoint);
+    const result = {
+      message: "Tạo địa điểm check-in thành công",
+      data: newCheckpoint
+    }
+
+    return ResponseStatus.created(res, result);
   } catch (error) {
     console.log(error);
     return ResponseStatus.error(res, error);
@@ -85,8 +90,11 @@ export const updateCheckpointStatusController = async (req, res) => {
       changedBy: req.user?._id || "676452c5b85460f14f0b1d76",
       description: notes,
     });
-
-    return ResponseStatus.ok(res, checkpoint);
+    const result = {
+      data: checkpoint,
+      message: "Cập nhật trạng thái thành công"
+    }
+    return ResponseStatus.ok(res, result);
   } catch (error) {
     console.log(error);
     return ResponseStatus.error(res, error);
