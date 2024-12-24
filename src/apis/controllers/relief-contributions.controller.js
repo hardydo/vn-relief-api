@@ -70,8 +70,11 @@ export const createContributionController = async (req, res) => {
       ...contributionData,
       donorId: donor._id,
     });
-
-    return ResponseStatus.created(res, newContribution);
+    const result = {
+      message: "Đã thêm vào danh sách đóng góp",
+      data: newContribution,
+    };
+    return ResponseStatus.created(res, result);
   } catch (error) {
     console.log(error);
     return ResponseStatus.error(res, error);

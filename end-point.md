@@ -112,7 +112,7 @@ Base URL: /api/v1
 - PUT `/vehicles/:id`                    - Cập nhật thông tin
 - DELETE `/vehicles/:id`                 - Xóa phương tiện
 
-## Rescue Requests Management
+## Rescue Requests Management (done)
 ### Rescue Requests (`/natural-disasters/:disasterId/rescue-requests`)
 - GET `/rescue-requests`                 - Danh sách yêu cầu cứu trợ
   + Query:
@@ -142,7 +142,7 @@ Base URL: /api/v1
 	+ Cái này là TNV role xac_minh có thể phân công đơn cứu trợ cho 1 đội cứu trợ nào đó
 	+ Các role khác --> CHẶN
 
-### Rescue Request Items (`/rescue-request-items`)
+### Rescue Request Items (`/rescue-request-items`) (done)
 - GET `/rescue-requests/:id/items`       - Danh sách nhu yếu phẩm cần hỗ trợ của 1 đơn cứu trợ
 - POST `/rescue-requests/:id/items`      - Thêm nhu yếu phẩm
 - PUT `/rescue-requests/:id/items/:itemId` - Cập nhật số lượng/thông tin
@@ -152,7 +152,7 @@ Base URL: /api/v1
 	---> Sẽ xoá cái sạch cái cũ "100 cân gạo, 10 cân thịt,..." và ghi mới (create) bằng cái mới "10 cân cá" luôn
 - DELETE `/rescue-requests/:id/items/:itemId` - Xóa item
 
-## Support Locations Management 
+## Support Locations Management (done)
 ### Support Locations (`/natural-disasters/:disasterId/support-locations`)
 - GET `/support-locations`               - Danh sách địa điểm
 	+ Get luôn thông tin các hàng hoá đang có ở địa điểm này (bảng "chi tiết đóng góp hàng cứu trợ")
@@ -171,19 +171,19 @@ Base URL: /api/v1
 	+ Đồng thời update trạng thái của các "hàng cứu trợ muốn đóng góp" dựa vào mảng id tuyền body lên (status: Đang vận chuyển)
 	+ Đồng thời update trạng thái "lich trinh van chuyen"
 
-- GET `/support-locations/nearby`        - Tìm điểm gần nhất
+- GET `/support-locations/location/nearby`(sửa để không bị trùng với "/id")        - Tìm điểm gần nhất
 		+ Lọc các điểm hỗ trợ gần người dùng (dựa vào vị trí hiện tại người dùng)
 		+ --> Dùng cái field "mã địa phương" được format theo dạng string "mã xã, mã huyện, mã tỉnh", lấy về split ra và check
 		+ *mỗi vị trí đều có 1 mã xã, mã huyện, mã tỉnh riêng. Ví dụ triều khúc, thanh trì, hà nội thì field wardCode lưu là "01 | 32 | 12" (giả sử triều khúc là 01, thanh trì là mã 32, hà nội mã 12 - cái này có data trên google, search là thấy)
 
 ## Relief Contributions Management
-### Relief Contributions (`/relief-contributions`)
+### Relief Contributions (`/relief-contributions`) (chưa test)
 - GET `/relief-contributions`            - Danh sách đóng góp
   + Query:
     - type: 'money' | 'supplies' | 'other'
     - status: 'pending' | 'received' | 'distributed'
 - GET `/relief-contributions/:id`        - Chi tiết đóng góp
-- POST `/relief-contributions`           - Tạo đóng góp mới
+- POST `/relief-contributions`           - Tạo đóng góp mới (đã test)
 	+ Body truyền lên số điện thoại của người donation (nguoi_dung) + id của "địa điểm cứu trợ" --> Người A có sđt 091231231 mang hàng tới "địa điểm Bắc Ninh"
 	+ Nếu nguoi_dung chưa có account 
 		+ Thì dựa vào sđt tạo luôn 1 account với role thanh_vien_thuong 

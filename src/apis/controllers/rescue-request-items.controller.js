@@ -39,8 +39,11 @@ export const addRequestItemsController = async (req, res) => {
         remainingQuantity: item.providedQuantity,
       }))
     );
-
-    return ResponseStatus.created(res, newItems);
+    const result = {
+      message: "Cung cấp sản phẩm thành công",
+      data: newItems,
+    }
+    return ResponseStatus.created(res, result);
   } catch (error) {
     console.log(error);
     return ResponseStatus.error(res, error);
@@ -67,8 +70,11 @@ export const updateRequestItemController = async (req, res) => {
     if (!updated) {
       return ResponseStatus.notfound(res);
     }
-
-    return ResponseStatus.ok(res, updated);
+    const result = {
+      message: "Đã chỉnh sửa thông tin sản phẩm",
+      data: updated
+    }
+    return ResponseStatus.ok(res, result);
   } catch (error) {
     console.log(error);
     return ResponseStatus.error(res, error);

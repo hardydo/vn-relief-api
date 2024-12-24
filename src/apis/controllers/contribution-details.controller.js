@@ -38,8 +38,11 @@ export const addContributionItemsController = async (req, res) => {
         remainingQuantity: item.providedQuantity,
       }))
     );
-
-    return ResponseStatus.created(res, newItems);
+    const result = {
+      message: "Đã thêm vào danh sách đóng góp",
+      data: newItems,
+    };
+    return ResponseStatus.created(res, result);
   } catch (error) {
     console.log(error);
     return ResponseStatus.error(res, error);

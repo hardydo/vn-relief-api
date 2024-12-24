@@ -75,8 +75,11 @@ export const createSupportLocationController = async (req, res) => {
       verificationOfficerId: req.user?._id || "676452c5b85460f14f0b1d76",
       verificationStatus: "active",
     });
-
-    return ResponseStatus.created(res, newLocation);
+    const result = {
+      message: "Tạo địa điểm mới thành công",
+      data: newLocation
+    }
+    return ResponseStatus.created(res, result);
   } catch (error) {
     console.log(error);
     return ResponseStatus.error(res, error);
@@ -99,7 +102,12 @@ export const updateSupportLocationController = async (req, res) => {
       return ResponseStatus.notfound(res);
     }
 
-    return ResponseStatus.ok(res, updated);
+    const result = {
+      message: "Cập nhật địa chỉ thành công",
+      data: updated,
+    };
+
+    return ResponseStatus.ok(res, result);
   } catch (error) {
     console.log(error);
     return ResponseStatus.error(res, error);
@@ -130,7 +138,7 @@ export const deleteSupportLocationController = async (req, res) => {
       return ResponseStatus.notfound(res);
     }
 
-    return ResponseStatus.ok(res, "Xóa địa điểm thành công");
+    return ResponseStatus.ok(res, {message: "Xóa địa điểm thành công"});
   } catch (error) {
     console.log(error);
     return ResponseStatus.error(res, error);
@@ -155,7 +163,7 @@ export const receiveSuppliesController = async (req, res) => {
 
     // TODO: Cập nhật lịch trình vận chuyển
 
-    return ResponseStatus.ok(res, "Tiếp nhận hàng hóa thành công");
+    return ResponseStatus.ok(res, {messsage: "Tiếp nhận hàng hóa thành công"});
   } catch (error) {
     console.log(error);
     return ResponseStatus.error(res, error);
@@ -165,7 +173,7 @@ export const receiveSuppliesController = async (req, res) => {
 // Tìm địa điểm gần nhất
 export const getNearbyLocationsController = async (req, res) => {
   try {
-    const userWardCode = req.user?.wardCode;
+    const userWardCode = req.user?.wardCode || "01|23|34";
     if (!userWardCode) {
       return ResponseStatus.badRequest(
         res,

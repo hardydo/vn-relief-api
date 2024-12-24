@@ -13,6 +13,11 @@ const contributionDetailSchema = new Schema(
     remainingQuantity: Number,
     notes: String,
     status: String,
+    locationId: {
+      type: Schema.Types.ObjectId,
+      ref: "SupportLocations",
+      default: null
+    },
     deletedAt: {
       type: Date,
       default: null,
