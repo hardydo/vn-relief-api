@@ -32,6 +32,6 @@ supportLocationsRouter.delete("/:id", authMiddleware, deleteSupportLocationContr
 supportLocationsRouter.post("/:id/receive", authMiddleware, receiveSuppliesController);
 
 // Tìm địa điểm gần nhất
-supportLocationsRouter.get("/nearby", authMiddleware, getNearbyLocationsController);
+supportLocationsRouter.get("/location/nearby", authMiddleware, getNearbyLocationsController);
 
 export default supportLocationsRouter;

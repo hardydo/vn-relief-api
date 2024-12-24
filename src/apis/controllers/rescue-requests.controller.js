@@ -197,11 +197,12 @@ export const updateStatusController = async (req, res) => {
   try {
     const { id } = req.params;
     const { status } = req.body;
+    console.log("🚀 ~ updateStatusController ~ id:", id)
 
     // Kiểm tra yêu cầu được gán cho đội của user
     const teamRequest = await TeamRescueRequests.findOne({
       rescueRequestId: id,
-      rescueTeamId: req.user?.rescueTeamId || "6764524cb85460f14f0b1d70",
+      rescueTeamId: req.user?.rescueTeamId || "67659c92b213f000bbe0f102",
     });
 
     if (!teamRequest) {
@@ -221,8 +222,11 @@ export const updateStatusController = async (req, res) => {
       newStatus: status,
       changedBy: req.user?._id || "676452c5b85460f14f0b1d76",
     });
-
-    return ResponseStatus.ok(res, teamRequest);
+    const result = {
+      messsage: "Cập nhật trạng thái thành công",
+      data: teamRequest
+    }
+    return ResponseStatus.ok(res, result);
   } catch (error) {
     console.log(error);
     return ResponseStatus.error(res, error);
@@ -256,7 +260,12 @@ export const assignTeamController = async (req, res) => {
       description: `Assigned to team ${teamId}`,
     });
 
-    return ResponseStatus.created(res, newAssignment);
+    const result = {
+      message: "Giao việc cho đội thành công",
+      data: newAssignment,
+    };
+
+    return ResponseStatus.created(res, result);
   } catch (error) {
     console.log(error);
     return ResponseStatus.error(res, error);

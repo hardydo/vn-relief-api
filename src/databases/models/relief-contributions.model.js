@@ -12,9 +12,9 @@ const reliefContributionSchema = new Schema(
       enum: ["individual", "organization", "other"],
       required: true,
     },
-    transportScheduleId: {
+    transportId: {
       type: Schema.Types.ObjectId,
-      ref: "TransportSchedules",
+      ref: "Transports",
     },
     contributionType: {
       type: String,
