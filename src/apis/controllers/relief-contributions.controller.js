@@ -50,7 +50,7 @@ export const getContributionByIdController = async (req, res) => {
 // Tạo đóng góp mới (tạo account nếu chưa có, gửi OTP)
 export const createContributionController = async (req, res) => {
   try {
-    const { phone, ...contributionData } = req.body;
+    const { phone, cccd, ...contributionData } = req.body;
 
     // Kiểm tra user tồn tại
     let donor = await Users.findOne({ phone });
@@ -60,6 +60,9 @@ export const createContributionController = async (req, res) => {
       donor = await Users.create({
         phone,
         role: "thanh_vien_thuong",
+        password: phone,
+        name: `Thanh vien ${phone}`,
+        cccd
         // TODO: Thêm các thông tin khác
       });
 
@@ -69,6 +72,7 @@ export const createContributionController = async (req, res) => {
     const newContribution = await ReliefContributions.create({
       ...contributionData,
       donorId: donor._id,
+      status: "pending"
     });
     const result = {
       message: "Đã thêm vào danh sách đóng góp",
@@ -96,8 +100,11 @@ export const updateContributionController = async (req, res) => {
     if (!updated) {
       return ResponseStatus.notfound(res);
     }
-
-    return ResponseStatus.ok(res, updated);
+    const result = {
+      data: updated,
+      message: "Tạo đóng góp mới thành công"
+    }
+    return ResponseStatus.ok(res, result);
   } catch (error) {
     console.log(error);
     return ResponseStatus.error(res, error);
@@ -115,7 +122,7 @@ export const deleteContributionController = async (req, res) => {
       return ResponseStatus.notfound(res);
     }
 
-    return ResponseStatus.ok(res, "Xóa thành công");
+    return ResponseStatus.ok(res, {message: "Xóa thành công"});
   } catch (error) {
     console.log(error);
     return ResponseStatus.error(res, error);

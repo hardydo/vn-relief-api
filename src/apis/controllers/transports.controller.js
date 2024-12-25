@@ -6,12 +6,9 @@ import SupportLocations from "../../databases/models/support-locations.model.js"
 // Lấy danh sách vận chuyển
 export const getTransportsController = async (req, res) => {
   try {
-    const { status, vehicleId, startDate, endDate } = req.query;
+    const { vehicleId, startDate, endDate } = req.query;
 
     let query = {};
-    if (status) {
-      query.status = status;
-    }
     if (vehicleId) {
       query.vehicleId = vehicleId;
     }
@@ -79,7 +76,12 @@ export const createTransportController = async (req, res) => {
       notes,
     });
 
-    return ResponseStatus.created(res, newTransport);
+    const result = {
+      data: newTransport,
+      message: "Tạo chuyến đi thành công"
+    }
+
+    return ResponseStatus.created(res, result);
   } catch (error) {
     console.log(error);
     return ResponseStatus.error(res, error);
@@ -102,7 +104,12 @@ export const updateTransportController = async (req, res) => {
       return ResponseStatus.notfound(res);
     }
 
-    return ResponseStatus.ok(res, updated);
+    const result = {
+      data: updated,
+      message: "Cập nhật thông tin vận chuyển thành công"
+    }
+
+    return ResponseStatus.ok(res, result);
   } catch (error) {
     console.log(error);
     return ResponseStatus.error(res, error);
@@ -120,7 +127,7 @@ export const deleteTransportController = async (req, res) => {
       return ResponseStatus.notfound(res);
     }
 
-    return ResponseStatus.ok(res, "Hủy vận chuyển thành công");
+    return ResponseStatus.ok(res, {messsage: "Hủy vận chuyển thành công"});
   } catch (error) {
     console.log(error);
     return ResponseStatus.error(res, error);
