@@ -280,7 +280,7 @@ Base URL: /api/v1
 
 ### Notifications (`/notifications`): ĐỂ CUỐI, NẾU KỊP THÌ LÀM
 
-## Statistics & Reports
+## Statistics & Reports (done)
 - GET `/statistics/rescue-teams`         - Thống kê đội cứu trợ
 - GET `/statistics/contributions`        - Thống kê đóng góp
 - GET `/statistics/rescue-requests`      - Thống kê yêu cầu cứu trợ
