@@ -43,8 +43,11 @@ export const createHistoryController = async (req, res) => {
       ...data,
       changedBy: req.user?._id || "676452c5b85460f14f0b1d76",
     });
-
-    return ResponseStatus.created(res, newHistory);
+    const result = {
+      message: "Đã lưu lịch sử trạng thái",
+      data: newHistory
+    }
+    return ResponseStatus.created(res, result);
   } catch (error) {
     console.log(error);
     return ResponseStatus.error(res, error);
@@ -66,8 +69,11 @@ export const updateHistoryController = async (req, res) => {
     if (!updated) {
       return ResponseStatus.notfound(res);
     }
-
-    return ResponseStatus.ok(res, updated);
+    const result = {
+      message: "Đã cập nhật lịch sử trạng thái",
+      data: updated
+    }
+    return ResponseStatus.ok(res, result);
   } catch (error) {
     console.log(error);
     return ResponseStatus.error(res, error);
@@ -85,7 +91,7 @@ export const deleteHistoryController = async (req, res) => {
       return ResponseStatus.notfound(res);
     }
 
-    return ResponseStatus.ok(res, "Xóa lịch sử thành công");
+    return ResponseStatus.ok(res, {message: "Xóa lịch sử thành công"});
   } catch (error) {
     console.log(error);
     return ResponseStatus.error(res, error);

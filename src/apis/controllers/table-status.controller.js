@@ -38,8 +38,11 @@ export const createTableStatusController = async (req, res) => {
     const data = req.body;
 
     const newStatus = await TableStatuses.create(data);
-
-    return ResponseStatus.created(res, newStatus);
+    const result = {
+      data: newStatus,
+      message: "Lưu lịch sử trạng thái thành công"
+    }
+    return ResponseStatus.created(res, result);
   } catch (error) {
     console.log(error);
     return ResponseStatus.error(res, error);
@@ -61,8 +64,11 @@ export const updateTableStatusController = async (req, res) => {
     if (!updated) {
       return ResponseStatus.notfound(res);
     }
-
-    return ResponseStatus.ok(res, updated);
+    const result = {
+      data: updated,
+      message: "Cập nhật lịch sử trạng thái thành công"
+    }
+    return ResponseStatus.ok(res, result);
   } catch (error) {
     console.log(error);
     return ResponseStatus.error(res, error);
@@ -80,7 +86,7 @@ export const deleteTableStatusController = async (req, res) => {
       return ResponseStatus.notfound(res);
     }
 
-    return ResponseStatus.ok(res, "Xóa trạng thái thành công");
+    return ResponseStatus.ok(res, {message: "Xóa trạng thái thành công"});
   } catch (error) {
     console.log(error);
     return ResponseStatus.error(res, error);

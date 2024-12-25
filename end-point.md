@@ -261,7 +261,7 @@ Base URL: /api/v1
 - GET `/transactions/payment-methods`    - Danh sách phương thức thanh toán
 
 ## System Management
-### Status History (`/status-histories`)
+### Status History (`/status-histories`) 
 - GET `/status-histories`                - Lấy danh sách lịch sử trạng thái
 - GET `/status-histories/:table/:id`     - Lịch sử của một record
 	+ table là tên bảng

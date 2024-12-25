@@ -50,7 +50,7 @@ export const getContributionByIdController = async (req, res) => {
 // Tạo đóng góp mới (tạo account nếu chưa có, gửi OTP)
 export const createContributionController = async (req, res) => {
   try {
-    const { phone, name, ...contributionData } = req.body;
+    const { phone, cccd, ...contributionData } = req.body;
 
     // Kiểm tra user tồn tại
     let donor = await Users.findOne({ phone });
@@ -61,7 +61,8 @@ export const createContributionController = async (req, res) => {
         phone,
         role: "thanh_vien_thuong",
         password: phone,
-        name
+        name: `Thanh vien ${phone}`,
+        cccd
         // TODO: Thêm các thông tin khác
       });
 

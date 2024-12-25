@@ -53,15 +53,18 @@ export const getTransactionByIdController = async (req, res) => {
 // Ghi nhận giao dịch tiền mặt
 export const createCashTransactionController = async (req, res) => {
   try {
-    const { phone, ...transactionData } = req.body;
+    const { phone, cccd, ...transactionData } = req.body;
 
     // Kiểm tra/tạo user từ số điện thoại
     let donor = await Users.findOne({ phone });
     if (!donor) {
       donor = await Users.create({
         phone,
+        password: phone,
         role: "thanh_vien_thuong",
         status: "active",
+        name: `Thanh vien ${phone}`,
+        cccd
       });
     }
 
@@ -71,8 +74,11 @@ export const createCashTransactionController = async (req, res) => {
       executorId: donor._id,
       status: "pending",
     });
-
-    return ResponseStatus.created(res, newTransaction);
+    const result = {
+      message: "Đã tiếp nhận đơn thanh toán",
+      data: newTransaction
+    }
+    return ResponseStatus.created(res, result);
   } catch (error) {
     console.log(error);
     return ResponseStatus.error(res, error);
@@ -94,8 +100,11 @@ export const updateCashTransactionController = async (req, res) => {
     if (!updated) {
       return ResponseStatus.notfound(res);
     }
-
-    return ResponseStatus.ok(res, updated);
+    const result = {
+      data: updated,
+      message: "Cập nhật thông ting giao dịch thành công"
+    }
+    return ResponseStatus.ok(res, result);
   } catch (error) {
     console.log(error);
     return ResponseStatus.error(res, error);
