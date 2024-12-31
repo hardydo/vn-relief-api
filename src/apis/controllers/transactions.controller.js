@@ -1,6 +1,14 @@
 import ResponseStatus from "../../response-handler/response-handler.js";
 import FinancialTransactions from "../../databases/models/financial-transactions.model.js";
 import Users from "../../databases/models/users.model.js";
+import PayOS from "@payos/node";
+import VARIABLE_GLOBAL from "../../variables/global.js";
+
+const payOS = new PayOS(
+  VARIABLE_GLOBAL.PAYOS_CLIENT_ID,
+  VARIABLE_GLOBAL.PAYOS_API_KEY,
+  VARIABLE_GLOBAL.PAYOS_CHECKSUM_KEY
+)
 
 // Lấy danh sách giao dịch
 export const getTransactionsController = async (req, res) => {
@@ -115,11 +123,16 @@ export const updateCashTransactionController = async (req, res) => {
 export const createVNPayTransactionController = async (req, res) => {
   try {
     const { amount, ...transactionData } = req.body;
-
-    // TODO: Tạo URL thanh toán VNPAY
-    const paymentUrl = ""; // URL từ VNPAY
-
+    //test payos
+    const order = {
+      amount: 10000,
+      description: "Test",
+      orderCode: 10,
+      returnUrl: "https://www.facebook.com/dwchau",
+      cancelUrl: "https://www.facebook.com/walter.19.12"
+    }
     // Lưu thông tin giao dịch
+    const paymentLink = await payOS.createPaymentLink(order)
     const newTransaction = await FinancialTransactions.create({
       ...transactionData,
       amount,
@@ -127,11 +140,11 @@ export const createVNPayTransactionController = async (req, res) => {
       executorId: req.user?._id || "676452c5b85460f14f0b1d76",
       status: "pending",
     });
-
-    return ResponseStatus.created(res, {
-      transaction: newTransaction,
-      paymentUrl,
-    });
+    return res.redirect(303, paymentLink.checkoutUrl)
+    // return ResponseStatus.created(res, {
+    //   transaction: newTransaction,
+    //   paymentUrl,
+    // });
   } catch (error) {
     console.log(error);
     return ResponseStatus.error(res, error);
