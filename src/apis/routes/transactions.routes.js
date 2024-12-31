@@ -26,10 +26,10 @@ transactionsRouter.post("/cash", authMiddleware, createCashTransactionController
 transactionsRouter.put("/cash/:id", authMiddleware, updateCashTransactionController);
 
 // Tạo giao dịch VNPAY
-transactionsRouter.post("/vnpay/create", authMiddleware, createVNPayTransactionController);
+transactionsRouter.post("/payos/create", authMiddleware, createVNPayTransactionController);
 
 // Callback VNPAY
-transactionsRouter.post("/vnpay/callback", handleVNPayCallbackController);
+transactionsRouter.post("/payos/callback", handleVNPayCallbackController);
 
 // Danh sách phương thức thanh toán
 transactionsRouter.get("/payment-methods", authMiddleware, getPaymentMethodsController);
