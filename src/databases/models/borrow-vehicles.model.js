@@ -1,6 +1,6 @@
 import mongoose, { Schema } from "mongoose";
 
-// Chi tiết đóng góp cứu trợ
+// Bảng mượn phương tiện
 const borrowVehiclesSchema = new Schema(
   {
     user_id: {

@@ -4,6 +4,7 @@ import TeamRescueRequests from "../../databases/models/team-rescue-requests.mode
 import StatusHistory from "../../databases/models/status-history.model.js";
 
 // Lấy danh sách yêu cầu cứu trợ
+//http://localhost:8800/rescue-requests?type=emergency&area=9289|259|27&nearby=true
 export const getRescueRequestsController = async (req, res) => {
   try {
     const { status, type, area, nearby } = req.query;
@@ -70,7 +71,11 @@ export const createRescueRequestController = async (req, res) => {
     const newRequest = await RescueRequests.create({
       ...data,
       informantId: req.user?._id || "676452c5b85460f14f0b1d76",
-      status: "pending",
+      status: {
+        "verify": "pending",
+        "recipient":  "pending",
+        "goods": "pending"
+      },
     });
 
     // Tạo lịch sử trạng thái
@@ -78,7 +83,11 @@ export const createRescueRequestController = async (req, res) => {
       referenceTable: "RescueRequests",
       referenceId: newRequest._id,
       action: "create",
-      newStatus: "pending",
+      status: {
+        "verify": "pending",
+        "recipient":  "pending",
+        "goods": "pending"
+      },
       changedBy: req.user?._id || "676452c5b85460f14f0b1d76",
     });
     const result = {
@@ -159,12 +168,13 @@ export const deleteRescueRequestController = async (req, res) => {
 export const verifyRescueRequestController = async (req, res) => {
   try {
     const { id } = req.params;
+    console.log("\n🔥 ~ file: rescue-requests.controller.js:173 ~ req.body?.verifierId::\n", req.body?.verifierId)
 
     const updated = await RescueRequests.findByIdAndUpdate(
       id,
       {
         $set: {
-          verifierId: req.user?._id || "676452c5b85460f14f0b1d76",
+          verifierId: req.body?.verifierId || "676452c5b85460f14f0b1d76",
           status: "verified",
         },
       },

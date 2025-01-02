@@ -16,20 +16,33 @@ const rescueRequestSchema = new Schema(
     description: String,
     title: String,
     status: {
-      type: String,
-      enum: ["pending", "doing", "closed"]
+      verify: {
+        type: String,
+        enum: ["pending", "closed"],
+      },
+      recipient: {
+        //người nhận đơn (cá nhân | đội cứu trợ | phương tiện | ...)
+        type: String,
+        enum: ["pending", "doing", "closed"],
+      },
+      // goods: {
+      //   type: String,
+      //   enum: ["pending", "doing", "closed"]
+      // }
     },
+    contentNeedsRelief: String,
     phone: String,
+    senderType: String, //Gửi giúp, Tự gửi
     priorityContact: String,
     priorityPhone: String,
-    currentLocation: {
-      type: {
-        type: String,
-        enum: ["Point"],
-        required: true,
-      },
-      coordinates: [Number],
-    },
+    // currentLocation: {
+    //   type: {
+    //     type: String,
+    //     enum: ["Point"],
+    //     required: true,
+    //   },
+    //   coordinates: [Number],
+    // },
     address: String,
     numberOfPeopleNeedingHelp: Number,
     images: [String],
@@ -37,7 +50,7 @@ const rescueRequestSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: "Users",
     },
-    requiredRescueTime: Date, //6h, 12-24h
+    // requiredRescueTime: Date, //6h, 12-24h
     deletedAt: {
       type: Date,
       default: null,
