@@ -2,7 +2,6 @@ import ResponseStatus from "../../response-handler/response-handler.js";
 import NaturalDisasters from "../../databases/models/natural-disasters.model.js";
 import { DateTime } from "luxon";
 
-
 // Lấy danh sách đợt thiên tai
 export const getDisastersController = async (req, res) => {
   try {
@@ -22,7 +21,7 @@ export const getDisastersController = async (req, res) => {
         if (start.isValid) {
           query.startTime.$gte = start.toJSDate();
         } else {
-          return ResponseStatus.badRequest(res, "startDate sai định dạng" );
+          return ResponseStatus.badRequest(res, "startDate sai định dạng");
         }
       }
       if (endDate) {
@@ -31,7 +30,7 @@ export const getDisastersController = async (req, res) => {
         if (end.isValid) {
           query.endTime.$gte = end.toJSDate();
         } else {
-           return ResponseStatus.badRequest(res, "endDate sai định dạng");
+          return ResponseStatus.badRequest(res, "endDate sai định dạng");
         }
       }
     }
@@ -41,6 +40,21 @@ export const getDisastersController = async (req, res) => {
     });
 
     return ResponseStatus.ok(res, disasters);
+  } catch (error) {
+    console.log(error);
+    return ResponseStatus.error(res, error);
+  }
+};
+
+// Lấy đợt thiên tai đang active
+export const getDisasterActiveController = async (req, res) => {
+  try {
+    const disaster = await NaturalDisasters.findOne({ status: "ongoing" });
+    if (!disaster) {
+      return ResponseStatus.notfound(res);
+    }
+
+    return ResponseStatus.ok(res, disaster);
   } catch (error) {
     console.log(error);
     return ResponseStatus.error(res, error);
@@ -72,8 +86,8 @@ export const createDisasterController = async (req, res) => {
     const newDisaster = await NaturalDisasters.create(data);
     const result = {
       data: newDisaster,
-      message: "Tạo thiên tai mới thành công"
-    }
+      message: "Tạo thiên tai mới thành công",
+    };
     return ResponseStatus.created(res, result);
   } catch (error) {
     console.log(error);
@@ -122,7 +136,7 @@ export const deleteDisasterController = async (req, res) => {
       return ResponseStatus.notfound(res);
     }
 
-    return ResponseStatus.ok(res, {message: "Xóa thành công"});
+    return ResponseStatus.ok(res, { message: "Xóa thành công" });
   } catch (error) {
     console.log(error);
     return ResponseStatus.error(res, error);

@@ -2,6 +2,7 @@ import mongoose, { Schema } from "mongoose";
 
 const userSchema = new Schema(
   {
+    uid_firebase: String,
     name: {
       type: String,
       required: true,
@@ -18,15 +19,15 @@ const userSchema = new Schema(
     fbLink: String,
     livingArea: String,
     supportArea: String,
-    password: {
-      type: String,
-      required: true,
-      minLength: [6, "Password must be at least 6 characters"],
-    },
-    cccd: {
-      type: String,
-      unique: true,
-    },
+    // password: {
+    //   type: String,
+    //   required: true,
+    //   minLength: [6, "Password must be at least 6 characters"],
+    // },
+    // cccd: {
+    //   type: String,
+    //   unique: true,
+    // },
     wardCode: String, //mã xã | mã tỉnh | mã huyện --> "01 | 23 | 34"
     avatar: String,
     accountStatus: {

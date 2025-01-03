@@ -74,6 +74,68 @@ export const getUserByIdController = async (req, res) => {
     return ResponseStatus.error(res, error);
   }
 };
+// Chi tiết user by phone number
+export const getUserByPhoneNumber = async (req, res) => {
+  try {
+    const { phoneNumber } = req.params;
+    console.log("\n🔥 ~ file: users.controller.js:81 ~ phone::\n", phoneNumber);
+
+    const user = await Users.findOne({ phone: phoneNumber }).populate({
+      path: "rescueTeamId",
+      select: "teamName",
+    });
+
+    if (!user) {
+      return ResponseStatus.ok(res, { exist: false });
+    }
+
+    // Lấy roles của user
+    const userRoles = await UserRoles.find({ userId: user._id }).populate(
+      "roleId",
+      "name code"
+    );
+
+    return ResponseStatus.ok(res, {
+      ...user.toObject(),
+      roles: userRoles,
+      exist: true,
+    });
+  } catch (error) {
+    console.log(error);
+    return ResponseStatus.error(res, error);
+  }
+};
+
+// Chi tiết user by firebase uid
+export const getUserByUidFirebaseController = async (req, res) => {
+  try {
+    const { uid } = req.params;
+
+    const user = await Users.findOne({ uid_firebase: uid }).populate({
+      path: "rescueTeamId",
+      select: "teamName",
+    });
+    console.log("\n🔥 ~ file: users.controller.js:85 ~ user::\n", user);
+
+    if (!user) {
+      return ResponseStatus.notfound(res);
+    }
+
+    // Lấy roles của user
+    const userRoles = await UserRoles.find({ userId: user._id }).populate(
+      "roleId",
+      "name code"
+    );
+
+    return ResponseStatus.ok(res, {
+      ...user.toObject(),
+      roles: userRoles,
+    });
+  } catch (error) {
+    console.log(error);
+    return ResponseStatus.error(res, error);
+  }
+};
 
 // Tạo user mới
 export const createUserController = async (req, res) => {
@@ -83,7 +145,7 @@ export const createUserController = async (req, res) => {
     // Tạo user với trạng thái inactive
     const newUser = await Users.create({
       ...userData,
-      accountStatus: "inactive",
+      // accountStatus: "inactive",
     });
 
     // Thêm roles cho user nếu có

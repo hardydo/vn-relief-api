@@ -11,26 +11,27 @@ const rescueTeamSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: "NaturalDisasters",
     },
-    leaderId: {
-      ref: "Users",
-      type: Schema.Types.ObjectId,
-    },
+    // leaderId: {
+    //   ref: "Users",
+    //   type: Schema.Types.ObjectId,
+    // },
     operationType: String, // Loại hình hoạt động: y tế, cứu người, di dời,...
     phone: String,
     supportCapability: String,
-    livestreamLink: String,
-    currentLocation: {
-      type: {
-        type: String,
-        enum: ["Point"],
-        required: true,
-      },
-      coordinates: [Number],
-    },
+    // livestreamLink: String,
+    // currentLocation: {
+    //   type: {
+    //     type: String,
+    //     enum: ["Point"],
+    //     required: true,
+    //   },
+    //   coordinates: [Number],
+    // },
     wardCode: String, //mã xã | mã tỉnh | mã huyện --> "01 | 23 | 34"
-    operatingArea: String,
+    // operatingArea: String,
     status: String,
-    locationTrackingLink: String,
+    activityStatus: String,
+    // locationTrackingLink: String,
     deletedAt: {
       type: Date,
       default: null,

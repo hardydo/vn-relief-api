@@ -7,20 +7,21 @@ const roleSchema = new Schema(
       type: Number,
       required: true,
       enum: [
-        0,  // Vai trò admin
-        1,  // Vai trò thành viên đội cứu trợ
-        2,  // Vai trò tình nguyện viên thu thập thông tin
-        3,  // Vai trò tình nguyện viên hotline
-        4,  // Vai trò tình nguyện viên xác minh và kết nối tới đội cứu trợ
-        5   // Vai trò thành viên thường
-      ]
+        0, // Vai trò admin
+        1, // Vai trò thành viên đội cứu trợ
+        2, // Vai trò tình nguyện viên thu thập thông tin
+        3, // Vai trò tình nguyện viên hotline
+        4, // Vai trò tình nguyện viên xác minh và kết nối tới đội cứu trợ
+        5, // Vai trò thành viên thường
+      ],
     },
     name: String,
-  deletedAt: {
-  type: Date,
-  default: null
-  }
-},
+    description: String,
+    deletedAt: {
+      type: Date,
+      default: null,
+    },
+  },
   { timestamps: true }
 );
 

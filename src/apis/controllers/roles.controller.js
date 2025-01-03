@@ -38,12 +38,14 @@ export const createRoleController = async (req, res) => {
   try {
     const data = req.body;
 
-    const newRole = await Roles.create(data);
+    // const newRole = await Roles.create(data);
+
+    const newRole = await Roles.insertMany(data);
 
     const result = {
       data: newRole,
-      message: 'Role created successfully'
-    }
+      message: "Role created successfully",
+    };
 
     return ResponseStatus.created(res, result);
   } catch (error) {

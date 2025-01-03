@@ -4,9 +4,14 @@ import {
   getUserByIdController,
   createUserController,
   updateUserController,
-  toggleUserStatusController
+  toggleUserStatusController,
+  getUserByUidFirebaseController,
+  getUserByPhoneNumber,
 } from "../controllers/users.controller.js";
-import { authMiddleware, adminMiddleware } from "../middlewares/auth.middleware.js";
+import {
+  authMiddleware,
+  adminMiddleware,
+} from "../middlewares/auth.middleware.js";
 
 const usersRouter = express.Router();
 
@@ -17,6 +22,16 @@ usersRouter.get("/", authMiddleware, getUsersController);
 // Lấy chi tiết user
 usersRouter.get("/:id", authMiddleware, getUserByIdController);
 
+// Lấy chi tiết userby phone
+usersRouter.get("/phone/:phoneNumber", authMiddleware, getUserByPhoneNumber);
+
+// Lấy chi tiết user qua uid firebawe
+usersRouter.get(
+  "/firebase/:uid",
+  authMiddleware,
+  getUserByUidFirebaseController
+);
+
 // Tạo user mới
 // Phải đợi xác minh từ admin hoặc TNV
 usersRouter.post("/", createUserController);
@@ -25,6 +40,11 @@ usersRouter.post("/", createUserController);
 usersRouter.put("/:id", authMiddleware, updateUserController);
 
 // Thay đổi trạng thái user (active/inactive)
-usersRouter.post("/toggle-status", authMiddleware, adminMiddleware, toggleUserStatusController);
+usersRouter.post(
+  "/toggle-status",
+  authMiddleware,
+  adminMiddleware,
+  toggleUserStatusController
+);
 
 export default usersRouter;

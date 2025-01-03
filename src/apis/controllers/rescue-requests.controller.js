@@ -70,11 +70,11 @@ export const createRescueRequestController = async (req, res) => {
 
     const newRequest = await RescueRequests.create({
       ...data,
-      informantId: req.user?._id || "676452c5b85460f14f0b1d76",
+      informantId: req.user?._id || null,
       status: {
-        "verify": "pending",
-        "recipient":  "pending",
-        "goods": "pending"
+        verify: "pending",
+        recipient: "pending",
+        goods: "pending",
       },
     });
 
@@ -84,16 +84,16 @@ export const createRescueRequestController = async (req, res) => {
       referenceId: newRequest._id,
       action: "create",
       status: {
-        "verify": "pending",
-        "recipient":  "pending",
-        "goods": "pending"
+        verify: "pending",
+        recipient: "pending",
+        goods: "pending",
       },
-      changedBy: req.user?._id || "676452c5b85460f14f0b1d76",
+      changedBy: req.user?._id || null,
     });
     const result = {
       data: newRequest,
-      message: "Tạo yêu cầu hỗ trợ thành công"
-    }
+      message: "Tạo yêu cầu hỗ trợ thành công",
+    };
     return ResponseStatus.created(res, result);
   } catch (error) {
     console.log(error);
@@ -129,8 +129,8 @@ export const updateRescueRequestController = async (req, res) => {
     }
     const result = {
       message: "Cập nhật thông tin cứu trợ thành công",
-      data: updated
-    }
+      data: updated,
+    };
     return ResponseStatus.ok(res, result);
   } catch (error) {
     console.log(error);
@@ -157,7 +157,7 @@ export const deleteRescueRequestController = async (req, res) => {
       return ResponseStatus.notfound(res);
     }
 
-    return ResponseStatus.ok(res, {message: "Xóa thành công"});
+    return ResponseStatus.ok(res, { message: "Xóa thành công" });
   } catch (error) {
     console.log(error);
     return ResponseStatus.error(res, error);
@@ -168,7 +168,10 @@ export const deleteRescueRequestController = async (req, res) => {
 export const verifyRescueRequestController = async (req, res) => {
   try {
     const { id } = req.params;
-    console.log("\n🔥 ~ file: rescue-requests.controller.js:173 ~ req.body?.verifierId::\n", req.body?.verifierId)
+    console.log(
+      "\n🔥 ~ file: rescue-requests.controller.js:173 ~ req.body?.verifierId::\n",
+      req.body?.verifierId
+    );
 
     const updated = await RescueRequests.findByIdAndUpdate(
       id,
@@ -207,7 +210,7 @@ export const updateStatusController = async (req, res) => {
   try {
     const { id } = req.params;
     const { status } = req.body;
-    console.log("🚀 ~ updateStatusController ~ id:", id)
+    console.log("🚀 ~ updateStatusController ~ id:", id);
 
     // Kiểm tra yêu cầu được gán cho đội của user
     const teamRequest = await TeamRescueRequests.findOne({
@@ -234,8 +237,8 @@ export const updateStatusController = async (req, res) => {
     });
     const result = {
       messsage: "Cập nhật trạng thái thành công",
-      data: teamRequest
-    }
+      data: teamRequest,
+    };
     return ResponseStatus.ok(res, result);
   } catch (error) {
     console.log(error);

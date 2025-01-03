@@ -14,8 +14,8 @@ const TeamRescueUsersSchema = new Schema(
       type: String,
       enum: ["pending", "active"],
       required: true,
-      default: "pending"
-    }
+      default: "pending",
+    },
   },
   { timestamps: true }
 );

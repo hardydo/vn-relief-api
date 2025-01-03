@@ -5,9 +5,13 @@ import {
   createDisasterController,
   updateDisasterController,
   deleteDisasterController,
-  getActiveDisastersController
+  getActiveDisastersController,
+  getDisasterActiveController,
 } from "../controllers/natural-disasters.controller.js";
-import { authMiddleware, adminMiddleware } from "../middlewares/auth.middleware.js";
+import {
+  authMiddleware,
+  adminMiddleware,
+} from "../middlewares/auth.middleware.js";
 
 const naturalDisastersRouter = express.Router();
 
@@ -16,18 +20,44 @@ const naturalDisastersRouter = express.Router();
 naturalDisastersRouter.get("/", authMiddleware, getDisastersController);
 
 // Chi tiết đợt thiên tai
+naturalDisastersRouter.get(
+  "/active",
+  authMiddleware,
+  getDisasterActiveController
+);
+
+// Chi tiết đợt thiên tai
 naturalDisastersRouter.get("/:id", authMiddleware, getDisasterByIdController);
 
 // Tạo đợt thiên tai mới
-naturalDisastersRouter.post("/", authMiddleware, adminMiddleware, createDisasterController);
+naturalDisastersRouter.post(
+  "/",
+  authMiddleware,
+  adminMiddleware,
+  createDisasterController
+);
 
 // Cập nhật đợt thiên tai
-naturalDisastersRouter.put("/:id", authMiddleware, adminMiddleware, updateDisasterController);
+naturalDisastersRouter.put(
+  "/:id",
+  authMiddleware,
+  adminMiddleware,
+  updateDisasterController
+);
 
 // Xóa đợt thiên tai (soft delete)
-naturalDisastersRouter.delete("/:id", authMiddleware, adminMiddleware, deleteDisasterController);
+naturalDisastersRouter.delete(
+  "/:id",
+  authMiddleware,
+  adminMiddleware,
+  deleteDisasterController
+);
 
 // Lấy đợt thiên tai đang diễn ra
-naturalDisastersRouter.get("/active", authMiddleware, getActiveDisastersController);
+naturalDisastersRouter.get(
+  "/active",
+  authMiddleware,
+  getActiveDisastersController
+);
 
 export default naturalDisastersRouter;

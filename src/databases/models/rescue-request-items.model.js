@@ -7,15 +7,15 @@ const rescueRequestItemSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: "RescueRequests",
     },
-    itemType: String,
-    providedQuantity: Number,
-    remainingQuantity: Number,
+    name: String,
+    quantity: String,
+    remainingQuantity: String,
     unit: String,
-    priority: {
-      type: String,
-      enum: ["high", "medium", "low"],
-    },
-    notes: String,
+    // priority: {
+    //   type: String,
+    //   enum: ["high", "medium", "low"],
+    // },
+    // notes: String,
     deletedAt: {
       type: Date,
       default: null,

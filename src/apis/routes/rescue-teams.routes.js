@@ -11,9 +11,12 @@ import {
   sendJoinRequestController,
   getJoinRequestsController,
   handleJoinRequestController,
-  changeTeamLeaderController
+  changeTeamLeaderController,
 } from "../controllers/rescue-teams.controller.js";
-import { authMiddleware, teamLeaderMiddleware } from "../middlewares/auth.middleware.js";
+import {
+  authMiddleware,
+  teamLeaderMiddleware,
+} from "../middlewares/auth.middleware.js";
 
 const rescueTeamsRouter = express.Router();
 
@@ -28,10 +31,20 @@ rescueTeamsRouter.get("/:id", authMiddleware, getTeamByIdController);
 rescueTeamsRouter.post("/", authMiddleware, createTeamController);
 
 // Cập nhật thông tin (chỉ trưởng nhóm)
-rescueTeamsRouter.put("/:id", authMiddleware, teamLeaderMiddleware, updateTeamController);
+rescueTeamsRouter.put(
+  "/:id",
+  authMiddleware,
+  teamLeaderMiddleware,
+  updateTeamController
+);
 
 // Giải tán đội (chỉ trưởng nhóm)
-rescueTeamsRouter.delete("/:id", authMiddleware, teamLeaderMiddleware, deleteTeamController);
+rescueTeamsRouter.delete(
+  "/:id",
+  authMiddleware,
+  teamLeaderMiddleware,
+  deleteTeamController
+);
 
 // Quản lý thành viên
 rescueTeamsRouter.get(
@@ -53,11 +66,30 @@ rescueTeamsRouter.delete(
 );
 
 // Quản lý yêu cầu tham gia
-rescueTeamsRouter.post("/:rescueTeamId/join-requests", authMiddleware, sendJoinRequestController);
-rescueTeamsRouter.get("/:rescueTeamId/join-requests", authMiddleware, teamLeaderMiddleware, getJoinRequestsController);
-rescueTeamsRouter.put("/:rescueTeamId/join-requests/:requestId", authMiddleware, teamLeaderMiddleware, handleJoinRequestController);
+rescueTeamsRouter.post(
+  "/:rescueTeamId/join-requests",
+  authMiddleware,
+  sendJoinRequestController
+);
+rescueTeamsRouter.get(
+  "/:rescueTeamId/join-requests",
+  authMiddleware,
+  teamLeaderMiddleware,
+  getJoinRequestsController
+);
+rescueTeamsRouter.put(
+  "/:rescueTeamId/join-requests/:requestId",
+  authMiddleware,
+  teamLeaderMiddleware,
+  handleJoinRequestController
+);
 
 // Chuyển quyền trưởng nhóm
-rescueTeamsRouter.put("/:rescueTeamId/leader/:userId", authMiddleware, teamLeaderMiddleware, changeTeamLeaderController);
+rescueTeamsRouter.put(
+  "/:rescueTeamId/leader/:userId",
+  authMiddleware,
+  teamLeaderMiddleware,
+  changeTeamLeaderController
+);
 
 export default rescueTeamsRouter;
