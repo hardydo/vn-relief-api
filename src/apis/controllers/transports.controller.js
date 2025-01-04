@@ -54,12 +54,12 @@ export const getTransportByIdController = async (req, res) => {
 // Tạo vận chuyển mới
 export const createTransportController = async (req, res) => {
   try {
-    const { vehicleId, pickupLocationId, pickupLocation, notes } = req.body;
+    const data = req.body;
 
     // Kiểm tra vehicle và location tồn tại
     const [vehicle, location] = await Promise.all([
-      Vehicles.findById(vehicleId),
-      SupportLocations.findById(pickupLocationId),
+      Vehicles.findById(data.vehicleId),
+      SupportLocations.findById(data.pickupLocationId),
     ]);
 
     if (!vehicle || !location) {
@@ -69,17 +69,12 @@ export const createTransportController = async (req, res) => {
       );
     }
 
-    const newTransport = await Transports.create({
-      vehicleId,
-      pickupLocationId,
-      pickupLocation,
-      notes,
-    });
+    const newTransport = await Transports.create(data);
 
     const result = {
       data: newTransport,
-      message: "Tạo chuyến đi thành công"
-    }
+      message: "Tạo chuyến đi thành công",
+    };
 
     return ResponseStatus.created(res, result);
   } catch (error) {
@@ -106,8 +101,8 @@ export const updateTransportController = async (req, res) => {
 
     const result = {
       data: updated,
-      message: "Cập nhật thông tin vận chuyển thành công"
-    }
+      message: "Cập nhật thông tin vận chuyển thành công",
+    };
 
     return ResponseStatus.ok(res, result);
   } catch (error) {
@@ -127,7 +122,7 @@ export const deleteTransportController = async (req, res) => {
       return ResponseStatus.notfound(res);
     }
 
-    return ResponseStatus.ok(res, {messsage: "Hủy vận chuyển thành công"});
+    return ResponseStatus.ok(res, { messsage: "Hủy vận chuyển thành công" });
   } catch (error) {
     console.log(error);
     return ResponseStatus.error(res, error);

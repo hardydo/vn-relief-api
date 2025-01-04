@@ -11,6 +11,10 @@ const userRoleSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: "Roles",
     },
+    status: {
+      type: String,
+      enum: ["pending", "accept"],
+    },
     deletedAt: {
       type: Date,
       default: null,

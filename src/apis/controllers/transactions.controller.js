@@ -8,7 +8,35 @@ const payOS = new PayOS(
   VARIABLE_GLOBAL.PAYOS_CLIENT_ID,
   VARIABLE_GLOBAL.PAYOS_API_KEY,
   VARIABLE_GLOBAL.PAYOS_CHECKSUM_KEY
-)
+);
+
+//=========================
+//save good persional
+export const handleSaveGoods = async (req, res) => {
+  try {
+    //đơn nào ? ai cung cấp ? cung cấp những gì ?
+    const { userId, amount } = req.body;
+    const { id: rescueRequestId } = req.params;
+
+    const naturalDisasterId = req.headers["naturaldisasterid"];
+
+    const transactions = await FinancialTransactions.create({
+      type: "other",
+      userId, //ai hỗ trợ
+      rescueRequestId, //hỗ trợ cho đơn nào
+      naturalDisasterId, //đợt thiên tai nào
+      amount, //hỗ trợ những gì, số lượng, vật phẩm,...
+      status: "pending",
+    });
+
+    return ResponseStatus.ok(res, transactions);
+  } catch (error) {
+    console.log(error);
+    return ResponseStatus.error(res, error);
+  }
+};
+
+//=========================
 
 // Lấy danh sách giao dịch
 export const getTransactionsController = async (req, res) => {
@@ -72,7 +100,7 @@ export const createCashTransactionController = async (req, res) => {
         role: "thanh_vien_thuong",
         status: "active",
         name: `Thanh vien ${phone}`,
-        cccd
+        cccd,
       });
     }
 
@@ -84,8 +112,8 @@ export const createCashTransactionController = async (req, res) => {
     });
     const result = {
       message: "Đã tiếp nhận đơn thanh toán",
-      data: newTransaction
-    }
+      data: newTransaction,
+    };
     return ResponseStatus.created(res, result);
   } catch (error) {
     console.log(error);
@@ -110,8 +138,8 @@ export const updateCashTransactionController = async (req, res) => {
     }
     const result = {
       data: updated,
-      message: "Cập nhật thông ting giao dịch thành công"
-    }
+      message: "Cập nhật thông ting giao dịch thành công",
+    };
     return ResponseStatus.ok(res, result);
   } catch (error) {
     console.log(error);
@@ -129,10 +157,10 @@ export const createVNPayTransactionController = async (req, res) => {
       description: "Test",
       orderCode: 10,
       returnUrl: "https://www.facebook.com/dwchau",
-      cancelUrl: "https://www.facebook.com/walter.19.12"
-    }
+      cancelUrl: "https://www.facebook.com/walter.19.12",
+    };
     // Lưu thông tin giao dịch
-    const paymentLink = await payOS.createPaymentLink(order)
+    const paymentLink = await payOS.createPaymentLink(order);
     const newTransaction = await FinancialTransactions.create({
       ...transactionData,
       amount,
@@ -140,7 +168,7 @@ export const createVNPayTransactionController = async (req, res) => {
       executorId: req.user?._id || "676452c5b85460f14f0b1d76",
       status: "pending",
     });
-    return res.redirect(303, paymentLink.checkoutUrl)
+    return res.redirect(303, paymentLink.checkoutUrl);
     // return ResponseStatus.created(res, {
     //   transaction: newTransaction,
     //   paymentUrl,

@@ -13,14 +13,15 @@ const transportSchema = new Schema(
       ref: "SupportLocations",
       // description: "Địa điểm lấy hàng/điểm tập kết",
     },
-    pickupLocation: {
-      type: {
-        type: String,
-        enum: ["Point"],
-      },
-      coordinates: [Number],
-      // description: "Tọa độ điểm lấy hàng",
-    },
+    amount: mongoose.Schema.Types.Mixed, //lưu lại danh sách hàng hỗ trợ cho đơn cứu trợ
+    // pickupLocation: {
+    //   type: {
+    //     type: String,
+    //     enum: ["Point"],
+    //   },
+    //   coordinates: [Number],
+    //   // description: "Tọa độ điểm lấy hàng",
+    // },
     notes: String,
     deletedAt: {
       type: Date,

@@ -4,7 +4,7 @@ import {
   getTransportByIdController,
   createTransportController,
   updateTransportController,
-  deleteTransportController
+  deleteTransportController,
 } from "../controllers/transports.controller.js";
 import { authMiddleware } from "../middlewares/auth.middleware.js";
 

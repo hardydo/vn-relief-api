@@ -4,7 +4,7 @@ import {
   getVehicleByIdController,
   createVehicleController,
   updateVehicleController,
-  deleteVehicleController
+  deleteVehicleController,
 } from "../controllers/vehicles.controller.js";
 import { authMiddleware } from "../middlewares/auth.middleware.js";
 

@@ -3,6 +3,35 @@ import TransportSupplies from "../../databases/models/transport-supplies.model.j
 import ContributionDetails from "../../databases/models/contribution-details.model.js";
 import StatusHistory from "../../databases/models/status-history.model.js";
 
+// Kiểm tra xem phương tiện đã nhận đơn cứu trợ hay chưa
+export const handleCheckExistVehicleReceiveRescueRequest = async (req, res) => {
+  try {
+    const { vehicleId, rescueRequestId } = req.body;
+    const supplies = await TransportSupplies.find({
+      vehicleId,
+      rescueRequestId,
+    });
+
+    return ResponseStatus.ok(res, supplies);
+  } catch (error) {
+    console.log(error);
+    return ResponseStatus.error(res, error);
+  }
+};
+
+// Nhận đơn cứu trợ từ điểm tập kết
+export const handleReceiveGoodsFromSupportLocation = async (req, res) => {
+  try {
+    const supplies = await TransportSupplies.create(req.body);
+
+    return ResponseStatus.ok(res, supplies);
+  } catch (error) {
+    console.log(error);
+    return ResponseStatus.error(res, error);
+  }
+};
+
+//============== a Lộc hiểu sai ý, nên các cái dưới coi như bỏ
 // Lấy danh sách hàng đang vận chuyển
 export const getTransportSuppliesController = async (req, res) => {
   try {
@@ -39,8 +68,8 @@ export const addSupplyToTransportController = async (req, res) => {
     );
     const result = {
       data: supplies,
-      message: "Đã thêm hàng vào chuyến đi"
-    }
+      message: "Đã thêm hàng vào chuyến đi",
+    };
     return ResponseStatus.created(res, result);
   } catch (error) {
     console.log(error);
@@ -59,7 +88,9 @@ export const removeSupplyFromTransportController = async (req, res) => {
       return ResponseStatus.notfound(res);
     }
 
-    return ResponseStatus.ok(res, {message: "Xóa hàng khỏi chuyến thành công"});
+    return ResponseStatus.ok(res, {
+      message: "Xóa hàng khỏi chuyến thành công",
+    });
   } catch (error) {
     console.log(error);
     return ResponseStatus.error(res, error);
@@ -120,7 +151,7 @@ export const distributeSuppliesController = async (req, res) => {
       await TransportSupplies.findOneAndUpdate(
         {
           transportId: id,
-          "_id": item.transportSuppliesId,
+          _id: item.transportSuppliesId,
         },
         {
           $set: {
@@ -145,7 +176,7 @@ export const distributeSuppliesController = async (req, res) => {
       description: notes,
     });
 
-    return ResponseStatus.ok(res, {message: "Phân phối hàng hóa thành công"});
+    return ResponseStatus.ok(res, { message: "Phân phối hàng hóa thành công" });
   } catch (error) {
     console.log(error);
     return ResponseStatus.error(res, error);

@@ -6,16 +6,21 @@ const financialTransactionSchema = new Schema(
     naturalDisasterId: {
       type: Schema.Types.ObjectId,
       ref: "NaturalDisasters",
+      required: true,
     },
     rescueRequestId: {
       type: Schema.Types.ObjectId,
       ref: "RescueRequests",
     },
+    rescueRequestItemsId: {
+      type: Schema.Types.ObjectId,
+      ref: "RescueRequestItems",
+    },
     type: {
       type: String,
       enum: ["bank", "cash", "other"],
     },
-    executorId: {
+    userId: {
       type: Schema.Types.ObjectId,
       ref: "Users",
     },
@@ -25,7 +30,7 @@ const financialTransactionSchema = new Schema(
     },
     description: String,
     image: [String],
-    amount: Number,
+    amount: mongoose.Schema.Types.Mixed,
     status: {
       type: String,
       enum: ["pending", "approved", "rejected", "cancelled"],

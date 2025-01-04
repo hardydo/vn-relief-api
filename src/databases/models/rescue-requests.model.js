@@ -12,9 +12,18 @@ const rescueRequestSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: "Users",
     },
+    naturalDisasterId: {
+      type: Schema.Types.ObjectId,
+      ref: "NaturalDisasters",
+      required: true,
+    },
     wardCode: String, //mã xã | mã tỉnh | mã huyện --> "01 | 23 | 34",
     description: String,
     title: String,
+    formStatue: {
+      type: String,
+      enum: ["pending", "closed"],
+    },
     status: {
       verify: {
         type: String,
@@ -27,8 +36,8 @@ const rescueRequestSchema = new Schema(
       },
       // goods: {
       //   type: String,
-      //   enum: ["pending", "doing", "closed"]
-      // }
+      //   enum: ["pending", "doing", "closed"],
+      // },
     },
     contentNeedsRelief: String,
     phone: String,

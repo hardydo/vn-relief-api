@@ -2,25 +2,31 @@ import ResponseStatus from "../../response-handler/response-handler.js";
 import Vehicles from "../../databases/models/vehicles.model.js";
 import RescueTeams from "../../databases/models/rescue-teams.model.js";
 import StatusHistory from "../../databases/models/status-history.model.js";
+import BorrowVehicles from "../../databases/models/borrow-vehicles.model.js";
 
 // Lấy danh sách phương tiện
 export const getVehiclesController = async (req, res) => {
   try {
-    const { status, type } = req.query;
+    const { userId } = req.query;
 
     let query = {};
-    if (status) {
-      query.status = status;
-    }
-    if (type) {
-      query.vehicleType = type;
-    }
-    console.log("🚀 ~ getVehiclesController ~ query:", query)
+    query.ownerId = userId;
+    // if (status) {
+    //   query.status = status;
+    // }
+    // if (type) {
+    //   query.vehicleType = type;
+    // }
 
     const vehicles = await Vehicles.find(query)
       .populate("ownerId", "name phone")
       .populate("rescueTeamId", "teamName")
       .sort({ createdAt: -1 });
+
+    // const borrowVehicles = await BorrowVehicles.find({
+    //   userId,
+    //   status: "accept", //phải đc cho phép rồi
+    // });
 
     return ResponseStatus.ok(res, vehicles);
   } catch (error) {
@@ -101,10 +107,10 @@ export const updateVehicleController = async (req, res) => {
     }
 
     if (
-      vehicle.ownerId.toString() !== (req.user?._id ||
-      "676452c5b85460f14f0b1d76") &&
-        (!req.user.rescueTeamId ||
-          vehicle.rescueTeamId?.toString() !== req.user?.rescueTeamId)
+      vehicle.ownerId.toString() !==
+        (req.user?._id || "676452c5b85460f14f0b1d76") &&
+      (!req.user.rescueTeamId ||
+        vehicle.rescueTeamId?.toString() !== req.user?.rescueTeamId)
     ) {
       return ResponseStatus.forbidden(res, "Không có quyền cập nhật");
     }
@@ -117,8 +123,8 @@ export const updateVehicleController = async (req, res) => {
 
     const result = {
       message: "Cập nhật phương tiện thành công",
-      data: updated
-    }
+      data: updated,
+    };
 
     return ResponseStatus.ok(res, result);
   } catch (error) {
@@ -139,8 +145,8 @@ export const deleteVehicleController = async (req, res) => {
     }
 
     if (
-      vehicle.ownerId.toString() !== (req.user?._id ||
-      "676452c5b85460f14f0b1d76")
+      vehicle.ownerId.toString() !==
+      (req.user?._id || "676452c5b85460f14f0b1d76")
     ) {
       return ResponseStatus.forbidden(res, "Không có quyền xóa");
     }
@@ -164,7 +170,7 @@ export const deleteVehicleController = async (req, res) => {
       changedBy: req.user?._id || "676452c5b85460f14f0b1d76",
     });
 
-    return ResponseStatus.ok(res, {message: "Xóa phương tiện thành công"});
+    return ResponseStatus.ok(res, { message: "Xóa phương tiện thành công" });
   } catch (error) {
     console.log(error);
     return ResponseStatus.error(res, error);

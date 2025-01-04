@@ -2,6 +2,7 @@ import ResponseStatus from "../../response-handler/response-handler.js";
 import TransportHistories from "../../databases/models/transport-histories.model.js";
 import Transports from "../../databases/models/transports.model.js";
 import StatusHistory from "../../databases/models/status-history.model.js";
+import Vehicles from "../../databases/models/vehicles.model.js";
 
 // Lấy lịch sử vận chuyển
 export const getTransportHistoriesController = async (req, res) => {
@@ -19,20 +20,20 @@ export const getTransportHistoriesController = async (req, res) => {
   }
 };
 
-// Thêm điểm check-in mới
+// Thêm điểm check-in mới (liên kết với vehicles nhá)
 export const addCheckpointController = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { id } = req.params; //id của vehicles
     const { location, status, notes } = req.body;
 
     // Kiểm tra transport tồn tại
-    const transport = await Transports.findById(id);
-    if (!transport) {
+    const vehicle = await Vehicles.findById(id);
+    if (!vehicle) {
       return ResponseStatus.notfound(res);
     }
 
     const newCheckpoint = await TransportHistories.create({
-      transportId: id,
+      vehicleId: id,
       location,
       status,
       notes,
@@ -50,8 +51,8 @@ export const addCheckpointController = async (req, res) => {
 
     const result = {
       message: "Tạo địa điểm check-in thành công",
-      data: newCheckpoint
-    }
+      data: newCheckpoint,
+    };
 
     return ResponseStatus.created(res, result);
   } catch (error) {
@@ -92,8 +93,8 @@ export const updateCheckpointStatusController = async (req, res) => {
     });
     const result = {
       data: checkpoint,
-      message: "Cập nhật trạng thái thành công"
-    }
+      message: "Cập nhật trạng thái thành công",
+    };
     return ResponseStatus.ok(res, result);
   } catch (error) {
     console.log(error);

@@ -36,13 +36,13 @@ export const addRequestItemsController = async (req, res) => {
       items.map((item) => ({
         ...item,
         rescueRequestId: id,
-        remainingQuantity: item.providedQuantity,
+        remainingQuantity: item.quantity,
       }))
     );
     const result = {
       message: "Cung cấp sản phẩm thành công",
       data: newItems,
-    }
+    };
     return ResponseStatus.created(res, result);
   } catch (error) {
     console.log(error);
@@ -72,8 +72,8 @@ export const updateRequestItemController = async (req, res) => {
     }
     const result = {
       message: "Đã chỉnh sửa thông tin sản phẩm",
-      data: updated
-    }
+      data: updated,
+    };
     return ResponseStatus.ok(res, result);
   } catch (error) {
     console.log(error);

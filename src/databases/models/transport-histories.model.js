@@ -3,9 +3,13 @@ import mongoose, { Schema } from "mongoose";
 // Lịch trình vận chuyển
 const transportHistorySchema = new Schema(
   {
-    transportId: {
+    // transportId: {
+    //   type: Schema.Types.ObjectId,
+    //   ref: "Transports",
+    // },
+    vehicleId: {
       type: Schema.Types.ObjectId,
-      ref: "Transports",
+      ref: "Vehicles",
     },
     status: {
       type: String,
@@ -20,13 +24,13 @@ const transportHistorySchema = new Schema(
       required: true,
       default: "pending",
     },
-    location: {
-      type: {
-        type: String,
-        enum: ["Point"],
-      },
-      coordinates: [Number],
-    },
+    // location: {
+    //   type: {
+    //     type: String,
+    //     enum: ["Point"],
+    //   },
+    //   coordinates: [Number],
+    // },
     notes: String,
     deletedAt: {
       type: Date,

@@ -3,7 +3,11 @@ import mongoose, { Schema } from "mongoose";
 // Địa điểm hỗ trợ
 const supportLocationSchema = new Schema(
   {
-    verificationOfficerId: {
+    // verificationOfficerId: {
+    //   type: Schema.Types.ObjectId,
+    //   ref: "Users",
+    // },
+    userId: {
       type: Schema.Types.ObjectId,
       ref: "Users",
     },
@@ -25,18 +29,18 @@ const supportLocationSchema = new Schema(
     phone: String,
     description: String,
     capacity: String, //sức chứa: 30 người, 100m2,...
-    verificationStatus: {
-      type: String,
-      enum: ["active", "inactive"],
-    },
+    // verificationStatus: {
+    //   type: String,
+    //   enum: ["active", "inactive"],
+    // },
     images: [String],
-    location: {
-      type: {
-        type: String,
-        enum: ["Point"],
-      },
-      coordinates: [Number],
-    },
+    // location: {
+    //   type: {
+    //     type: String,
+    //     enum: ["Point"],
+    //   },
+    //   coordinates: [Number],
+    // },
     wardCode: String, //mã xã | mã tỉnh | mã huyện --> "01 | 23 | 34"
     deletedAt: {
       type: Date,

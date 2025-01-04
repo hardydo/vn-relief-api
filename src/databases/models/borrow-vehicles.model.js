@@ -3,7 +3,13 @@ import mongoose, { Schema } from "mongoose";
 // Bảng mượn phương tiện
 const borrowVehiclesSchema = new Schema(
   {
-    user_id: {
+    userId: {
+      //người mượn
+      type: Schema.Types.ObjectId,
+      ref: "Users",
+    },
+    lenderId: {
+      //người cho mượn
       type: Schema.Types.ObjectId,
       ref: "Users",
     },
@@ -12,9 +18,9 @@ const borrowVehiclesSchema = new Schema(
       ref: "RescueTeams",
     },
     status: {
-        type: String,
-        enum: ["pending", "accept", "decline"]
-    }
+      type: String,
+      enum: ["pending", "accept", "decline"],
+    },
   },
   { timestamps: true }
 );

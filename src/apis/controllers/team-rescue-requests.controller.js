@@ -3,7 +3,27 @@ import TeamRescueRequests from "../../databases/models/team-rescue-requests.mode
 import RescueRequests from "../../databases/models/rescue-requests.model.js";
 import StatusHistory from "../../databases/models/status-history.model.js";
 
-// Danh sách yêu cầu được phân công cho đội
+// Danh sách các đội cứu trợ nhận yêu cầu
+export const getTeamRescueRequestsFromRequestController = async (req, res) => {
+  try {
+    const { rescueRequestId } = req.params; // id của đội
+
+    const requests = await TeamRescueRequests.find({
+      rescueRequestId,
+    })
+      .populate({
+        path: "rescueTeamId",
+      })
+      .sort({ createdAt: -1 });
+
+    return ResponseStatus.ok(res, requests);
+  } catch (error) {
+    console.log(error);
+    return ResponseStatus.error(res, error);
+  }
+};
+
+// Danh sách các yêu cầu cứu trợ của đội cứu trợ
 export const getTeamRescueRequestsController = async (req, res) => {
   try {
     const { teamRescueRequestsId } = req.params; // id của đội

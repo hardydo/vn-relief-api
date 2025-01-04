@@ -2,14 +2,91 @@ import ResponseStatus from "../../response-handler/response-handler.js";
 import RescueRequests from "../../databases/models/rescue-requests.model.js";
 import TeamRescueRequests from "../../databases/models/team-rescue-requests.model.js";
 import StatusHistory from "../../databases/models/status-history.model.js";
+import TransportSupplies from "../../databases/models/transport-supplies.model.js";
+import FinancialTransactions from "../../databases/models/financial-transactions.model.js";
+import RescueRequestItems from "../../databases/models/rescue-request-items.model.js";
+
+// Lấy danh sách hỗ trợ cho 1 đơn rescuerequest
+export const getReceivedRequestsController = async (req, res) => {
+  try {
+    const { rescueRequestId } = req.params;
+
+    const [transportSupplies, userContributions] = await Promise.all([
+      TransportSupplies.find({
+        rescueRequestId,
+      }).populate({
+        path: "vehicleId",
+        select: "_id name ownerId", // Chỉ lấy các trường cần thiết trong vehicleId
+        populate: {
+          path: "ownerId", // Tên field tham chiếu trong vehicleId
+          select: "_id name phone", // Chỉ lấy các trường cần thiết trong userId
+        },
+      }),
+      FinancialTransactions.find({
+        rescueRequestId,
+      }).populate("userId", "_id name"),
+    ]);
+
+    // Lấy danh sách tất cả các ObjectId từ field `amount` trong `transportSupplies` và `userContributions`
+    const rescueRequestItemIds = new Set();
+
+    transportSupplies.forEach((supply) => {
+      Object.keys(supply.amount || {}).forEach((id) =>
+        rescueRequestItemIds.add(id)
+      );
+    });
+
+    userContributions.forEach((contribution) => {
+      Object.keys(contribution.amount || {}).forEach((id) =>
+        rescueRequestItemIds.add(id)
+      );
+    });
+
+    // Tìm tất cả các `rescueRequestItems` tương ứng
+    const rescueRequestItems = await RescueRequestItems.find({
+      _id: { $in: Array.from(rescueRequestItemIds) },
+    }).lean();
+
+    // Tạo một map để truy xuất nhanh giá trị của `rescueRequestItems`
+    const rescueRequestItemsMap = rescueRequestItems.reduce((map, item) => {
+      map[item._id.toString()] = item;
+      return map;
+    }, {});
+
+    // Gắn thông tin của `rescueRequestItems` vào `amount`
+    const mapRescueItems = (amount) =>
+      Object.entries(amount || {}).map(([id, value]) => ({
+        item: rescueRequestItemsMap[id] || null,
+        quantity: value,
+      }));
+
+    transportSupplies.forEach((supply) => {
+      supply.amount = mapRescueItems(supply.amount);
+    });
+
+    userContributions.forEach((contribution) => {
+      contribution.amount = mapRescueItems(contribution.amount);
+    });
+    return ResponseStatus.ok(res, {
+      transportSupplies,
+      userContributions,
+    });
+  } catch (error) {
+    console.log(error);
+    return ResponseStatus.error(res, error);
+  }
+};
 
 // Lấy danh sách yêu cầu cứu trợ
 //http://localhost:8800/rescue-requests?type=emergency&area=9289|259|27&nearby=true
 export const getRescueRequestsController = async (req, res) => {
   try {
     const { status, type, area, nearby } = req.query;
+    const naturalDisasterId = req.headers["naturaldisasterid"];
 
     let query = {};
+    query.naturalDisasterId = naturalDisasterId;
+
     if (status) {
       query.status = status;
     }
@@ -67,9 +144,11 @@ export const getRescueRequestByIdController = async (req, res) => {
 export const createRescueRequestController = async (req, res) => {
   try {
     const data = req.body;
+    const naturalDisasterId = req.headers["naturaldisasterid"];
 
     const newRequest = await RescueRequests.create({
       ...data,
+      naturalDisasterId,
       informantId: req.user?._id || null,
       status: {
         verify: "pending",

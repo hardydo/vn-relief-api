@@ -13,6 +13,7 @@ const vehicleSchema = new Schema(
     naturalDisasterId: {
       type: Schema.Types.ObjectId,
       ref: "NaturalDisasters",
+      required: true,
     },
     phone: String,
     licensePlate: {
@@ -25,19 +26,19 @@ const vehicleSchema = new Schema(
     },
     supportCapability: String,
     maxPassengers: Number,
-    currentArea: String,
-    currentLocation: {
-      type: {
-        type: String,
-        enum: ["Point"],
-        required: true,
-      },
-      coordinates: [Number],
-    },
+    // currentArea: String,
+    // currentLocation: {
+    //   type: {
+    //     type: String,
+    //     enum: ["Point"],
+    //     required: true,
+    //   },
+    //   coordinates: [Number],
+    // },
     status: String,
     wardCode: String, //mã xã | mã tỉnh | mã huyện --> "01 | 23 | 34"
-    locationTrackingLink: String,
-    lastUpdate: Date,
+    // locationTrackingLink: String,
+    // lastUpdate: Date,
     deletedAt: {
       type: Date,
       default: null,

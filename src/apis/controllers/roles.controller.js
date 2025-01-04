@@ -1,7 +1,7 @@
 import ResponseStatus from "../../response-handler/response-handler.js";
 import Roles from "../../databases/models/roles.model.js";
 import UserRoles from "../../databases/models/user-roles.model.js";
-// import BorrowVehices from "../../databases/models/borrow-vehicles.model.js"
+import BorrowVehices from "../../databases/models/borrow-vehicles.model.js";
 //import tạm ở đây để khi chạy file, nó tạo luôn model BorrowVehices trong monggodb
 
 // Lấy danh sách roles

@@ -1,11 +1,38 @@
 import ResponseStatus from "../../response-handler/response-handler.js";
 import SupportLocations from "../../databases/models/support-locations.model.js";
 import ContributionDetails from "../../databases/models/contribution-details.model.js";
+import Transports from "../../databases/models/transports.model.js";
+
+// Lấy danh sách địa điểm mà phương tiện đã nhận hàng
+export const getSupportLocationsReveicedController = async (req, res) => {
+  try {
+    const { vehicleId } = req.params; //userId hoặc all
+
+    // Trước tiên lấy ra tất cả transport của vehicle
+    const transports = await Transports.find({
+      vehicleId: vehicleId,
+    });
+
+    // Lấy ra các pickupLocationId unique
+    const locationIds = [...new Set(transports.map((t) => t.pickupLocationId))];
+
+    // Query các SupportLocation tương ứng
+    const locations = await SupportLocations.find({
+      _id: { $in: locationIds },
+    });
+
+    return ResponseStatus.ok(res, locations);
+  } catch (error) {
+    console.log(error);
+    return ResponseStatus.error(res, error);
+  }
+};
 
 // Lấy danh sách địa điểm (kèm thông tin hàng hóa)
 export const getSupportLocationsController = async (req, res) => {
   try {
     const { type, area } = req.query;
+    const { from } = req.params; //userId hoặc all
 
     let query = {};
     if (type && type !== "all") {
@@ -15,8 +42,7 @@ export const getSupportLocationsController = async (req, res) => {
       query.wardCode = area;
     }
 
-    // Lấy địa điểm và join với thông tin hàng hóa
-    const locations = await SupportLocations.aggregate([
+    const pipeline = [
       { $match: query },
       {
         $lookup: {
@@ -25,7 +51,12 @@ export const getSupportLocationsController = async (req, res) => {
           pipeline: [
             {
               $match: {
-                $expr: { $eq: ["$locationId", "$$locationId"] },
+                $expr: {
+                  $and: [
+                    { $eq: ["$locationId", "$$locationId"] },
+                    ...(from !== "all" ? [{ $eq: ["$userId", from] }] : []),
+                  ],
+                },
                 remainingQuantity: { $gt: 0 },
               },
             },
@@ -33,7 +64,12 @@ export const getSupportLocationsController = async (req, res) => {
           as: "supplies",
         },
       },
-    ]).sort({ createdAt: -1 });
+    ];
+
+    // Lấy địa điểm và join với thông tin hàng hóa
+    const locations = await SupportLocations.aggregate(pipeline).sort({
+      createdAt: -1,
+    });
 
     return ResponseStatus.ok(res, locations);
   } catch (error) {
@@ -77,8 +113,8 @@ export const createSupportLocationController = async (req, res) => {
     });
     const result = {
       message: "Tạo địa điểm mới thành công",
-      data: newLocation
-    }
+      data: newLocation,
+    };
     return ResponseStatus.created(res, result);
   } catch (error) {
     console.log(error);
@@ -138,7 +174,7 @@ export const deleteSupportLocationController = async (req, res) => {
       return ResponseStatus.notfound(res);
     }
 
-    return ResponseStatus.ok(res, {message: "Xóa địa điểm thành công"});
+    return ResponseStatus.ok(res, { message: "Xóa địa điểm thành công" });
   } catch (error) {
     console.log(error);
     return ResponseStatus.error(res, error);
@@ -163,7 +199,9 @@ export const receiveSuppliesController = async (req, res) => {
 
     // TODO: Cập nhật lịch trình vận chuyển
 
-    return ResponseStatus.ok(res, {messsage: "Tiếp nhận hàng hóa thành công"});
+    return ResponseStatus.ok(res, {
+      messsage: "Tiếp nhận hàng hóa thành công",
+    });
   } catch (error) {
     console.log(error);
     return ResponseStatus.error(res, error);
