@@ -10,15 +10,7 @@ const userRolesRouter = express.Router();
 // Lấy roles của user
 userRolesRouter.get("/:id/roles", authMiddleware, getUserRolesController);
 
-//Xin thêm role
-userRolesRouter.post(
-  "/:userId/roles",
-  authMiddleware,
-  updateUserRolesController
-);
-
 // Cập nhật roles cho user
-// Body truyền roles: [roleIds]
 userRolesRouter.post(
   "/:userId/roles",
   authMiddleware,

@@ -92,7 +92,6 @@ export const getUserByIdController = async (req, res) => {
 export const getUserByPhoneNumber = async (req, res) => {
   try {
     const { phoneNumber } = req.params;
-    console.log("\n🔥 ~ file: users.controller.js:81 ~ phone::\n", phoneNumber);
 
     const user = await Users.findOne({ phone: phoneNumber }).populate({
       path: "rescueTeamId",
@@ -103,11 +102,13 @@ export const getUserByPhoneNumber = async (req, res) => {
       return ResponseStatus.ok(res, { exist: false });
     }
 
-    // Lấy roles của user
-    const userRoles = await UserRoles.find({ userId: user._id }).populate(
-      "roleId",
-      "name code"
-    );
+    // Lấy roles ĐÃ ACCEPT của user
+    const userRoles = await UserRoles.find({
+      userId: user._id,
+      status: "accept",
+    })
+      .populate("roleId")
+      .sort({ createdAt: -1 });
 
     return ResponseStatus.ok(res, {
       ...user.toObject(),
@@ -129,17 +130,18 @@ export const getUserByUidFirebaseController = async (req, res) => {
       path: "rescueTeamId",
       select: "teamName",
     });
-    console.log("\n🔥 ~ file: users.controller.js:85 ~ user::\n", user);
 
     if (!user) {
       return ResponseStatus.notfound(res);
     }
 
-    // Lấy roles của user
+    // Lấy roles ĐÃ ACCEPT của user
     const userRoles = await UserRoles.find({
       userId: user._id,
-      // status: "accept",
-    }).populate("roleId", "name code");
+      status: "accept",
+    })
+      .populate("roleId")
+      .sort({ createdAt: -1 });
 
     return ResponseStatus.ok(res, {
       ...user.toObject(),
@@ -154,7 +156,7 @@ export const getUserByUidFirebaseController = async (req, res) => {
 // Tạo user mới
 export const createUserController = async (req, res) => {
   try {
-    const { roles, ...userData } = req.body;
+    const userData = req.body;
 
     // Tạo user với trạng thái inactive
     const newUser = await Users.create({
@@ -162,15 +164,15 @@ export const createUserController = async (req, res) => {
       // accountStatus: "inactive",
     });
 
-    // Thêm roles cho user nếu có
-    if (roles && roles.length > 0) {
-      await UserRoles.insertMany(
-        roles.map((roleId) => ({
-          userId: newUser._id,
-          roleId,
-        }))
-      );
-    }
+    // Thêm roles cho user nếu có --> sai, phải lưu vào bảng role riêng
+    // if (roles && roles.length > 0) {
+    //   await UserRoles.insertMany(
+    //     roles.map((roleId) => ({
+    //       userId: newUser._id,
+    //       roleId,
+    //     }))
+    //   );
+    // }
 
     // Tạo lịch sử
     await StatusHistory.create({

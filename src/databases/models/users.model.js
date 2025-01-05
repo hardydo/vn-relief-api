@@ -17,8 +17,8 @@ const userSchema = new Schema(
       unique: true,
     },
     fbLink: String,
-    livingArea: String,
-    supportArea: String,
+    // livingArea: String,
+    // supportArea: String,
     // password: {
     //   type: String,
     //   required: true,
@@ -31,6 +31,7 @@ const userSchema = new Schema(
     wardCode: String, //mã xã | mã tỉnh | mã huyện --> "01 | 23 | 34"
     avatar: String,
     accountStatus: {
+      //tài khoản có bị khoá hay không?
       type: String,
       enum: ["active", "inactive"],
       default: "inactive",
