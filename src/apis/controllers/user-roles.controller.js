@@ -9,12 +9,80 @@ export const getUserRolesController = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const userRoles = await UserRoles.find({ userId: id })
+    const userRoles = await UserRoles.find({ userId: id, status: "accept" })
       .populate("roleId", "name code")
       .populate("userId")
       .sort({ createdAt: -1 });
 
     return ResponseStatus.ok(res, userRoles);
+  } catch (error) {
+    console.log(error);
+    return ResponseStatus.error(res, error);
+  }
+};
+
+// Xin thêm quyền (xin add thêm role TNV, TVĐCY)
+export const requestNewRoleController = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const { roleId } = req.body;
+
+    // Kiểm tra user tồn tại
+    const user = await Users.findById(userId);
+    if (!user) {
+      return ResponseStatus.notfound(res, "Không tìm thấy người dùng");
+    }
+
+    // Kiểm tra role tồn tại
+    const role = await Roles.findById(roleId);
+    if (!role) {
+      return ResponseStatus.notfound(res, "Không tìm thấy vai trò này");
+    }
+
+    // Kiểm tra xem user đã có role này chưa
+    const existingUserRole = await UserRoles.findOne({
+      userId,
+      roleId,
+      status: { $in: ["pending", "accept"] },
+    });
+
+    if (existingUserRole) {
+      if (existingUserRole.status === "pending") {
+        return ResponseStatus.badRequest(
+          res,
+          "Bạn đã gửi yêu cầu và đang chờ phê duyệt"
+        );
+      }
+      if (existingUserRole.status === "accept") {
+        return ResponseStatus.badRequest(res, "Bạn đã có vai trò này");
+      }
+    }
+
+    // Tạo yêu cầu xin quyền mới
+    const newRoleRequest = await UserRoles.create({
+      userId,
+      roleId,
+      status: "pending", // Trạng thái chờ phê duyệt
+    });
+
+    // Tạo lịch sử
+    await StatusHistory.create({
+      referenceTable: "UserRoles",
+      referenceId: newRoleRequest._id,
+      action: "request_role",
+      newStatus: "pending",
+      changedBy: userId,
+      description: `Yêu cầu thêm vai trò ${role.name}`,
+    });
+
+    const result = {
+      data: await UserRoles.findById(newRoleRequest._id)
+        .populate("roleId", "name code")
+        .populate("userId", "name phone"),
+      message: "Đã gửi yêu cầu thêm quyền thành công",
+    };
+
+    return ResponseStatus.created(res, result);
   } catch (error) {
     console.log(error);
     return ResponseStatus.error(res, error);

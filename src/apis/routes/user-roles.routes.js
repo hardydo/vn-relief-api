@@ -1,7 +1,7 @@
 import express from "express";
 import {
   getUserRolesController,
-  updateUserRolesController
+  updateUserRolesController,
 } from "../controllers/user-roles.controller.js";
 import { authMiddleware } from "../middlewares/auth.middleware.js";
 
@@ -10,8 +10,19 @@ const userRolesRouter = express.Router();
 // Lấy roles của user
 userRolesRouter.get("/:id/roles", authMiddleware, getUserRolesController);
 
+//Xin thêm role
+userRolesRouter.post(
+  "/:userId/roles",
+  authMiddleware,
+  updateUserRolesController
+);
+
 // Cập nhật roles cho user
 // Body truyền roles: [roleIds]
-userRolesRouter.post("/:userId/roles", authMiddleware, updateUserRolesController);
+userRolesRouter.post(
+  "/:userId/roles",
+  authMiddleware,
+  updateUserRolesController
+);
 
 export default userRolesRouter;

@@ -7,6 +7,7 @@ import {
   toggleUserStatusController,
   getUserByUidFirebaseController,
   getUserByPhoneNumber,
+  getUsersByRoleIdController,
 } from "../controllers/users.controller.js";
 import {
   authMiddleware,
@@ -18,6 +19,9 @@ const usersRouter = express.Router();
 // Lấy danh sách users
 // Query: roles, status, search
 usersRouter.get("/", authMiddleware, getUsersController);
+
+// Lấy danh sách TNV
+usersRouter.get("/", authMiddleware, getUsersByRoleIdController);
 
 // Lấy chi tiết user
 usersRouter.get("/:id", authMiddleware, getUserByIdController);

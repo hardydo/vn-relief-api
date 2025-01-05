@@ -3,6 +3,20 @@ import UserRoles from "../../databases/models/user-roles.model.js";
 import Users from "../../databases/models/users.model.js";
 import ResponseStatus from "../../response-handler/response-handler.js";
 
+// Lấy danh sách TNV
+export const getUsersByRoleIdController = async (req, res) => {
+  try {
+    const { roleId } = req.query;
+
+    const users = await Users.find({});
+
+    return ResponseStatus.ok(res, users);
+  } catch (error) {
+    console.log(error);
+    return ResponseStatus.error(res, error);
+  }
+};
+
 // Lấy danh sách users
 export const getUsersController = async (req, res) => {
   try {
@@ -122,10 +136,10 @@ export const getUserByUidFirebaseController = async (req, res) => {
     }
 
     // Lấy roles của user
-    const userRoles = await UserRoles.find({ userId: user._id }).populate(
-      "roleId",
-      "name code"
-    );
+    const userRoles = await UserRoles.find({
+      userId: user._id,
+      // status: "accept",
+    }).populate("roleId", "name code");
 
     return ResponseStatus.ok(res, {
       ...user.toObject(),
