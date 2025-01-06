@@ -21,7 +21,7 @@ const usersRouter = express.Router();
 usersRouter.get("/", authMiddleware, getUsersController);
 
 // Lấy danh sách TNV
-usersRouter.get("/", authMiddleware, getUsersByRoleIdController);
+usersRouter.get("/roles", authMiddleware, getUsersByRoleIdController);
 
 // Lấy chi tiết user
 usersRouter.get("/:id", authMiddleware, getUserByIdController);
