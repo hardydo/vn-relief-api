@@ -24,6 +24,10 @@ const rescueTeamsRouter = express.Router();
 // Query: status (active | inactive)
 rescueTeamsRouter.get("/", authMiddleware, getTeamsController);
 
+// Danh sách các lời xin vào nhóm
+// Query: status (active | inactive)
+// rescueTeamsRouter.get("/", authMiddleware, getTeamsController);
+
 // Chi tiết đội
 rescueTeamsRouter.get("/:id", authMiddleware, getTeamByIdController);
 

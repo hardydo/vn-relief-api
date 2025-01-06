@@ -12,13 +12,13 @@ const teamRescueRequestSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: "RescueRequests",
     },
-    pickupTime: Date,
-    deliveryTime: Date,
+    // pickupTime: Date,
+    // deliveryTime: Date,
     status: {
       type: String,
       enum: ["pending", "accepted", "in_progress", "completed", "cancelled"],
     },
-    notes: String,
+    // notes: String,
     deletedAt: {
       type: Date,
       default: null,

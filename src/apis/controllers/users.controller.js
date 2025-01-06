@@ -128,7 +128,6 @@ export const getUserByUidFirebaseController = async (req, res) => {
 
     const user = await Users.findOne({ uid_firebase: uid }).populate({
       path: "rescueTeamId",
-      select: "teamName",
     });
 
     if (!user) {

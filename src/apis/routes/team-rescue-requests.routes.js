@@ -1,7 +1,6 @@
 import express from "express";
 import {
   getTeamRescueRequestsController,
-  getTeamRescueRequestsFromRequestController,
   handleRescueRequestController,
   updateRequestStatusController,
 } from "../controllers/team-rescue-requests.controller.js";
@@ -16,7 +15,7 @@ const teamRescueRequestsRouter = express.Router();
 teamRescueRequestsRouter.get(
   "/:rescueRequestId/rescue-team",
   authMiddleware,
-  getTeamRescueRequestsFromRequestController
+  getTeamRescueRequestsController
 );
 
 // Danh sách các yêu cầu cứu trợ của đội cứu trợ
@@ -29,7 +28,7 @@ teamRescueRequestsRouter.get(
 
 // Nhận/huỷ yêu cầu cứu trợ
 teamRescueRequestsRouter.post(
-  "/rescue-teams/:teamRescueRequestsId/rescue-requests/:requestId",
+  "/rescue-teams/:rescueTeamId/rescue-requests/:rescueRequestId",
   authMiddleware,
   teamMemberMiddleware,
   handleRescueRequestController

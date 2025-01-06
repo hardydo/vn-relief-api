@@ -3,27 +3,7 @@ import TeamRescueRequests from "../../databases/models/team-rescue-requests.mode
 import RescueRequests from "../../databases/models/rescue-requests.model.js";
 import StatusHistory from "../../databases/models/status-history.model.js";
 
-// Danh sách các đội cứu trợ nhận yêu cầu
-export const getTeamRescueRequestsFromRequestController = async (req, res) => {
-  try {
-    const { rescueRequestId } = req.params; // id của đội
-
-    const requests = await TeamRescueRequests.find({
-      rescueRequestId,
-    })
-      .populate({
-        path: "rescueTeamId",
-      })
-      .sort({ createdAt: -1 });
-
-    return ResponseStatus.ok(res, requests);
-  } catch (error) {
-    console.log(error);
-    return ResponseStatus.error(res, error);
-  }
-};
-
-// Danh sách các yêu cầu cứu trợ của đội cứu trợ
+// Danh sách yêu cầu được phân công cho đội
 export const getTeamRescueRequestsController = async (req, res) => {
   try {
     const { teamRescueRequestsId } = req.params; // id của đội
@@ -47,32 +27,38 @@ export const getTeamRescueRequestsController = async (req, res) => {
 // Nhận/huỷ yêu cầu cứu trợ
 export const handleRescueRequestController = async (req, res) => {
   try {
-    const { teamRescueRequestsId, requestId } = req.params;
+    const { rescueTeamId, rescueRequestId } = req.params;
     const { action } = req.body; // 'accept' hoặc 'cancel'
 
-    const teamRequest = await TeamRescueRequests.findOne({
-      rescueTeamId: teamRescueRequestsId,
-      rescueRequestId: requestId,
+    const teamRescueRequest = await TeamRescueRequests.findOne({
+      rescueTeamId: rescueTeamId,
+      rescueRequestId: rescueRequestId,
     });
 
-    if (!teamRequest) {
+    if (!teamRescueRequest) {
       return ResponseStatus.notfound(res);
     }
 
     // Cập nhật trạng thái
     const status = action === "accept" ? "accepted" : "cancelled";
-    teamRequest.status = status;
-    await teamRequest.save();
+    teamRescueRequest.status = status;
+    await teamRescueRequest.save();
 
     // Cập nhật status của rescue request
-    await RescueRequests.findByIdAndUpdate(requestId, { $set: { status } });
+    await RescueRequests.findByIdAndUpdate(rescueRequestId, {
+      $set: {
+        status: {
+          recipient: "doing",
+        },
+      },
+    });
 
     // Tạo lịch sử
     await StatusHistory.create({
       referenceTable: "TeamRescueRequests",
-      referenceId: teamRequest._id,
+      referenceId: teamRescueRequest._id,
       action,
-      oldStatus: teamRequest.status,
+      oldStatus: teamRescueRequest.status,
       newStatus: status,
       changedBy: req.user?._id || "676452c5b85460f14f0b1d76",
     });

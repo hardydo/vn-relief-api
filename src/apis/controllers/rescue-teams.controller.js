@@ -23,38 +23,64 @@ export const getTeamsController = async (req, res) => {
   }
 };
 
-// Chi tiết đội
-export const getTeamByIdController = async (req, res) => {
+// Danh sách các lời xin vào mhons
+export const getRequestTeamsController = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { status } = req.query;
 
-    const team = await RescueTeams.findById(id);
-    if (!team) {
-      return ResponseStatus.notfound(res);
+    let query = {};
+    if (status) {
+      query.status = status;
     }
 
-    return ResponseStatus.ok(res, team);
+    const teams = await RescueTeams.find(query).sort({ createdAt: -1 });
+
+    return ResponseStatus.ok(res, teams);
   } catch (error) {
     console.log(error);
     return ResponseStatus.error(res, error);
   }
 };
 
-// Tạo đội mới (gồm leaderId = người tạo)
+// Chi tiết đội
+export const getTeamByIdController = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Lấy thông tin của rescue team
+    const team = await RescueTeams.findById(id).lean(); // Sử dụng `.lean()` để dữ liệu trả về là plain object
+    if (!team) {
+      return ResponseStatus.notfound(res);
+    }
+
+    // Lấy danh sách các thành viên thuộc đội cứu trợ
+    const members = await Users.find({ rescueTeamId: id }).lean();
+
+    // Thêm danh sách thành viên vào dữ liệu đội cứu trợ
+    team.members = members.length == 0 ? [] : members;
+
+    return ResponseStatus.ok(res, team);
+  } catch (error) {
+    console.error(error);
+    return ResponseStatus.error(res, error);
+  }
+};
+
+// Tạo đội mới
 export const createTeamController = async (req, res) => {
   try {
     const data = req.body;
 
     const newTeam = await RescueTeams.create({
       ...data,
-      status: "deactive",
-      leaderId: req.user?._id,
+      // status: "deactive",
+      // leaderId: req.user?._id,
     });
 
     // Cập nhật rescueTeamId cho leader
-    await Users.findByIdAndUpdate(req.user?._id, {
-      $set: { rescueTeamId: newTeam._id },
-    });
+    // await Users.findByIdAndUpdate(req.user?._id, {
+    //   $set: { rescueTeamId: newTeam._id },
+    // });
 
     // Tạo lịch sử
     await StatusHistory.create({

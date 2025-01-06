@@ -29,8 +29,11 @@ const rescueTeamSchema = new Schema(
     // },
     wardCode: String, //mã xã | mã tỉnh | mã huyện --> "01 | 23 | 34"
     // operatingArea: String,
-    status: String,
-    activityStatus: String,
+    // status: String,
+    status: {
+      type: String,
+      enum: ["deactive", "active"],
+    },
     // locationTrackingLink: String,
     deletedAt: {
       type: Date,
