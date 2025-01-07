@@ -69,7 +69,7 @@ export const getTeamByIdController = async (req, res) => {
 // Tạo đội mới
 export const createTeamController = async (req, res) => {
   try {
-    const data = req.body;
+    const { userId, ...data } = req.body;
 
     const newTeam = await RescueTeams.create({
       ...data,
@@ -78,9 +78,9 @@ export const createTeamController = async (req, res) => {
     });
 
     // Cập nhật rescueTeamId cho leader
-    // await Users.findByIdAndUpdate(req.user?._id, {
-    //   $set: { rescueTeamId: newTeam._id },
-    // });
+    await Users.findByIdAndUpdate(userId, {
+      $set: { rescueTeamId: newTeam._id },
+    });
 
     // Tạo lịch sử
     await StatusHistory.create({
@@ -88,7 +88,7 @@ export const createTeamController = async (req, res) => {
       referenceId: newTeam._id,
       action: "create",
       newStatus: "active",
-      changedBy: req.user?._id,
+      changedBy: userId,
     });
 
     const result = {

@@ -5,28 +5,21 @@ import StatusHistory from "../../databases/models/status-history.model.js";
 import BorrowVehicles from "../../databases/models/borrow-vehicles.model.js";
 
 // Lấy danh sách phương tiện
+/**
+ * @type: "userId" --> lấy danh sách phương tiện của userId
+ * @type: "all" --> lấy hết
+ */
 export const getVehiclesController = async (req, res) => {
   try {
-    const { userId } = req.query;
+    const { type } = req.query;
 
     let query = {};
-    query.ownerId = userId;
-    // if (status) {
-    //   query.status = status;
-    // }
-    // if (type) {
-    //   query.vehicleType = type;
-    // }
+    if (type !== "all") query.ownerId = type;
 
     const vehicles = await Vehicles.find(query)
-      .populate("ownerId", "name phone")
-      .populate("rescueTeamId", "teamName")
+      .populate("ownerId")
+      .populate("rescueTeamId")
       .sort({ createdAt: -1 });
-
-    // const borrowVehicles = await BorrowVehicles.find({
-    //   userId,
-    //   status: "accept", //phải đc cho phép rồi
-    // });
 
     return ResponseStatus.ok(res, vehicles);
   } catch (error) {
@@ -40,15 +33,22 @@ export const getVehicleByIdController = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const vehicle = await Vehicles.findById(id)
-      .populate("ownerId", "name phone")
-      .populate("rescueTeamId", "teamName");
+    const [vehicle, borrowRequests] = await Promise.all([
+      Vehicles.findById(id).populate("ownerId").populate("rescueTeamId"),
+      BorrowVehicles.find({ lenderId: id })
+        .populate("userId")
+        .populate("rescueTeamId")
+        .sort({ createdAt: -1 }),
+    ]);
 
     if (!vehicle) {
       return ResponseStatus.notfound(res);
     }
 
-    return ResponseStatus.ok(res, vehicle);
+    return ResponseStatus.ok(res, {
+      ...vehicle.toObject(),
+      borrowRequests,
+    });
   } catch (error) {
     console.log(error);
     return ResponseStatus.error(res, error);

@@ -14,12 +14,13 @@ const borrowVehiclesSchema = new Schema(
       ref: "Users",
     },
     rescueTeamId: {
+      //đội cứu trợ mượn
       type: Schema.Types.ObjectId,
       ref: "RescueTeams",
     },
     status: {
       type: String,
-      enum: ["pending", "accept", "decline"],
+      enum: ["pending", "accept", "return", "decline"],
     },
   },
   { timestamps: true }

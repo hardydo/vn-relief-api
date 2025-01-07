@@ -24,8 +24,8 @@ const vehicleSchema = new Schema(
       type: String,
       required: true,
     },
+    quantity: Number,
     supportCapability: String,
-    maxPassengers: Number,
     // currentArea: String,
     // currentLocation: {
     //   type: {
@@ -35,7 +35,7 @@ const vehicleSchema = new Schema(
     //   },
     //   coordinates: [Number],
     // },
-    status: String,
+    status: String, //đã có người mượn,.... ai mượn
     wardCode: String, //mã xã | mã tỉnh | mã huyện --> "01 | 23 | 34"
     // locationTrackingLink: String,
     // lastUpdate: Date,

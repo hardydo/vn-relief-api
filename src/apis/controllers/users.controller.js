@@ -4,7 +4,7 @@ import UserRoles from "../../databases/models/user-roles.model.js";
 import Users from "../../databases/models/users.model.js";
 import ResponseStatus from "../../response-handler/response-handler.js";
 
-// Lấy danh sách user theo mảng role
+// Lấy danh sách user theo mảng role và kèm user role
 export const getUsersByRoleIdController = async (req, res) => {
   try {
     const { roles } = req.query; // Lấy danh sách `code` từ query
@@ -20,7 +20,6 @@ export const getUsersByRoleIdController = async (req, res) => {
       "_id"
     );
     const roleIds = roleList.map((role) => role._id);
-    console.log("\n🔥 ~ file: users.controller.js:23 ~ roleIds::\n", roleIds);
 
     if (!roleIds.length) {
       return ResponseStatus.notfound(
@@ -33,11 +32,9 @@ export const getUsersByRoleIdController = async (req, res) => {
     const userRoles = await UserRoles.find({
       roleId: { $in: roleIds },
       status: "accept", // Chỉ lấy các vai trò đã được chấp nhận
-    }).select("userId");
-    console.log(
-      "\n🔥 ~ file: users.controller.js:40 ~ userRoles::\n",
-      userRoles
-    );
+    })
+      .populate("roleId", "code name") // Populate để lấy thông tin `code` và `name` của vai trò
+      .select("userId roleId status");
 
     // Lấy mảng `userId` từ kết quả
     const userIds = userRoles.map((ur) => ur.userId);
@@ -52,8 +49,25 @@ export const getUsersByRoleIdController = async (req, res) => {
     // Lọc danh sách người dùng theo `userId`
     const users = await Users.find({ _id: { $in: userIds } });
 
-    // Trả về danh sách người dùng
-    return ResponseStatus.ok(res, users);
+    // Kết hợp thông tin user và user role
+    const usersWithRoles = users.map((user) => {
+      const rolesForUser = userRoles
+        .filter((ur) => ur.userId.toString() === user._id.toString())
+        .map((ur) => ({
+          roleId: ur.roleId._id,
+          roleCode: ur.roleId.code,
+          roleName: ur.roleId.name,
+          status: ur.status,
+        }));
+
+      return {
+        ...user.toObject(), // Chuyển `user` sang dạng object
+        roles: rolesForUser, // Thêm thông tin roles
+      };
+    });
+
+    // Trả về danh sách người dùng kèm vai trò
+    return ResponseStatus.ok(res, usersWithRoles);
   } catch (error) {
     console.error(error);
     return ResponseStatus.error(res, error);

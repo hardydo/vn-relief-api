@@ -6,7 +6,7 @@ import userRolesRouter from "./user-roles.routes.js";
 import naturalDisastersRouter from "./natural-disasters.routes.js";
 import disasterInformationRouter from "./disaster-information.routes.js";
 import rescueTeamsRouter from "./rescue-teams.routes.js";
-import teamRescueRequestsRouter from "./team-rescue-requests.routes.js"; 
+import teamRescueRequestsRouter from "./team-rescue-requests.routes.js";
 import vehiclesRouter from "./vehicles.routes.js";
 import rescueRequestsRouter from "./rescue-requests.routes.js";
 import rescueRequestItemsRouter from "./rescue-request-items.routes.js";
@@ -20,6 +20,7 @@ import transactionsRouter from "./transactions.routes.js";
 import statusHistoriesRouter from "./status-histories.routes.js";
 import tableStatusRouter from "./table-status.routes.js";
 import statisticsRouter from "./statistics.routes.js";
+import borrowVehiclesRouter from "./borrow-vehicle.routes.js";
 
 const router = express.Router();
 
@@ -37,10 +38,11 @@ router.use("/disaster-information", disasterInformationRouter);
 
 // Quản lý đội cứu trợ
 router.use("/rescue-teams", rescueTeamsRouter);
-router.use("/team-rescue-requests", teamRescueRequestsRouter); 
+router.use("/team-rescue-requests", teamRescueRequestsRouter);
 
 // Quản lý phương tiện
 router.use("/vehicles", vehiclesRouter);
+router.use("/borrow-vehicles", borrowVehiclesRouter);
 
 // Quản lý yêu cầu cứu trợ
 router.use("/rescue-requests", rescueRequestsRouter);
