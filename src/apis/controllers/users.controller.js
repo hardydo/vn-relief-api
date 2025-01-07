@@ -102,14 +102,33 @@ export const getUsersController = async (req, res) => {
       ];
     }
 
+    // Tìm danh sách users theo query
     const users = await Users.find(query)
       .populate({
         path: "rescueTeamId",
-        select: "teamName",
       })
       .sort({ createdAt: -1 });
 
-    return ResponseStatus.ok(res, users);
+    // Lấy danh sách userIds từ users
+    const userIds = users.map((user) => user._id);
+
+    // Tìm userRoles dựa trên userIds
+    const userRoles = await UserRoles.find({
+      userId: { $in: userIds },
+    }).populate("roleId");
+
+    // Map userRoles vào từng user
+    const usersWithRoles = users.map((user) => {
+      const rolesForUser = userRoles.filter(
+        (ur) => ur.userId.toString() === user._id.toString()
+      );
+      return {
+        ...user.toObject(),
+        roles: rolesForUser,
+      };
+    });
+
+    return ResponseStatus.ok(res, usersWithRoles);
   } catch (error) {
     console.log(error);
     return ResponseStatus.error(res, error);
@@ -131,10 +150,7 @@ export const getUserByIdController = async (req, res) => {
     }
 
     // Lấy roles của user
-    const userRoles = await UserRoles.find({ userId: id }).populate(
-      "roleId",
-      "name code"
-    );
+    const userRoles = await UserRoles.find({ userId: id }).populate("roleId");
 
     return ResponseStatus.ok(res, {
       ...user.toObject(),
