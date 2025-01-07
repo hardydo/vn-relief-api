@@ -28,44 +28,87 @@ export const getTeamRescueRequestsController = async (req, res) => {
 export const handleRescueRequestController = async (req, res) => {
   try {
     const { rescueTeamId, rescueRequestId } = req.params;
-    const { action } = req.body; // 'accept' hoặc 'cancel'
+    const { action } = req.body; // 'accept' or 'cancel'
 
     const teamRescueRequest = await TeamRescueRequests.findOne({
       rescueTeamId: rescueTeamId,
       rescueRequestId: rescueRequestId,
     });
 
-    if (!teamRescueRequest) {
-      return ResponseStatus.notfound(res);
-    }
+    if (action === "accept") {
+      if (teamRescueRequest) {
+        return ResponseStatus.ok(res, {
+          message: "Đã nhận đơn này rồi",
+        });
+      }
 
-    // Cập nhật trạng thái
-    const status = action === "accept" ? "accepted" : "cancelled";
-    teamRescueRequest.status = status;
-    await teamRescueRequest.save();
+      // Create a new team rescue request
+      const newTeamRescueRequest = await TeamRescueRequests.create({
+        rescueTeamId: rescueTeamId,
+        rescueRequestId: rescueRequestId,
+        status: "accepted",
+      });
 
-    // Cập nhật status của rescue request
-    await RescueRequests.findByIdAndUpdate(rescueRequestId, {
-      $set: {
-        status: {
-          recipient: "doing",
+      // Update rescue request status
+      await RescueRequests.findByIdAndUpdate(rescueRequestId, {
+        $set: {
+          status: {
+            recipient: "doing",
+          },
         },
-      },
-    });
+      });
 
-    // Tạo lịch sử
-    await StatusHistory.create({
-      referenceTable: "TeamRescueRequests",
-      referenceId: teamRescueRequest._id,
-      action,
-      oldStatus: teamRescueRequest.status,
-      newStatus: status,
-      changedBy: req.user?._id || "676452c5b85460f14f0b1d76",
-    });
+      // Create status history
+      await StatusHistory.create({
+        referenceTable: "TeamRescueRequests",
+        referenceId: newTeamRescueRequest._id,
+        action: "accept",
+        oldStatus: null,
+        newStatus: "accepted",
+        changedBy: req.user?._id || "676452c5b85460f14f0b1d76",
+      });
 
-    return ResponseStatus.ok(res, {
-      message: "Cập nhật trạng thái thành công",
-    });
+      return ResponseStatus.ok(res, {
+        message: "Nhận đơn thành công",
+      });
+    } else if (action === "cancel") {
+      if (!teamRescueRequest) {
+        return ResponseStatus.ok(res, {
+          message: "Đơn này chưa được nhận",
+        });
+      }
+
+      // Update team rescue request status to cancelled
+      teamRescueRequest.status = "cancelled";
+      await teamRescueRequest.save();
+
+      // Update rescue request status
+      await RescueRequests.findByIdAndUpdate(rescueRequestId, {
+        $set: {
+          status: {
+            recipient: "cancelled",
+          },
+        },
+      });
+
+      // Create status history
+      await StatusHistory.create({
+        referenceTable: "TeamRescueRequests",
+        referenceId: teamRescueRequest._id,
+        action: "cancel",
+        oldStatus: teamRescueRequest.status,
+        newStatus: "cancelled",
+        changedBy: req.user?._id || "676452c5b85460f14f0b1d76",
+      });
+
+      return ResponseStatus.ok(res, {
+        message: "Hủy đơn thành công",
+      });
+    } else {
+      return ResponseStatus.badRequest(res, {
+        message: "Invalid action",
+      });
+    }
   } catch (error) {
     console.log(error);
     return ResponseStatus.error(res, error);

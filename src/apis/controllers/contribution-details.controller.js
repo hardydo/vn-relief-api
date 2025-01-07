@@ -34,7 +34,7 @@ export const addContributionItemsController = async (req, res) => {
     const newItems = await ContributionDetails.insertMany(
       items.map((item) => ({
         ...item,
-        contributionId: id,
+        reliefContributionId: id,
         remainingQuantity: item.providedQuantity,
       }))
     );

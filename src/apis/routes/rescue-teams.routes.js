@@ -12,6 +12,7 @@ import {
   getJoinRequestsController,
   handleJoinRequestController,
   changeTeamLeaderController,
+  getTeamDetailsByUserId,
 } from "../controllers/rescue-teams.controller.js";
 import {
   authMiddleware,
@@ -19,6 +20,9 @@ import {
 } from "../middlewares/auth.middleware.js";
 
 const rescueTeamsRouter = express.Router();
+
+// Get team details by user ID
+rescueTeamsRouter.get("/user/:userId", authMiddleware, getTeamDetailsByUserId);
 
 // Danh sách đội cứu trợ
 // Query: status (active | inactive)

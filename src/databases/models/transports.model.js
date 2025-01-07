@@ -22,6 +22,7 @@ const transportSchema = new Schema(
     //   coordinates: [Number],
     //   // description: "Tọa độ điểm lấy hàng",
     // },
+    images: [String],
     notes: String,
     deletedAt: {
       type: Date,

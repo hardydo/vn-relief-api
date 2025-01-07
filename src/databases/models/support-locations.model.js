@@ -23,8 +23,14 @@ const supportLocationSchema = new Schema(
     },
     locationType: {
       type: String,
-      enum: ["temporary_stop", "residence", "warehouse", "other"],
-      //điểm dừng nghỉ, tạm trú, kho tập kết, khác
+      enum: [
+        "temporary_stop",
+        "residence",
+        "warehouse",
+        "commissariat",
+        "other",
+      ],
+      //điểm dừng nghỉ, tạm trú, kho tập kết, tiếp tế lương thực, khác
     },
     phone: String,
     description: String,

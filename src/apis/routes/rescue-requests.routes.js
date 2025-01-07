@@ -9,6 +9,7 @@ import {
   updateStatusController,
   assignTeamController,
   getReceivedRequestsController,
+  getByUserIdController,
 } from "../controllers/rescue-requests.controller.js";
 import {
   authMiddleware,
@@ -16,6 +17,10 @@ import {
 } from "../middlewares/auth.middleware.js";
 
 const rescueRequestsRouter = express.Router();
+
+// Lấy danh sách các đơn cứu trợ của 1 user
+// Query: status, type, area, nearby
+rescueRequestsRouter.get("/user", authMiddleware, getByUserIdController);
 
 // Lấy danh sách các vehicles/user hỗ trợ cho 1 đơn rescuerequest
 // Query: status, type, area, nearby

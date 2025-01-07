@@ -5,6 +5,7 @@ import {
   createVehicleController,
   updateVehicleController,
   deleteVehicleController,
+  getVehicleByUserIdController,
 } from "../controllers/vehicles.controller.js";
 import { authMiddleware } from "../middlewares/auth.middleware.js";
 
@@ -13,6 +14,13 @@ const vehiclesRouter = express.Router();
 // Lấy danh sách phương tiện (filter: status, type)
 // status: 'available' | 'in_use'
 vehiclesRouter.get("/", authMiddleware, getVehiclesController);
+
+// Lấy chi tiết phương tiện bằng userid
+vehiclesRouter.get(
+  "/user/:userId",
+  authMiddleware,
+  getVehicleByUserIdController
+);
 
 // Lấy chi tiết phương tiện
 vehiclesRouter.get("/:id", authMiddleware, getVehicleByIdController);

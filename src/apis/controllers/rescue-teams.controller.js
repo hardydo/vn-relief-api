@@ -3,6 +3,92 @@ import RescueTeams from "../../databases/models/rescue-teams.model.js";
 import Users from "../../databases/models/users.model.js";
 import StatusHistory from "../../databases/models/status-history.model.js";
 import TeamRescueUsers from "../../databases/models/team-rescue-users.js";
+import TeamRescueRequests from "../../databases/models/team-rescue-requests.model.js";
+
+// Get team details by user ID
+export const getTeamDetailsByUserId = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    const user = await Users.findById(userId);
+    if (!user || !user.rescueTeamId) {
+      return ResponseStatus.notfound(
+        res,
+        "Người dùng không thuộc đội cứu trợ nào"
+      );
+    }
+
+    const rescueTeamId = user.rescueTeamId;
+
+    const [team, members, joinRequests, assignedRequests] = await Promise.all([
+      RescueTeams.findById(rescueTeamId),
+      Users.find({ rescueTeamId: rescueTeamId }).select(
+        "name phone avatar createdAt"
+      ),
+      TeamRescueUsers.find({
+        rescueTeamId: rescueTeamId,
+        status: "pending",
+      }).populate("userId", "name phone avatar"),
+      TeamRescueRequests.find({
+        rescueTeamId: rescueTeamId,
+      }).populate({
+        path: "rescueRequestId",
+        populate: {
+          path: "informantId",
+          select: "name phone",
+        },
+      }),
+    ]);
+
+    if (!team) {
+      return ResponseStatus.notfound(
+        res,
+        "Không tìm thấy thông tin đội cứu trợ"
+      );
+    }
+
+    const result = {
+      team: {
+        _id: team._id,
+        teamName: team.teamName,
+        naturalDisasterId: team.naturalDisasterId,
+        operationType: team.operationType,
+        phone: team.phone,
+        supportCapability: team.supportCapability,
+        wardCode: team.wardCode,
+        status: team.status,
+      },
+      members: members.map((m) => ({
+        _id: m._id,
+        name: m.name,
+        phone: m.phone,
+        avatar: m.avatar,
+        joinedAt: m.createdAt,
+      })),
+      pendingJoinRequests: joinRequests.map((r) => ({
+        _id: r._id,
+        user: {
+          _id: r.userId._id,
+          name: r.userId.name,
+          phone: r.userId.phone,
+          avatar: r.userId.avatar,
+        },
+        requestedAt: r.createdAt,
+      })),
+      assignedRequests: assignedRequests.map((ar) => ({
+        _id: ar._id,
+        status: ar.status,
+        rescueRequest: ar.rescueRequestId,
+        assignedAt: ar.createdAt,
+      })),
+    };
+
+    return ResponseStatus.ok(res, result);
+  } catch (error) {
+    console.error("Error in getTeamDetailsByUserId:", error);
+    return ResponseStatus.error(res, error);
+  }
+};
 
 // Danh sách đội cứu trợ
 export const getTeamsController = async (req, res) => {
@@ -188,11 +274,14 @@ export const getTeamMembersController = async (req, res) => {
 export const addTeamMemberController = async (req, res) => {
   try {
     const { rescueTeamId } = req.params;
-    const { userId } = req.body;
+    const { phone } = req.body;
+
+    const user = await Users.findOne({ phone });
+    if (!user) return ResponseStatus.notfound(res);
 
     // Cập nhật rescueTeamId cho user
     const updated = await Users.findByIdAndUpdate(
-      userId,
+      user._id,
       { $set: { rescueTeamId: rescueTeamId } },
       { new: true }
     );
@@ -276,6 +365,7 @@ export const getJoinRequestsController = async (req, res) => {
 export const handleJoinRequestController = async (req, res) => {
   try {
     const { rescueTeamId, requestId } = req.params;
+    const { userId, status } = req.body;
     const checkExists = await TeamRescueUsers.findByIdAndUpdate(requestId, {
       $set: {
         status: "active",
@@ -284,8 +374,14 @@ export const handleJoinRequestController = async (req, res) => {
     if (!checkExists) {
       return ResponseStatus.badRequest(res, "Không tìm thấy yêu cầu");
     }
+
+    if (status == "accept") {
+      await Users.findByIdAndUpdate(userId, {
+        rescueTeamId,
+      });
+    }
     await TeamRescueUsers.deleteMany({
-      userId: req.user?._id || "676452c5b85460f14f0b1d76",
+      userId: userId,
       _id: {
         $ne: checkExists._id,
       },

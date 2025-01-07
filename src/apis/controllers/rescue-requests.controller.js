@@ -6,6 +6,24 @@ import TransportSupplies from "../../databases/models/transport-supplies.model.j
 import FinancialTransactions from "../../databases/models/financial-transactions.model.js";
 import RescueRequestItems from "../../databases/models/rescue-request-items.model.js";
 
+// Lấy danh sách hỗ trợ cho 1 user
+export const getByUserIdController = async (req, res) => {
+  try {
+    const { id } = req.params; // ID của user
+
+    // Tìm tất cả các đơn cứu trợ có informantId là ID của user
+    const rescueRequests = await RescueRequests.find({ informantId: id })
+      .populate("informantId", "name phone")
+      .populate("verifierId", "name phone")
+      .sort({ createdAt: -1 });
+
+    return ResponseStatus.ok(res, rescueRequests);
+  } catch (error) {
+    console.log(error);
+    return ResponseStatus.error(res, error);
+  }
+};
+
 // Lấy danh sách hỗ trợ cho 1 đơn rescuerequest
 export const getReceivedRequestsController = async (req, res) => {
   try {
@@ -88,7 +106,9 @@ export const getRescueRequestsController = async (req, res) => {
     query.naturalDisasterId = naturalDisasterId;
 
     if (status) {
-      query.status = status;
+      query.status = {
+        verify: status,
+      };
     }
     if (type) {
       query.type = type;
@@ -143,15 +163,19 @@ export const getRescueRequestByIdController = async (req, res) => {
 // Tạo yêu cầu mới
 export const createRescueRequestController = async (req, res) => {
   try {
-    const data = req.body;
+    const { user, ...data } = req.body;
+
     const naturalDisasterId = req.headers["naturaldisasterid"];
 
     const newRequest = await RescueRequests.create({
       ...data,
       naturalDisasterId,
-      informantId: req.user?._id || null,
+      informantId: user._id,
       status: {
-        verify: "pending",
+        verify:
+          user.roles.find((role) => role.roleId.code == 4) != -1
+            ? "closed"
+            : "pending",
         recipient: "pending",
         goods: "pending",
       },

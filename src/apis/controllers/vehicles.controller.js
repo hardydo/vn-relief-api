@@ -3,6 +3,7 @@ import Vehicles from "../../databases/models/vehicles.model.js";
 import RescueTeams from "../../databases/models/rescue-teams.model.js";
 import StatusHistory from "../../databases/models/status-history.model.js";
 import BorrowVehicles from "../../databases/models/borrow-vehicles.model.js";
+import TransportSupplies from "../../databases/models/transport-supplies.model.js";
 
 // Lấy danh sách phương tiện
 /**
@@ -22,6 +23,35 @@ export const getVehiclesController = async (req, res) => {
       .sort({ createdAt: -1 });
 
     return ResponseStatus.ok(res, vehicles);
+  } catch (error) {
+    console.log(error);
+    return ResponseStatus.error(res, error);
+  }
+};
+
+// Chi tiết phương tiện
+export const getVehicleByUserIdController = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    // Find the vehicle associated with the userId
+    const vehicle = await Vehicles.findOne({ ownerId: userId });
+
+    if (!vehicle) {
+      return ResponseStatus.notfound(res, {
+        message: "Vehicle not found for the user",
+      });
+    }
+
+    // Find the transport suppliers (schedules) for the vehicle
+    const transportSuppliers = await TransportSupplies.find({
+      vehicleId: vehicle._id,
+    });
+
+    return ResponseStatus.ok(res, {
+      vehicle,
+      transportSuppliers,
+    });
   } catch (error) {
     console.log(error);
     return ResponseStatus.error(res, error);
@@ -106,14 +136,14 @@ export const updateVehicleController = async (req, res) => {
       return ResponseStatus.notfound(res);
     }
 
-    if (
-      vehicle.ownerId.toString() !==
-        (req.user?._id || "676452c5b85460f14f0b1d76") &&
-      (!req.user.rescueTeamId ||
-        vehicle.rescueTeamId?.toString() !== req.user?.rescueTeamId)
-    ) {
-      return ResponseStatus.forbidden(res, "Không có quyền cập nhật");
-    }
+    // if (
+    //   vehicle.ownerId.toString() !==
+    //     (req.user?._id || "676452c5b85460f14f0b1d76") &&
+    //   (!req.user.rescueTeamId ||
+    //     vehicle.rescueTeamId?.toString() !== req.user?.rescueTeamId)
+    // ) {
+    //   return ResponseStatus.forbidden(res, "Không có quyền cập nhật");
+    // }
 
     const updated = await Vehicles.findByIdAndUpdate(
       id,
@@ -144,15 +174,12 @@ export const deleteVehicleController = async (req, res) => {
       return ResponseStatus.notfound(res);
     }
 
-    if (
-      vehicle.ownerId.toString() !==
-      (req.user?._id || "676452c5b85460f14f0b1d76")
-    ) {
-      return ResponseStatus.forbidden(res, "Không có quyền xóa");
-    }
+    // if (vehicle.ownerId.toString() !== req.user?._id) {
+    //   return ResponseStatus.forbidden(res, "Không có quyền xóa");
+    // }
 
     // Kiểm tra phương tiện có đang được sử dụng
-    if (vehicle.status === "in_use") {
+    if (vehicle.status === "unavaiable") {
       return ResponseStatus.badRequest(
         res,
         "Không thể xóa phương tiện đang được sử dụng"

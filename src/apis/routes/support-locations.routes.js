@@ -8,25 +8,32 @@ import {
   receiveSuppliesController,
   getNearbyLocationsController,
   getSupportLocationsReveicedController,
+  getLocationsByTypeController,
 } from "../controllers/support-locations.controller.js";
 import { authMiddleware } from "../middlewares/auth.middleware.js";
 
 const supportLocationsRouter = express.Router();
 
-// Lấy danh sách địa điểm (kèm thông tin hàng hóa)
-// from: userId (lấy danh sách địa điểm của 1 user) hoặc all (lấy hết)
+// Lấy danh sách địa điểm mà phương tiện đã nhận hàng
 supportLocationsRouter.get(
   "/vehicle-received/:vehicleId",
   authMiddleware,
   getSupportLocationsReveicedController
 );
 
-// Lấy danh sách địa điểm (kèm thông tin hàng hóa)
+// Lấy danh sách địa điểm theo user/all (kèm thông tin hàng hóa)
 // from: userId (lấy danh sách địa điểm của 1 user) hoặc all (lấy hết)
 supportLocationsRouter.get(
   "/user/:from",
   authMiddleware,
   getSupportLocationsController
+);
+
+// Lấy danh sách địa điểm theo type (tạm trú, ....) (kèm thông tin hàng hóa)
+supportLocationsRouter.get(
+  "/filter/by-type",
+  authMiddleware,
+  getLocationsByTypeController
 );
 
 // Lấy chi tiết địa điểm
@@ -38,7 +45,7 @@ supportLocationsRouter.get(
 
 // Thêm địa điểm mới
 supportLocationsRouter.post(
-  "/",
+  "/type/:type",
   authMiddleware,
   createSupportLocationController
 );

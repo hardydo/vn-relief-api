@@ -2,6 +2,7 @@ import ResponseStatus from "../../response-handler/response-handler.js";
 import SupportLocations from "../../databases/models/support-locations.model.js";
 import ContributionDetails from "../../databases/models/contribution-details.model.js";
 import Transports from "../../databases/models/transports.model.js";
+import ReliefContributions from "../../databases/models/relief-contributions.model.js";
 
 // Lấy danh sách địa điểm mà phương tiện đã nhận hàng
 export const getSupportLocationsReveicedController = async (req, res) => {
@@ -28,45 +29,65 @@ export const getSupportLocationsReveicedController = async (req, res) => {
   }
 };
 
-// Lấy danh sách địa điểm (kèm thông tin hàng hóa)
+// Lấy danh sách địa điểm theo user/all (kèm thông tin hàng hóa)
 export const getSupportLocationsController = async (req, res) => {
   try {
-    const { type, area } = req.query;
+    const { type } = req.query;
     const { from } = req.params; //userId hoặc all
 
     let query = {};
     if (type && type !== "all") {
       query.locationType = type;
     }
-    if (area) {
-      query.wardCode = area;
-    }
 
     const pipeline = [
       { $match: query },
       {
         $lookup: {
-          from: "contributiondetails",
+          from: "reliefcontributions",
           let: { locationId: "$_id" },
           pipeline: [
             {
               $match: {
-                $expr: {
-                  $and: [
-                    { $eq: ["$locationId", "$$locationId"] },
-                    ...(from !== "all" ? [{ $eq: ["$userId", from] }] : []),
-                  ],
-                },
-                remainingQuantity: { $gt: 0 },
+                $expr: { $eq: ["$supportLocationId", "$$locationId"] },
+              },
+            },
+            {
+              $lookup: {
+                from: "contributiondetails",
+                localField: "_id",
+                foreignField: "reliefContributionId",
+                as: "contributionDetails",
+              },
+            },
+            {
+              $unwind: "$contributionDetails",
+            },
+            {
+              $replaceRoot: {
+                newRoot: "$contributionDetails",
               },
             },
           ],
           as: "supplies",
         },
       },
+      {
+        $lookup: {
+          from: "users", // Tên collection chứa thông tin user
+          localField: "userId", // Field trong `SupportLocations` hoặc các document liên quan
+          foreignField: "_id", // Field `_id` của user trong collection `users`
+          as: "user", // Tên field mới chứa thông tin user
+        },
+      },
+      {
+        $unwind: {
+          path: "$user", // Bóc tách thông tin user
+          preserveNullAndEmptyArrays: true, // Nếu không tìm thấy user, giữ nguyên document
+        },
+      },
     ];
 
-    // Lấy địa điểm và join với thông tin hàng hóa
     const locations = await SupportLocations.aggregate(pipeline).sort({
       createdAt: -1,
     });
@@ -78,23 +99,125 @@ export const getSupportLocationsController = async (req, res) => {
   }
 };
 
+// Lấy danh sách địa điểm theo type (kèm thông tin hàng hóa)
+export const getLocationsByTypeController = async (req, res) => {
+  try {
+    const { type, area } = req.query;
+    const naturalDisasterId = req.headers["naturaldisasterid"];
+
+    // Query SupportLocations first
+    let query = {};
+
+    if (type && type !== "all") {
+      query.locationType = type;
+    }
+
+    if (area) {
+      query.wardCode = area;
+    }
+
+    if (naturalDisasterId) {
+      query.naturalDisasterId = naturalDisasterId;
+    }
+
+    // Get all locations first
+    const locations = await SupportLocations.find(query)
+      .populate({
+        path: "userId",
+      })
+      .lean();
+
+    // Get all ReliefContributions and their details for each location
+    const locationsWithSupplies = await Promise.all(
+      locations.map(async (location) => {
+        // First get all relief contributions for this location
+        const contributions = await ReliefContributions.find({
+          supportLocationId: location._id,
+        }).lean();
+
+        // Get all contributionDetails for these contributions
+        const contributionIds = contributions.map((contrib) => contrib._id);
+
+        const supplies = await ContributionDetails.find({
+          reliefContributionId: { $in: contributionIds },
+        }).lean();
+
+        // Map supplies with their contribution info
+        const suppliesWithContributorInfo = supplies.map((supply) => {
+          const contribution = contributions.find(
+            (c) => c._id.toString() === supply.reliefContributionId.toString()
+          );
+
+          return {
+            _id: supply._id,
+            name: supply.name,
+            unit: supply.unit,
+            providedQuantity: supply.providedQuantity,
+            remainingQuantity: supply.remainingQuantity,
+            createdAt: supply.createdAt,
+            contributor: contribution, // Contains donorName, phone, etc from ReliefContributions
+          };
+        });
+
+        return {
+          ...location,
+          supplies: suppliesWithContributorInfo,
+        };
+      })
+    );
+
+    return ResponseStatus.ok(res, locationsWithSupplies);
+  } catch (error) {
+    console.log(error);
+    return ResponseStatus.error(res, error);
+  }
+};
+
 // Chi tiết địa điểm
 export const getSupportLocationByIdController = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const location = await SupportLocations.findById(id);
+    // Get location info
+    const location = await SupportLocations.findById(id).populate("userId");
     if (!location) {
       return ResponseStatus.notfound(res);
     }
 
-    // Lấy thông tin hàng hóa tại địa điểm
+    // First get all relief contributions for this location
+    const contributions = await ReliefContributions.find({
+      supportLocationId: id,
+    }).lean();
+
+    // Get all contributionDetails for these contributions
+    const contributionIds = contributions.map((contrib) => contrib._id);
+
     const supplies = await ContributionDetails.find({
-      locationId: id,
+      reliefContributionId: { $in: contributionIds },
       remainingQuantity: { $gt: 0 },
+    }).lean();
+
+    // Map supplies with their contribution info
+    const suppliesWithContributorInfo = supplies.map((supply) => {
+      const contribution = contributions.find(
+        (c) => c._id.toString() === supply.reliefContributionId.toString()
+      );
+
+      return {
+        _id: supply._id,
+        name: supply.name,
+        unit: supply.unit,
+        providedQuantity: supply.providedQuantity,
+        remainingQuantity: supply.remainingQuantity,
+        createdAt: supply.createdAt,
+        contributor: contribution, // Contains donorName, phone, address etc from ReliefContributions
+      };
     });
 
-    return ResponseStatus.ok(res, { ...location.toObject(), supplies });
+    return ResponseStatus.ok(res, {
+      ...location.toObject(),
+      supplies: suppliesWithContributorInfo,
+    });
   } catch (error) {
     console.log(error);
     return ResponseStatus.error(res, error);
@@ -104,17 +227,32 @@ export const getSupportLocationByIdController = async (req, res) => {
 // Thêm địa điểm mới
 export const createSupportLocationController = async (req, res) => {
   try {
+    const { type } = req.params;
     const data = req.body;
+
+    // Kiểm tra loại địa điểm hợp lệ
+    const validTypes = [
+      "temporary_stop",
+      "residence",
+      "warehouse",
+      "commissariat",
+    ];
+    if (!validTypes.includes(type)) {
+      return ResponseStatus.badRequest(res, "Loại địa điểm không hợp lệ");
+    }
 
     const newLocation = await SupportLocations.create({
       ...data,
-      verificationOfficerId: req.user?._id || "676452c5b85460f14f0b1d76",
-      verificationStatus: "active",
+      locationType: type,
+      // userId: req.user?._id,
+      naturalDisasterId: req.headers["naturaldisasterid"],
     });
+
     const result = {
-      message: "Tạo địa điểm mới thành công",
+      message: "Thêm địa điểm hỗ trợ thành công",
       data: newLocation,
     };
+
     return ResponseStatus.created(res, result);
   } catch (error) {
     console.log(error);
